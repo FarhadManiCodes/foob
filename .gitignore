@@ -5,3 +5,7 @@
 /.agents/
 /.codex/
 /.aws/
+
+# Meson output and validation interpreter caches.
+/build*/
+__pycache__/

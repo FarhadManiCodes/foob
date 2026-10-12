@@ -105,13 +105,16 @@ M1 is intentionally small. M2–M4 form the **usable browser MVP**, while M5 is 
 
 ### Backlog
 
-- [ ] **M0-01 / P0:** Record package and compiler versions (`pacman -Q wpewebkit`; Meson, Ninja, C compiler).
-- [ ] **M0-02 / P0:** Install Arch build tools and WPE using pacman **only if missing**. First inspect what is already installed and the package dependency changes.
-- [ ] **M0-03 / P0:** Confirm `pkg-config --modversion wpe-webkit-2.0` and `pkg-config --modversion wpe-platform-2.0`; optionally check `wpe-platform-wayland-2.0` where exposed.
-- [ ] **M0-04 / P0:** Initialize one small Meson/C23 project; verify the compiler supports `c_std=c23` and WPE symbols link successfully.
+- [x] **M0-01 / P0:** Record package and compiler versions (`pacman -Q wpewebkit`; Meson, Ninja, C compiler).
+- [x] **M0-02 / P0:** Install Arch build tools and WPE using pacman **only if missing**. First inspect what is already installed and the package dependency changes.
+- [x] **M0-03 / P0:** Confirm `pkg-config --modversion wpe-webkit-2.0` and `pkg-config --modversion wpe-platform-2.0`; optionally check `wpe-platform-wayland-2.0` where exposed.
+- [x] **M0-04 / P0:** Initialize one small Meson/C23 project; verify the compiler supports `c_std=c23` and WPE symbols link successfully.
 - [ ] **M0-05 / P1:** Add `README.md`, `.gitignore`, basic license decision and concise `docs/` links to the architecture and this roadmap.
 
 ### Suggested first commands
+
+M0 P0 complete on 2026-10-12: [installed versions and C23/link evidence](docs/validation/m0.md).
+M0-05 license remains a maintainer P1 deferral.
 
 ```bash
 pacman -Q wpewebkit meson ninja pkgconf gcc 2>/dev/null
