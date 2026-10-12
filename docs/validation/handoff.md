@@ -8,8 +8,8 @@ Maintainer chose to save desktop interaction for later. Stop before M2.
 - Baseline: `cd93192`.
 - M0 implementation/evidence: `ed52f71`.
 - M1 implementation/evidence: `a92fbc358f10546f845301be1eb367f131ab29dd`.
-  Final documentation-only checkpoint adds paired diagnostic logs and this
-  clean-export evidence; C source and measured binary are unchanged. Resolve
+  Later checkpoints add paired diagnostic logs, clean-export evidence and a
+  collector geometry guard; C source and measured binary are unchanged. Resolve
   current documentation head with `git rev-parse HEAD`.
 - Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
 - Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
@@ -32,6 +32,8 @@ checks merely because this is a new context.
 - Compositor close, SIGTERM, SIGINT: exit 0 and no tracked leftover processes.
 - Nine fresh-process PSS launches and one separate local warm-reload control:
   all retained samples 950×1188/scale 1, full browser tree including helpers.
+  Final audit replaced one run with transient geometry; the collector rejects
+  geometry changes throughout settling, and all retained logs satisfy that check.
 - Automatic tile-width/fullscreen geometry and visual fixture inspection; simple
   arithmetic JS and hand-written MathML visually pass.
 - One Scholar query rendered results without an observed challenge. User
@@ -54,7 +56,7 @@ checks merely because this is a new context.
 - Accessibility warnings persist because the system a11y bus is masked. No
   system configuration change attempted.
 - Under-100-MiB stretch target not met: mean PSS blank 174.318 MiB, fixture
-  201.429 MiB, Wikipedia 333.708 MiB. No custom-engine work or security weakening.
+  202.412 MiB, Wikipedia 333.708 MiB. No custom-engine work or security weakening.
 - Blank/Wikipedia warm reloads untested; local warm reload measured separately.
 - Full sandbox/TLS/resource-policy audit remains later-milestone scope. Observed
   stock web process has seccomp/new namespaces; network/UI confinement differs.

@@ -43,6 +43,8 @@ output.parent.mkdir(parents=True, exist_ok=True)
 log = output.with_suffix('.log')
 tracked = {}
 process = None
+geometry_reference = None
+geometry_guard_offset = 0
 
 
 def check_health(expected_loads=None, allow_exit=False):
@@ -54,6 +56,10 @@ def check_health(expected_loads=None, allow_exit=False):
     if expected_loads is not None:
         if text.count('foob: load-started') != expected_loads or text.count('foob: load-finished status=ok') != expected_loads:
             raise RuntimeError('navigation changed after requested completion; idle interval invalid')
+        if geometry_reference is not None:
+            geometry = re.findall(r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)', text[geometry_guard_offset:])
+            if any(item != geometry_reference for item in geometry):
+                raise RuntimeError('viewport/scale changed after completion; fixed-geometry interval invalid')
     return text
 
 
@@ -68,6 +74,12 @@ try:
             text = check_health()
             finished = re.findall(r'load-finished status=ok elapsed_ms=([0-9.]+)', text)
             if len(finished) >= args.loads:
+                geometry_guard_offset = text.rfind('foob: load-finished status=ok')
+                geometry = re.findall(r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)', text[geometry_guard_offset:])
+                if not geometry:
+                    time.sleep(0.05)
+                    continue
+                geometry_reference = geometry[0]
                 check_health(args.loads)
                 completion = time.monotonic()
                 record['navigation_elapsed_ms'] = [float(item) for item in finished]

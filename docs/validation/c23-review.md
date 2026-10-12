@@ -72,3 +72,21 @@ Source/binary hashes unchanged.
 Follow-up was read-only code/saved-evidence inspection. It did not independently
 launch GUI tests or inject a hung-browser cleanup test. Visual/input acceptance
 remains separate; M1 incomplete and Gate A not approved.
+
+## Final geometry follow-up
+
+Final log audit found transient 950→1908→950 geometry in the original fixture-3,
+which sampled-endpoint checks alone missed. The main agent excluded that run,
+added continuous checks of every logged geometry report after final completion,
+and collected a stable replacement. An intermediate retry with a second
+navigation was correctly rejected and retained excluded.
+
+Reviewer confirms the incremental guard catches transient changes through idle,
+sampling and shutdown. Reviewed collector SHA256:
+`fa9a1e07023100af7501954456da02bc4a93b5a80015f6a1851ebd982278941e`.
+Replacement fixture-3 passes at 950×1188/scale 1, eight processes, samples about
+10/11/12 seconds, correct PSS sums, exit 0/no survivors. Reviewer retrospectively
+checked all ten accepted logs for expected navigation counts, no failure markers
+and no differing post-completion geometry. This strengthens the earlier review,
+which inspected sampled geometry only. No remaining blocking review finding;
+source/binary unchanged, no GUI test or Gate A approval. M1 interaction pending.

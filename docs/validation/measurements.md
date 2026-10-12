@@ -21,7 +21,11 @@ custom user agent. No concurrent browser benchmark workload.
 
 Every retained sample: **950×1188 WPE logical viewport, scale 1.0**. Local
 fixture screenshot confirms CSS viewport 950×1188 and DPR 1. Physical output
-1920×1200. Equal geometry is checked per run and across the suite.
+1920×1200. Equal geometry is checked per run and across the suite. The final
+collector also rejects any differing geometry diagnostic after final load
+completion, so a transient resize cannot be hidden by matching sampled endpoints.
+All accepted logs satisfy that stronger condition, including a replacement of
+the original third fixture run.
 
 For each launch, wait for successful `WEBKIT_LOAD_FINISHED`, then collect three
 samples beginning at least ten seconds after observed completion, one second
@@ -55,7 +59,7 @@ Elapsed times are engine navigation-completion durations in milliseconds.
 | [blank-3](runs/blank-3.json) | 174.224 | 174.236 | 174.236 | 0.975 |
 | [fixture-1](runs/fixture-1.json) | 202.607 | 202.757 | 202.771 | 38.015 |
 | [fixture-2](runs/fixture-2.json) | 199.457 | 199.431 | 199.442 | 37.364 |
-| [fixture-3](runs/fixture-3.json) | 202.130 | 202.135 | 202.135 | 37.244 |
+| [fixture-3](runs/fixture-3.json) | 204.149 | 205.662 | 205.428 | 37.632 |
 | [wikipedia-1](runs/wikipedia-1.json) | 334.151 | 333.577 | 333.556 | 1462.888 |
 | [wikipedia-2](runs/wikipedia-2.json) | 335.004 | 333.957 | 333.937 | 1465.389 |
 | [wikipedia-3](runs/wikipedia-3.json) | 333.509 | 332.853 | 332.829 | 1538.081 |
@@ -64,7 +68,7 @@ Elapsed times are engine navigation-completion durations in milliseconds.
 | Fresh-process workload | Mean of 9 samples (MiB) | Observed range (MiB) |
 |---|---:|---:|
 | Blank | 174.318 | 174.224–174.457 |
-| Local fixture | 201.429 | 199.431–202.771 |
+| Local fixture | 202.412 | 199.431–205.662 |
 | Wikipedia | 333.708 | 332.829–335.004 |
 
 Nine samples are repeated observations across **three** independent launches,
@@ -77,9 +81,11 @@ are **not tested**; no reload control was added to the M1 browser for them.
 
 Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
 Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
-Raw records contain M0 parent `ed52f71` and `source_dirty: true` because M1 was
-measured before its evidence commit. Exact source/binary hashes remove that
-ambiguity; no C source change occurred after measurement or independent review.
+Most raw records contain M0 parent `ed52f71` and `source_dirty: true` because
+M1 was measured before its evidence commit. Final replacement fixture-3 records
+documentation parent `c44316e` with collector/evidence changes pending.
+Exact source/binary hashes remove that ambiguity; no C source change occurred
+after measurement or independent review.
 
 Fixture SHA256:
 
@@ -100,5 +106,11 @@ metadata; paired `.log` files contain redacted application diagnostics and
 engine warnings. Review logs alongside records. `runs/preliminary/` contains
 one initial valid sample run and the failed negative-sleep run from the older
 collector, both **excluded**. Full suite was rerun with continuous health checks.
+Final log audit additionally excluded `fixture-3-transient` (950→1908→950
+between completion and shutdown, despite matching sample endpoints). One
+replacement was rejected for a second navigation and retained excluded as
+`fixture-3-navigation`. The final fixture-3 replacement passes continuous
+geometry/navigation checks; all other retained logs were audited with the same
+geometry condition. This replacement uses identical source/binary/fixture hashes.
 `crash-negative-control` and `missing-local-file` are expected failure controls,
 not passing workloads or measurements.
