@@ -7,8 +7,10 @@ Maintainer chose to save desktop interaction for later. Stop before M2.
 
 - Baseline: `cd93192`.
 - M0 implementation/evidence: `ed52f71`.
-- M1 implementation/evidence: the commit containing this checkpoint; resolve
-  `git log -1 --format='%H' -- src/main.c`. Final handoff records the exact revision.
+- M1 implementation/evidence: `a92fbc358f10546f845301be1eb367f131ab29dd`.
+  Final documentation-only checkpoint adds paired diagnostic logs and this
+  clean-export evidence; C source and measured binary are unchanged. Resolve
+  current documentation head with `git rev-parse HEAD`.
 - Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
 - Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
 
@@ -24,6 +26,9 @@ checks merely because this is a new context.
 - Registered startup contract test passes (16 rejected / 7 accepted cases).
 - Fresh final configure/build/test passes, no compiler warnings; actual C23 flags
   and independent strict-warning syntax check confirmed.
+- Clean Git export of committed M1 `a92fbc3` to `/tmp/foob-m1-clean.EBZFWg`:
+  fresh `meson setup build`, compile and registered test all pass with no
+  compiler warnings. The export has no ignored local build/profile/agent data.
 - Compositor close, SIGTERM, SIGINT: exit 0 and no tracked leftover processes.
 - Nine fresh-process PSS launches and one separate local warm-reload control:
   all retained samples 950×1188/scale 1, full browser tree including helpers.

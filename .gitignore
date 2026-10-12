@@ -9,3 +9,7 @@
 # Meson output and validation interpreter caches.
 /build*/
 __pycache__/
+
+# Retain approved textual validation diagnostics despite global *.log ignores.
+!/docs/validation/runs/*.log
+!/docs/validation/runs/preliminary/*.log
