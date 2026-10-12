@@ -18,11 +18,43 @@ meson compile -C build
 ./build/foob
 ```
 
-The M0 executable checks public type-symbol linkage and exits; M1 adds the
-browser window. Default build: `debugoptimized`, warning level 3, `-std=c23`.
+Default build: `debugoptimized`, warning level 3, `-std=c23`.
 Use four spaces, lowercase function names and explicit object ownership.
 GLib/GObject is the engine boundary; its convenience macros may use compiler
 extensions. The application does not claim an extension-free ISO C build.
 
 Project license: **deferred to the maintainer (M0-05 / P1)**. No license has
 been selected. WPE/WebKit and GLib retain their upstream licenses.
+
+## Run and validate
+
+```sh
+./build/foob                              # about:blank
+./build/foob https://en.wikipedia.org/wiki/Mathematics
+FOOB_DIAGNOSTICS=1 ./build/foob file://$PWD/tests/fixtures/viewport.html
+meson test -C build --print-errorlogs
+```
+
+`foob [URI]` accepts one explicit HTTP(S) URI, a local absolute `file:` URI,
+or `about:blank`. HTTP credentials and non-local file hosts are rejected.
+The M1 prototype is for trusted pages; comprehensive navigation/resource
+policy belongs to M2/M4. It uses one native Wayland window and an explicit
+ephemeral session. The `WPE_PLATFORM` environment cannot select another backend
+because the program constructs `WPEDisplayWayland` directly. Closing the window,
+SIGINT and SIGTERM release the view/session/display and exit.
+
+Diagnostics report load results, elapsed navigation time, WPE logical viewport,
+scale, focus/window state and abnormal web-process termination. They omit URLs,
+error-message text, cookies and input contents. Navigation completion timing is
+**not first-visible-frame timing**. Deferred/coalesced geometry callbacks are
+cancelled on shutdown. Engine/system warnings can still appear with diagnostics
+disabled.
+
+The [desktop checklist](docs/validation/desktop-checklist.md) and
+[validation/handoff](docs/validation/handoff.md) describe the remaining M1 work.
+The standard-library Python scripts under `tests/benchmark/` need desktop access
+and readable process PSS. Run `python3 tests/benchmark/suite.py` for serial fresh
+launches and a separate local warm-reload control. No Python packages are needed.
+Each opens a test window; do this when desktop interaction is available.
+The suite checks all browser descendants, including sandbox helpers and the D-Bus
+proxy, and checks their disappearance after shutdown.

@@ -16,4 +16,9 @@ wpe = dependency('wpe-webkit-2.0', version: '>=2.54.1')
 platform = dependency('wpe-platform-2.0', version: '>=2.54.1')
 wayland = dependency('wpe-platform-wayland-2.0', version: '>=2.54.1')
 
-executable('foob', 'src/main.c', dependencies: [wpe, platform, wayland])
+foob = executable('foob', 'src/main.c', dependencies: [wpe, platform, wayland])
+python = find_program('python3', required: false)
+if python.found()
+    test('startup URI contract', python,
+        args: [files('tests/check_cli.py'), foob], timeout: 30)
+endif

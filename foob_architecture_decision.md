@@ -28,6 +28,14 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 
 **Evidence levels:** upstream release/package/header/CMake facts have been checked; actual installed packages, compiler support, graphics acceleration, sandbox execution, math rendering, custom WPE compilation and total PSS remain **unmeasured**. Package versions are time-sensitive: record `pacman -Q wpewebkit` at M0. This ledger distinguishes upstream product version, distribution package revision and ABI/API suffix.
 
+**Implementation checkpoint (2026-10-13):** the ledger above is the original
+pre-implementation audit. [M0 evidence](docs/validation/m0.md) now verifies the
+installed packages/C23 linkage; [M1 evidence](docs/validation/m1.md) records native
+Wayland loading/cleanup, simple math/JS, web-process confinement and
+[stock process-tree PSS](docs/validation/measurements.md). Acceleration remains
+qualified; interactive acceptance and Gate A are pending. The M1 session is
+explicitly ephemeral; M2's ordinary persistent profile remains planned.
+
 ## Target machine and language/runtime decision
 
 - **Hardware:** x86_64 laptop with an integrated AMD GPU.

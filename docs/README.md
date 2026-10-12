@@ -7,6 +7,11 @@ The current project scope is defined by the existing
 Implementation: [approved M0/M1 plan](plans/m0-m1.md),
 [M0 validation](validation/m0.md), and [build instructions](../README.md).
 
+Current [handoff](validation/handoff.md): M0 P0 complete; M1 implemented and
+independently reviewed, with [runtime evidence](validation/m1.md),
+[measurements](validation/measurements.md) and
+[desktop checks pending](validation/desktop-checklist.md). Gate A is not approved.
+
 The [qvu research handoff](research/qvu/README.md) contains earlier design discussion,
 math/local-document experiments and Scholar compatibility findings. Those records
 are historical evidence, not authorization to implement the old Qt design in foob.

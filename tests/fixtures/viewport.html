@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foob M1 viewport and input</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 20px/1.5 sans-serif; background: #edf2f4; color: #132b35; }
+  header { position: sticky; top: 0; padding: 12px; background: #163c4b; color: white; z-index: 1; }
+  main { padding: 20px; }
+  #frame { width: 100%; height: 25vh; border: 8px solid #d06c20; padding: 10px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card { padding: 16px; background: white; border: 2px solid #387286; }
+  input, button { font: inherit; max-width: 100%; padding: 8px; }
+  #lower { height: 110vh; background: repeating-linear-gradient(#edf2f4 0 95px, #b8d3dc 95px 100px); }
+  footer { padding: 24px; background: #d06c20; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } #breakpoint::after { content: 'narrow / one column'; } }
+  @media (min-width: 801px) { #breakpoint::after { content: 'wide / two columns'; } }
+</style>
+<header><strong>M1 geometry</strong> — <span id="metrics">JavaScript pending</span></header>
+<main>
+  <h1>Viewport, focus, input, link, scrolling</h1>
+  <div id="frame">This orange rectangle follows 100% width and 25vh height.<br><span id="breakpoint"></span></div>
+  <div class="grid">
+    <section class="card">
+      <label for="typing">Click here and type a disposable test phrase</label><br>
+      <input id="typing" autocomplete="off" placeholder="No input text is logged">
+      <p id="input-state">Input events: 0</p>
+      <p id="pointer">Pointer test: click inside the orange rectangle.</p>
+    </section>
+    <section class="card">
+      <p><a href="linked.html">Open the local linked page</a></p>
+      <p><a href="mathml.html">Open hand-written MathML</a></p>
+      <button id="counter">JavaScript counter: 0</button>
+      <button onclick="location.reload()">Reload this fixture</button>
+      <p id="js">JavaScript pending</p>
+    </section>
+  </div>
+  <h2>Scroll to the orange footer</h2>
+  <div id="lower">Ruler stripes every 100 CSS px.</div>
+</main>
+<footer>END — scrolling reached the footer. <a href="#">Return to top</a></footer>
+<script>
+  let resizes = 0, inputs = 0, clicks = 0;
+  const metrics = document.getElementById('metrics');
+  function update() {
+    metrics.textContent = `${innerWidth} × ${innerHeight} CSS px; DPR ${devicePixelRatio}; resizes ${resizes}; scrollY ${Math.round(scrollY)}`;
+  }
+  addEventListener('resize', () => { resizes++; update(); });
+  addEventListener('scroll', update);
+  document.getElementById('typing').addEventListener('input', () => {
+    document.getElementById('input-state').textContent = `Input events: ${++inputs}`;
+  });
+  document.getElementById('frame').addEventListener('click', e => {
+    document.getElementById('pointer').textContent = `Click client position: ${Math.round(e.clientX)}, ${Math.round(e.clientY)}`;
+  });
+  document.getElementById('counter').addEventListener('click', e => {
+    e.target.textContent = `JavaScript counter: ${++clicks}`;
+  });
+  document.getElementById('js').textContent = 'JavaScript PASS: 6 × 7 = ' + (6 * 7);
+  update();
+  // Optional controlled warm-reload fixture; only one reload within this session.
+  if (new URL(location.href).searchParams.get('warm') === '1' && !sessionStorage.getItem('m1-reloaded')) {
+    sessionStorage.setItem('m1-reloaded', '1');
+    setTimeout(() => location.reload(), 3000);
+  }
+</script>
