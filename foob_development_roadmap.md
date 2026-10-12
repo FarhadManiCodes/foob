@@ -1,0 +1,388 @@
+# foob — Staged Development Roadmap
+
+**Document type:** Execution plan / agile-style milestones  
+**Status:** Ready for M0/M1; subsequent stages provisional; audited 2026-10-12  
+**Created:** 2026-10-12  
+**Working project name:** `foob`  
+**Companion document:** [`foob_architecture_decision.md`](./foob_architecture_decision.md) — technical decisions, API investigation, security boundaries and research notes.
+
+## 1. Guiding decision
+
+**Develop the browser against Arch Linux's packaged WPE WebKit first, then build a custom reduced-feature WPE separately and compare them using the same browser source revision, tests and workloads.** The executable may require rebuilding/relinking against each engine installation; do not assume a custom prefix can be swapped safely at runtime.
+
+- Initial engine: Arch `extra/wpewebkit`, **2.54.1-2 as checked on 2026-10-12** (upstream version **2.54.1**, Arch package revision **-2**; confirm locally, as packages change).
+- Interface: **WPE WebKit 2.0 API** (`wpe-webkit-2.0`) and **WPEPlatform 2.0 API** (`wpe-platform-2.0`), native Wayland. **2.0 is the API version, not the WPE engine release**; avoid the deprecated `libwpe` backend.
+- Application: **C23**, Meson, GLib/GObject; one web view/window; no GTK/Qt or permanent browser chrome.
+- Machine: x86_64 laptop, integrated AMD GPU (`amdgpu`); Arch Wayland with **niri**.
+- Custom engine: use **unmodified, pinned upstream WPE source** with a maintained feature configuration/Arch packaging; **no WebKit fork or git submodule** just for build options.
+- Servo: **out of scope** for this development cycle.
+- Primary principle: **make it run → make it correct → measure it → customize it → decide based on results**.
+
+This is an execution roadmap, not a commitment that the custom build will outperform the distribution build in runtime memory. The under-100-MiB **total PSS** goal for a lightweight page is a stretch target to measure, not a release-blocking promise.
+
+### Exact version conventions (audit 2026-10-12)
+
+| Token | Meaning |
+|---|---|
+| `2.54.0` | Upstream WPE WebKit engine release that stabilized WPEPlatform (2026-09-16) |
+| `2.54.1` | Current verified upstream stable WPE WebKit engine release (2026-10-06) |
+| `2.54.1-2` | Current verified **Arch package** release of that engine; the suffix is Arch packaging revision |
+| `wpe-webkit-2.0` | pkg-config **API/ABI namespace**, not the installed engine version |
+| `wpe-platform-2.0` | WPEPlatform pkg-config **API/ABI namespace**, not an alternative engine release |
+| `wpe-platform-wayland-2.0` | Optional Wayland-specific platform API; check availability with pkg-config |
+
+These are **repository/upstream values, not measured local installation results**. M0 records the machine's actual versions. The stock and custom engines need not have identical package revisions but should use comparable upstream engine sources and reproducible build settings when attributing performance differences.
+
+## 2. Workflow and milestone rules
+
+Use a lightweight **Kanban / agile** board, not arbitrary calendar-length sprints. Work in small, reviewable increments. Suggested columns: **Backlog → Ready → In progress → Validate → Done**, with **Blocked** as an optional status. Work-in-progress limit: **one major issue at a time** until Milestone 1 passes.
+
+Each issue should have:
+
+- **ID and outcome**, not just an activity (e.g. `M1-04 — niri tile resize changes CSS viewport`).
+- **Priority:** P0 blocks the **milestone to which that issue is assigned**, not necessarily M1; P1 is a desirable follow-up within or after that milestone; P2 is deferred. A P0 dialog task assigned to M3 does **not** block Gate A after M1.
+- **Acceptance test:** a repeatable observation, command or fixture.
+- **Evidence:** commit reference, terminal output, screenshot if genuinely useful, and measured results.
+- **Dependencies:** only when another issue must finish first.
+
+**Definition of done:** builds from a clean checkout, passes its acceptance test on the target hardware, leaves no known regression in the established smoke-test set, and updates minimal setup/usage notes. Prefer automated tests for stable behaviors; document manual niri/display tests explicitly.
+
+**Review policy:** stop for a real architecture/performance review at **Gate A (after Milestone 1)** and **Gate B (after Milestone 5)**. Also resolve the **Scholar compatibility decision after M2**, once persistent profiles are implemented, before starting M3. Small implementation fixes inside an accepted milestone do **not** require a new design discussion. Security or API incompatibility discovered earlier may trigger an immediate exception review.
+
+### Agent execution and handoff rules
+
+Read `AGENTS.md` and both root planning documents before implementation. This roadmap controls task order, milestone acceptance and review stops; the architecture controls technical boundaries. Historical `docs/research/qvu/` material supplies evidence, not additional scope. If these documents still conflict materially, report the conflict before implementing the affected behavior.
+
+Unless the maintainer assigns a different stage, begin with incomplete M0/M1 work and stop at Gate A. A technical pass makes a gate ready for review; it does not authorize the agent to approve its own progression. Continue routine fixes within the authorized stage. Do not change engine, language, security boundaries or accepted scope without a maintainer decision.
+
+| Boundary | Required evidence / action | Continuation |
+|---|---|---|
+| M0 → M1 | All M0 P0 checks pass, including a clean C23 build/link; record actual versions | Continue within authorized M0/M1 work |
+| Gate A, after M1 | All M1 P0 checks pass; submit runtime and measurement evidence | Stop before M2; maintainer reviews and authorizes continuation |
+| Scholar decision, after M2 | All M2 P0 checks pass; persistent-profile tests and challenge behavior recorded | Stop before M3; maintainer accepts viability and any clearance requirement |
+| M3 → M4 | All M3 P0 checks pass; challenge-frequency decision and observed reliability limits recorded | Continue only within the assigned scope |
+| M4 → M5 | All M4 P0 checks pass; local-resource isolation, offline rendering, navigation and lifecycle evidence recorded | Begin the custom-engine experiment only if included in the assigned scope |
+| Gate B, after M5 | All M5 P0 checks pass or failed experiment outcomes are documented; comparison and maintenance assessment submitted | Stop; maintainer chooses stock/custom deployment and subsequent M6 scope |
+
+For each acceptance check, record **pass, fail, or not tested**, reproduction steps and evidence under `docs/validation/`, linked from the task. Mark a task complete only when its required checks pass. An investigation may complete with a documented unsupported capability, but must not be recorded as implemented functionality. Unavailable hardware, manual interaction or diagnostics mean not tested, not pass; a required untested check leaves the milestone incomplete. Record P1 deferrals explicitly; P2 work requires promotion into the assigned scope. Keep a handoff record with current milestone, completed tasks, failures, pending decisions and the next action. Do not publish credentials or private profile contents in evidence.
+
+Before each task, turn its acceptance text into a short checklist with fixture/input, expected result and observation method. For measurements, specify viewport/scale, idle interval, repetitions and cold/warm state before collecting results. Routine implementation choices within accepted boundaries may be selected and documented by the agent; unresolved product tradeoffs such as acceptable challenge frequency, deployment choice or a proposed architecture change belong to the maintainer. Report failed/untestable checks and continue independent work within scope, but do not cross a gate or claim an incomplete milestone is done.
+
+### Open decisions and when to resolve them
+
+These are intentional investigations, not permission to improvise beyond scope or reasons to delay unrelated M0/M1 work.
+
+| Decision | Timing / owner | Required outcome |
+|---|---|---|
+| Project license | M0-05, maintainer | Record the choice; do not invent one. This P1 decision does not block the prototype |
+| Shortcut bindings and find-query interaction | M2-01/M2-09, implementing agent | Document tested bindings and input/focus behavior; retain no persistent chrome |
+| Navigation defaults and persistent-profile concurrency | M2-03/M2-04, implementing agent | Record allowed/denied schemes, window behavior and safe handling of concurrent launches; do not assume shared-profile locking works |
+| Scholar clearance tolerance and challenge frequency | Post-M2 decision and M3-08, maintainer | Accept or reject the observed workflow; record the tested time span and limits |
+| Dialog/file-picker mechanism and PDF handoff | M3, implementing agent | Select and test a toolkit-free mechanism, cancellation/error behavior and safe destinations |
+| Markdown converter/dialect, document authorization and scheme origins | M4, implementing agent | Record the selected route and security policy; pass the required fixtures before closing M4 |
+| Typst export feasibility | M4-06, implementing agent | Report supported/unsupported output and fidelity; live tinymist integration remains deferred |
+| Custom-engine deployment value | Gate B, maintainer | Choose stock/custom from measured results and maintenance costs |
+
+## 3. Milestone overview
+
+| Stage | Name | Deliverable | Exit / review point |
+|---|---|---|---|
+| **M0** | Environment and skeleton | Reproducible build, stock WPE version, minimal repo | Toolchain and WPE pkg-config checks pass |
+| **M1** | First native window | Single-page Wayland browser running under niri | **Gate A: inspect actual behavior and measurements** |
+| **M2** | Controllable browser shell | Safe navigation, focus/keyboard, profile, basic diagnostics | Core workflows pass; Scholar compatibility decision |
+| **M3** | Web compatibility and integration | Dialogs, session persistence, uploads, PDF downloads and external handoff | Practical browsing flows pass |
+| **M4** | Local research and math | Secure serverless local previews, MathML/KaTeX tests | Offline math fixtures pass; security boundaries checked |
+| **M5** | Custom WPE and A/B comparison | Independently packaged, reduced-feature engine; comparative report | **Gate B: keep custom, adjust it, or stay with stock** |
+| **M6** | Harden and package | Repeatable releases, regression tests, maintenance procedure | Candidate for routine personal use |
+
+M1 is intentionally small. M2–M4 form the **usable browser MVP**, while M5 is an **optimization experiment**. Feature additions need not wait for M5, and custom-WPE work must not prevent timely security updates.
+
+---
+
+## M0 — Development environment and repository skeleton
+
+**Goal:** confirm the distribution API works on this machine before writing substantial browser code.
+
+### Backlog
+
+- [ ] **M0-01 / P0:** Record package and compiler versions (`pacman -Q wpewebkit`; Meson, Ninja, C compiler).
+- [ ] **M0-02 / P0:** Install Arch build tools and WPE using pacman **only if missing**. First inspect what is already installed and the package dependency changes.
+- [ ] **M0-03 / P0:** Confirm `pkg-config --modversion wpe-webkit-2.0` and `pkg-config --modversion wpe-platform-2.0`; optionally check `wpe-platform-wayland-2.0` where exposed.
+- [ ] **M0-04 / P0:** Initialize one small Meson/C23 project; verify the compiler supports `c_std=c23` and WPE symbols link successfully.
+- [ ] **M0-05 / P1:** Add `README.md`, `.gitignore`, basic license decision and concise `docs/` links to the architecture and this roadmap.
+
+### Suggested first commands
+
+```bash
+pacman -Q wpewebkit meson ninja pkgconf gcc 2>/dev/null
+pkg-config --modversion wpe-webkit-2.0
+pkg-config --modversion wpe-platform-2.0
+pkg-config --modversion wpe-platform-wayland-2.0
+meson --version
+cc --version | head -n 1
+```
+
+If needed, inspect package details with `pacman -Si wpewebkit`; install missing components deliberately (e.g. `sudo pacman -S --needed wpewebkit meson ninja pkgconf gcc`). Don't install deprecated WPEBackend-FDO/Cog as a prerequisite for a modern WPEPlatform launcher.
+
+**Exit:** all M0 P0 checks pass: a clean Meson/C23 build links to packaged WPE and WPEPlatform; toolchain and package versions are recorded. If C23 is unsupported, investigate the toolchain and report options; changing the accepted language standard requires a maintainer decision.
+
+## M1 — Minimal native browser: first empirical checkpoint
+
+**Goal:** establish that a toolkit-free WPE view works correctly on this machine's integrated AMD GPU under niri and collect exploratory Scholar observations. No custom WPE, no file chooser and no browser UI yet. The Scholar compatibility decision follows M2's persistent-profile implementation.
+
+### Backlog
+
+- [ ] **M1-01 / P0:** Create a `WebKitWebView` through the stable WPEPlatform API, using `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)`; run a GLib main loop.
+- [ ] **M1-02 / P0:** Select/use the **Wayland** backend (`WPE_PLATFORM=wayland` for explicit testing) and load a **trusted** CLI URI or harmless default HTTPS page. Full validation/policy for arbitrary input and unsupported schemes belongs to M2.
+- [ ] **M1-03 / P0:** Quit on the WPE view's `closed` signal; release owned GObjects; confirm no leftover application subprocesses after normal exit.
+- [ ] **M1-04 / P0:** Verify niri tiling, resize, maximize/fullscreen where applicable, focus and mouse scrolling; use the WPE-managed toplevel rather than writing another xdg-shell implementation.
+- [ ] **M1-05 / P0:** Verify simple keyboard input in an HTML text box and navigation/link clicking; observe whether rendering is GPU accelerated, or record inability to verify.
+- [ ] **M1-06 / P0:** Measure **total browser process-tree PSS** at fixed viewport/idle intervals for `about:blank`, a known local HTML fixture, and Wikipedia; record cold/warm starts separately.
+- [ ] **M1-07 / P1:** Test one simple local **MathML** fixture and an uncomplicated JS page; record pass/fail without implementing the preview pipeline yet.
+- [ ] **M1-08 / P1:** Capture runtime warnings, WPE/GLib errors, compositor-related observations and reproducible failure cases.
+- [ ] **M1-09 / P1:** Explore Google Scholar on stock WPE with default browser identity: submit a search, open a result and scroll. Record the session/profile configuration, immediate access, challenges, any attempted manual clearance and its outcome. Unresolved blocking prompts investigation, not automatic engine rejection; do not assess restart reliability before persistent profiles exist. Do not import Qt cookies, spoof headers, or weaken security to obtain a baseline. See the [qvu navigation and Dooble observations](docs/research/qvu/findings/scholar-navigation-and-dooble.md) for the unresolved failure that motivated this check. This task does not require M2's profile management or M3's download/dialog integration.
+
+### Gate A — stop, review and decide next implementation tasks
+
+Evidence to bring to the review:
+
+1. Exact installed `wpewebkit` version, compiler version and Meson configuration.
+2. Successful startup/close (or a minimal reproduction of the failure).
+3. niri resize/focus/scroll observations and graphics backend evidence.
+4. Total PSS, page/viewport dimensions and timing protocol for all three M1-06 workloads (`about:blank`, local fixture and Wikipedia), with cold/warm states recorded.
+5. Basic text input results; MathML observations if tested, or an explicit P1 deferral; notable log warnings.
+6. Exploratory Scholar search/result/scroll outcomes, session/profile conditions, and challenge/manual-clearance behavior, if tested. These observations do not establish persistence or long-term compatibility; the decision check follows M2.
+
+**Ready for review:** all M1 P0 checks pass. Demonstrate a correctly sized initial page, viewport/input alignment after tile resizing, usable typing/clicking/scrolling, supported fullscreen/maximize transitions, and clean shutdown without remaining browser child processes; attach M1-06 measurements. Mark unavailable display/scale cases and unverified acceleration explicitly. Carry unresolved Scholar observations into the persistent-profile test. Stop for the maintainer's Gate A decision before M2.  
+**Fix first:** backend initialization, visible rendering, process cleanup or viewport sizing fails. Exploratory Scholar blocking prompts investigation but does not by itself block M2.  
+**Reconsider engine choice only if:** a blocking incompatibility appears that cannot reasonably be resolved through public WPE APIs and documented configuration. Defer the Scholar compatibility decision until M2's persistent profile is tested. Do not begin stripping features merely to conceal a stock-engine integration defect.
+
+## M2 — Minimal controllable shell
+
+**Goal:** make the one-window launcher useful without adding a conventional browser chrome.
+
+- [ ] **M2-01 / P0:** Implement explicit, minimal keyboard shortcut policy through `WPEView::event`; forward unrelated input to the webpage.
+- [ ] **M2-02 / P0:** Support command-line URL opening; back, forward, reload, stop, and **copy current URL** (without a permanent address bar).
+- [ ] **M2-03 / P0:** Define ordinary HTTP(S), `file:`, downloads, unknown schemes, and target=`_blank` behavior; reject unsafe external-command interpolation.
+- [ ] **M2-04 / P0:** Add dedicated XDG profile/data/cache directories using `webkit_network_session_new(data_dir, cache_dir)` and the web view's `network-session` property; verify persistence after restart. The browser's `WebKitWebContext` and session have distinct responsibilities.
+- [ ] **M2-05 / P1:** Verify text selection, clipboard copy/paste, Unicode/compose input and focus in website forms.
+- [ ] **M2-06 / P1:** Log navigation failures, abnormal process exits, and useful troubleshooting details.
+
+  Track the user-requested URL separately from the current committed URL; update it on deliberate navigation, not redirects. Test that a Scholar challenge redirect preserves the original search for explicit recovery or future handoff. Redact sensitive queries in routine logs; this does not add browsing history or external-browser integration.
+
+  In bounded diagnostics, record navigation/redirects, response status where available, resource failures and subsequent JavaScript errors in sequence. Distinguish initial site rejection, challenge-page loading/interaction failure, and loss of clearance after successful manual completion. Verify available WPE diagnostic hooks; disclose missing observations and do not infer causation from console errors alone. Keep sensitive URLs, cookies and request bodies out of routine logs.
+
+
+- [ ] **M2-07 / P2:** Evaluate a transient URL launcher/prompt; **do not** choose an overlay, toolbar, tabs or IPC before an actual use case requires them.
+
+  This defers URL-entry UI, not M2-09's required find-query interaction. Implement only the transient interaction needed for accepted reading controls; do not expand it into a general browser interface.
+- [ ] **M2-08 / P0:** After M2-04, test Scholar with a fresh dedicated persistent profile and default browser identity: submit a search, open a result, scroll, complete any available challenge manually, then close and restart with the same profile and repeat. Record immediate versus clearance-dependent access, recurring challenges, and whether access survives restart. If blocked, compare the same search in fresh Firefox private mode on the same machine/network near the same time, without assuming identical routing. Confirm profile persistence separately with a controlled fixture so storage defects are not mistaken for site rejection.
+
+- [ ] **M2-09 / P0:** Investigate and implement basic reading controls from the initial browser stage: keyboard page zoom in/out/reset, find-in-page query entry, next/previous match and dismiss. Before choosing the interaction, probe WPEView's event signal, event consumption/propagation, focused forms/contenteditable, modifier handling and IME composition, and verify the supported public WebKit find/zoom APIs. Choose the simplest toolkit-free query-entry mechanism that works with that input model; the transient interaction remains to be decided, with no persistent chrome. Do not assume a conventional toolkit shortcut/prompt design is necessary or that signal-based handling automatically improves performance. Consume only reserved shortcuts and preserve ordinary page input. Test Unicode queries, no matches, repeated matches, search dismissal/focus restoration, zoom reset and math legibility; reuse these controls in M4 previews. Measure any claimed performance benefit separately.
+
+### Scholar compatibility decision — before M3
+
+**Ready for review:** demonstrate search, result navigation and scrolling in at least two independent launches using the same persistent profile, including after a clean shutdown; record any manual-clearance requirement and confirm storage persistence with the separate fixture. Report the number of attempts and observation period; two launches are a minimum continuity check, not proof of long-term reliability. Stop before M3 for the maintainer to accept viability and any clearance requirement.  
+**Investigate:** access remains blocked, clearance is lost, or results are inconsistent. Check profile persistence and supported configuration before attributing failure to the engine. Pause progression to M3 until the decision is resolved.  
+**Reconsider engine choice:** repeatable blocking comparable to the Qt experience remains after profile verification, while the Firefox comparison works and no reasonable public-API/configuration remedy is established. Do not import Qt cookies, spoof headers or weaken security to force a passing result.
+
+**Exit:** all M2 P0 checks pass: CLI navigation and back/forward/reload/stop/current-URL copy work; unrelated typing is preserved; the profile survives restart; documented scheme/new-window policy tests pass; find/zoom controls pass their fixtures; the maintainer accepts the Scholar evidence. No persistent on-screen controls are introduced.
+
+## M3 — Compatibility, files and browser responsibility
+
+**Goal:** make essential websites and document workflows work without accidentally widening privileges.
+
+- [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures.
+- [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads.
+- [ ] **M3-03 / P0:** WebKit-managed downloads with validated destinations, file-name collisions, cancellation/failure reporting and authenticated PDF links.
+- [ ] **M3-04 / P0:** Open downloaded PDFs through a carefully controlled external reader/desktop mechanism; avoid launching raw page-supplied commands.
+- [ ] **M3-05 / P0:** Verify TLS error handling, permission defaults and **effective runtime** sandbox isolation. The older `webkit_web_context_{get,set}_sandbox_enabled` accessors are **not available in WPE 2.0**; use current build/runtime evidence rather than coding against those symbols. **Do not disable sandbox/TLS checks to make a site work**.
+- [ ] **M3-06 / P1:** Test Wikipedia, Scholar and Semantic Scholar search/forms/links and representative ChatGPT/Claude/Gemini editing/login/upload flows, documenting incompatibilities.
+- [ ] **M3-08 / P0:** Extend the accepted M2 Scholar baseline with M3's integrations: repeat search/result/scroll checks across restarts and separate sessions, record recurring challenges or loss of clearance, and verify paper/PDF links, authenticated downloads where applicable, and external PDF handoff. Bring renewed blocking to review; the M2 result establishes initial viability, not proof of long-term reliability.
+
+  **Reliability checks for M3-08:** Retest in later sessions, including after any observed clearance expires naturally; do not extend expiry or generate background requests to preserve access. Record elapsed time since clearance, challenge recurrence, and whether manual completion restores usable search/result navigation. Review and agree on an acceptable challenge frequency before declaring the workflow reliable. If no expiry or recurrence was observed during testing, report the observation period and leave behavior beyond it unverified. The [qvu post-expiry comparison](docs/research/qvu/findings/scholar-post-expiry.md) showed that a successful restart could precede renewed blocking even with a complete profile; it did not prove expiry was the sole cause. Validate the ordinary dedicated persistent session first. Any later selective-cookie/storage minimization requires a separate comparison against that working baseline.
+
+- [ ] **M3-07 / P1:** Basic crash recovery, safe shutdown with downloads active and sensible user-visible errors without conventional chrome.
+
+**Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
+
+## M4 — Local documents, math and offline research
+
+**Goal:** make the browser a useful local mathematical/research viewer **without a localhost web server**.
+
+- [ ] **M4-01 / P0:** Open explicitly authorized `.html` using a correctly escaped `file://` URI; test relative assets and filesystem boundaries.
+- [ ] **M4-02 / P0:** Introduce a limited `foob:` URI-scheme handler for **managed document resources**, with per-document allowlists and correct MIME types.
+
+  Managed previews use a separate ephemeral network session; ordinary browsing retains M2's persistent session. Investigate the required WPE session/context boundaries before implementation. User-activated web links open in the ordinary browsing session without preview privileges. This preview isolation does not introduce a user-facing private-browsing mode.
+
+- [ ] **M4-03 / P0:** Threat-test traversal, encoded paths, symlinks, cross-document access, unexpected remote requests and untrusted content. Do not grant universal file access.
+
+  Verify preview storage is separate from browsing cookies/logins, preview site state does not persist after its session ends, and preview cleanup cannot erase browsing data. Test filesystem/network restrictions independently; ephemeral storage alone does not enforce those boundaries.
+
+
+  **Fresh-process controls for M4-03:** Apply the intended scheme classifications, allowlists and remote-resource restrictions before first navigation. Start each cold policy case in a fresh browser process with isolated empty test data/cache directories; do not reuse the normal browsing profile or a process previously run with relaxed restrictions. Use controlled allowed/denied resources to distinguish correct policy enforcement from general load failure. Record process/session isolation, cache state, active policy, request attempts and outcomes. Test warm reload separately; changing settings in a running process and reloading is not a substitute for the cold control.
+
+- [ ] **M4-04 / P0:** Keep separate fixture groups for hand-written MathML controls and converter-generated MathML: fractions, radicals, scripts, matrices, aligned rows, cases, delimiters, fonts, selection and zoom. Inspect generated markup, visible layout and row/delimiter geometry as well as error counts. Record the converter version, selected math font and actual font used where measurable; a CSS family declaration alone does not prove that font rendered. Use a known-font control when diagnosing malformed delimiters. Compare failing generated cases with equivalent hand-written controls before attributing defects to WPE. See the [qvu renderer comparison](docs/research/qvu/findings/math-renderer-comparison.md) and [font-selection findings](docs/research/qvu/findings/temml-katex-comparison.md); these motivate tests, not verified WPE outcomes.
+- [ ] **M4-05 / P0:** Offline Markdown + bundled KaTeX CSS/JS/fonts, or equivalent prerendering; verify **zero required network requests**.
+
+  **Acceptance checks for M4-05:** Recreate or explicitly import the six formula cases from the [qvu local KaTeX experiment](docs/research/qvu/findings/katex-local-assets.md): nested fraction, matrix, aligned equations, cases, summation and fluid equation. The fixture-generation code remains in qvu; it was not transferred into foob. Pin and record the KaTeX asset version, package JavaScript/CSS/fonts together, and preserve the font paths expected by the stylesheet. On stock WPE, verify visible equation correctness, loaded font faces and absence of math errors through `file://`, then repeat through the managed `foob:` transport when available. With networking unavailable, test both a fresh load and reload and confirm no HTTP requests are attempted. Test missing stylesheet/script/font assets and invalid TeX, ensuring failures produce useful diagnostics rather than silently appearing successful. For prerendering, verify the generated math and required CSS/fonts; browser-side KaTeX JavaScript need not be present. An empty resource-timing log alone is not proof of successful asset loading or offline operation. Keep security restrictions intact, and include the same fixtures in M5's custom-engine regression checks.
+
+  **Cold offline control for M4-05:** Make networking unavailable before launching a fresh browser process with isolated empty test data/cache directories, with restrictions applied before first navigation. Load the local fixture without first visiting a CDN or enabling remote access. Verify visible math, required assets and fonts, and no attempted HTTP(S) requests using appropriate request diagnostics; report how networking was made unavailable and any limits of the diagnostics. Record this cold result separately from a subsequent warm reload under the same offline restrictions. Repeat for `file://` and managed `foob:`. Run missing-asset cases with fresh process/cache state too, so cached copies cannot mask the failure. The [qvu asset-access investigation](docs/research/qvu/findings/katex-investigation.md) found that reload after restoring restrictions could pass while a fresh process failed; its cache/retained-state mechanism was not isolated.
+
+  **Mixed Markdown fixture for M4-05:** Define and document the supported Markdown dialect and math-delimiter rules. Test one document containing a table, checked/unchecked task items, inline code and fenced code with dollar signs, ordinary text with literal currency amounts, and intended inline/display equations. Verify table/task formatting and literal code/text survive conversion, while only intended math is rendered. Use this fixture to evaluate the chosen converter and include it in stock/custom WPE regression checks. The [historical Markdown adapter plan](docs/research/qvu/design/qt6_minimalist_research_viewer_blueprint.md) motivates these cases; it does not require reuse of Neovim's renderer.
+
+- [ ] **M4-06 / P1:** Investigate the actual Typst export route supported by installed Typst; compare output quality, retain external PDF viewer for faithful layout.
+
+  **Evidence boundary for M4-06:** The [qvu rendering experiment](docs/research/qvu/findings/rendering-findings.md) demonstrated paginated output and editor synchronization through tinymist's live preview frontend under Qt; it did not validate serverless Typst HTML/MathML export or WPE. The [historical adapter notes](docs/research/qvu/design/qt6_minimalist_research_viewer_blueprint.md) mention a prior WebKit canvas failure without establishing current WPE behavior. Keep export investigation separate from live preview. If live tinymist integration is requested later, investigate pagination, incremental updates, fonts and bidirectional editor synchronization independently; no live integration task is introduced here.
+
+- [ ] **M4-07 / P1:** Benchmark local MathML versus KaTeX, and prerendering versus client-side rendering, under reproducible inputs. Require correct mathematical structure and visible layout before treating a rendering path as a viable alternative; report converter failures separately from engine/font failures. Use equivalent formulas, consistent viewport/zoom and recorded fonts, and repeated measurements rather than inferring rankings from qvu's single Qt snapshots. Keep KaTeX as the preview candidate unless validated results justify a change.
+
+  Report browser process-tree PSS after rendering, conversion time, converter memory and total source-to-usable-preview time separately; state whether helpers exit or remain running and disclose measurement limitations. Browser-only savings must not hide work moved into converters. The under-100-MiB stretch target remains browser PSS, with workflow costs reported alongside it.
+
+- [ ] **M4-08 / P0:** Implement source-aware linked-Markdown navigation after M4-02/M4-03: preserve each preview's original source location and raw link target, resolve relative `.md` links against that source rather than the generated HTML/cache location, check authorization, and convert the target before displaying it. Preserve fragments such as `details.md#proof`; define deterministic heading IDs in the renderer and test explicit anchors, generated heading anchors and duplicate headings. Test sibling/parent-directory links, spaces and encoded filenames, missing targets, and Back navigation between converted documents. Links outside approved roots must be denied or require explicit authorization; navigation must not silently expand file access. Recreate or explicitly import the [qvu navigation fixtures](docs/research/qvu/findings/markdown-local-navigation.md), whose probe code remains in qvu.
+
+  **Web-link routing for M4-08:** User-activated HTTP(S) links from a managed preview open in a separate foob browsing window, using M2/M3's navigation and window policies, while preserving the preview document, scroll position and zoom. Same-document fragments stay in the preview; linked Markdown follows the authorized conversion route above. Automatic remote resource requests remain blocked by default; this rule does not authorize script-driven popups or redirects to create browsing windows. Test ordinary and `target=_blank` web links, preview-state preservation, and that the browsing window uses the ordinary browsing session without inheriting the preview's document-resource allowlist or local-file privileges. Keep one web view per window; no tab system is required.
+
+- [ ] **M4-09 / P0:** Define and implement preview output lifecycle alongside M4-02/M4-05/M4-08: assign ownership of generated HTML and required assets, publish complete output atomically, and retain each output generation while reload, linked-document navigation or Back navigation can still reference it. Define cleanup on preview close, conversion failure and application restart after a crash; delete only application-owned generated data, never source documents or externally owned assets. Track shared-asset references so closing one preview cannot break another. Test reload after the converter exits, failed publication, navigation back to an earlier document, two previews sharing assets, and crash-recovery cleanup. Live updates and multi-editor ownership remain deferred until their integration is introduced.
+
+**Exit:** all M4 P0 checks pass for the documented Markdown dialect and local-resource policy: cold offline and warm-reload math/mixed-Markdown fixtures, separate MathML controls, preview/browsing storage isolation, denied unapproved file/remote access, linked-document/fragments/Back navigation, and output-lifecycle checks. The `foob:` transport must be tested before closing M4, even if earlier checks used `file://`. Unsupported converter constructs and P1 Typst/export limitations are recorded explicitly.
+
+## M5 — Custom WPE build and controlled comparison
+
+**Goal:** test whether removing unneeded media and other features produces worthwhile improvements **without changing the browser application**.
+
+### Two workstreams
+
+**M5-A: engine build and packaging**
+
+- [ ] **M5-01 / P0:** Pin an upstream WPE release and its checksum; keep a reproducible build recipe (Arch `PKGBUILD` or equivalent) **separate from the application's Meson project**.
+- [ ] **M5-02 / P0:** Inspect the selected release's CMake options, option visibility (**public vs private**), dependencies and feature-summary output. For 2.54.1 the supported entry points include `ENABLE_WPE_PLATFORM_*`, `ENABLE_WPE_LEGACY_API`, `USE_GSTREAMER`, `ENABLE_VIDEO`, `ENABLE_WEB_AUDIO`, `ENABLE_SPEECH_SYNTHESIS`, and `ENABLE_PDFJS`; reject unverified all-flags-off commands.
+- [ ] **M5-03 / P0:** Build an **unmodified-config reference** from the selected upstream WPE source where feasible, then test a reduced-feature candidate using **public/supported** switches (`USE_GSTREAMER=OFF`, `ENABLE_VIDEO=OFF`, `ENABLE_WEB_AUDIO=OFF`, `ENABLE_SPEECH_SYNTHESIS=OFF`, `ENABLE_PDFJS=OFF`), with dependency-resolution checks. Retain JS, WASM, MathML, SVG, CSS, fonts, networking, Wayland GPU rendering and security protections. Do not turn private toggles into default supported tuning options.
+- [ ] **M5-04 / P0:** Preserve an easy fallback to Arch's stock WPE. Do not silently replace or overwrite the normal system libraries during exploratory builds.
+- [ ] **M5-05 / P0:** Record resulting binary/package versions, enabled CMake features, runtime libraries, dependency closure, security settings and test failures.
+
+**M5-B: reproducible A/B measurements**
+
+- [ ] **M5-06 / P0:** Run the **same browser commit and test fixtures** against both engine builds (separate binaries/prefixes are acceptable when required). Align WPE upstream source version first, where practicable; record Arch patch/build differences, and match profile/cache state, viewport, scaling, build mode, warm-up and idle time.
+- [ ] **M5-07 / P0:** Compare **total process-tree PSS**, cold/warm startup, CPU/scroll behavior, installed size, dependencies and visible rendering differences.
+- [ ] **M5-08 / P0:** Repeat web compatibility, local math, clipboard, uploads/downloads, JS execution and sandbox tests with the custom build.
+
+  Repeat M4-03's fresh-process resource-policy controls and M4-05's cold offline, warm-reload and missing-asset cases on stock and custom WPE with equivalent isolated test data/cache state. Record each result separately; a warm/cached success cannot replace a cold pass. Keep Scholar persistence tests on their explicitly retained test profiles rather than applying empty-profile controls to restart-continuity checks.
+
+- [ ] **M5-09 / P1:** Test feature options incrementally when savings appear measurable; don't drop WebGL, spellchecking, accessibility or other capabilities without a targeted compatibility test.
+
+### Gate B — explicit optimization decision
+
+| Outcome | Action |
+|---|---|
+| Meaningful savings, stable compatibility, maintainable security-update workflow | **Adopt custom WPE** for personal deployment; keep distro engine as baseline/fallback |
+| Minor disk-only savings, negligible PSS savings, substantially more maintenance | **Prefer stock WPE** until there is a stronger reason to own the custom build |
+| Custom engine breaks important pages or local math | Restore necessary options or return to stock; document regressions |
+| Under-100-MiB target not met | Record evidence and identify real memory contributors; **do not disable sandboxing** to force the number |
+
+No fixed percentage improvement is presumed in advance. Record repeated measurements and their spread, compatibility failures, package/dependency differences and the security-update procedure before stopping for Gate B. The maintainer decides whether the measured benefit justifies maintenance; the agent must not interpret “meaningful savings” as an automatic deployment threshold. A failed custom experiment may conclude with a documented stock-engine decision; it must not be marked as a passing custom build.
+
+## M6 — Hardening, maintenance and packaging
+
+- [ ] **M6-01 / P0:** Establish reproducible clean builds and smoke tests for supported Arch versions.
+- [ ] **M6-02 / P0:** Establish WebKit security-update response: monitor releases, update engine pins/checksums promptly, rebuild and rerun tests. Fall back to stock WPE when the custom update lags.
+- [ ] **M6-03 / P0:** Test crash handling, blocked permissions, profile isolation, URI schemes and shutdown with outstanding operations.
+- [ ] **M6-04 / P1:** Package `foob` independently from the engine, with documented runtime dependencies and license notices.
+- [ ] **M6-05 / P1:** Document keyboard shortcuts, PDF handoff, local-file trust model and performance methodology.
+- [ ] **M6-06 / P2:** Consider advanced window management, single-instance IPC, richer research integration and further memory tuning *only after* core operation is stable. Basic separate windows required by M3 popup policy and M4 preview-link routing are already in scope; this task does not defer them.
+
+**Exit:** all M6 P0 checks pass: documented clean builds/smoke tests on the current supported Arch environment, security-update/fallback procedure, and crash/security/shutdown regression evidence. List the tested environment, known limitations and P1 deferrals; additional platforms are not implied. The maintainer decides readiness for regular personal use.
+
+---
+
+## 4. Suggested repository layout
+
+```text
+foob/
+├── meson.build
+├── src/
+│   ├── main.c                 # M1: startup and view lifetime
+│   ├── browser.c              # M2+: app state and navigation
+│   ├── browser.h
+│   ├── input.c                # M2+: shortcuts and focus
+│   ├── downloads.c            # M3+: download policy
+│   └── local_documents.c      # M4+: guarded local scheme
+├── tests/
+│   ├── fixtures/
+│   │   ├── viewport.html
+│   │   ├── input.html
+│   │   ├── mathml.html
+│   │   └── dialogs.html
+│   └── benchmark/             # reproducible measurement scripts
+├── docs/
+│   ├── README.md              # links to the root planning documents
+│   └── validation/            # task evidence and current handoff record
+├── packaging/
+│   └── arch/                  # eventual foob application package
+└── README.md
+```
+
+**Do not create all source modules on day one.** Initially `meson.build`, `src/main.c`, a `.gitignore`, and a small README are enough. Split files when responsibilities actually emerge. A custom-WPE `PKGBUILD` can live in a **separate packaging repository** or clearly isolated directory, but should not be a source submodule and should not share the application's build cycle.
+
+## 5. Starting backlog: the next concrete sequence
+
+These are the *only* actions needed to start development before Gate A:
+
+1. **Check installed package/toolchain versions** (`M0-01`–`M0-03`).
+2. **Create the C23/Meson skeleton** and link against `wpe-webkit-2.0` (`M0-04`).
+3. **Show one Wayland web window** from a CLI URL (`M1-01`–`M1-02`).
+4. **Make window close exit cleanly** (`M1-03`).
+5. **Test niri resize, focus, scrolling and text input** (`M1-04`–`M1-05`).
+6. **Collect reproducible total-PSS baseline**, warnings and optional MathML/Scholar observations (`M1-06`–`M1-09`); record P1 deferrals explicitly.
+7. **Hold Gate A review using evidence**, then prioritize M2 rather than speculating about later optimization.
+
+**No custom-engine build, Servo investigation, browser tabs, IPC framework, overlay UI, or complex mathematical converter pipeline before Gate A.** Arbitrary external URI schemes and untrusted local-file access are not part of the M1 trusted-page smoke test.
+
+## 6. Test and measurement record template
+
+Create one record per fixture/engine build, ideally committed as a small Markdown or machine-readable log:
+
+```text
+Date:
+Commit:
+Kernel / niri / Mesa:
+WPE version + source (Arch stock | custom release/build ID):
+Compiler / Meson build mode:
+WPE_PLATFORM:
+Page URL or local fixture + checksum:
+Profile (fresh | warm) / network condition:
+Viewport logical size / output scale:
+Timing protocol (startup, idle interval, repetitions):
+Process IDs / process tree:
+Total PSS (MiB; repeated measurements):
+CPU / startup / installed size (when relevant):
+Resize / input / rendering / MathML results:
+Warnings / crashes / regressions:
+Notes / reproducibility commands:
+```
+
+For PSS, account for **all WPE child processes**, not just the top-level `foob` process; avoid double-counting shared pages. Record the collection method and use the same procedure in stock/custom comparisons. The 100 MiB stretch target concerns lightweight single-page scenarios, not rich AI apps or an arbitrary worst-case memory ceiling.
+
+## 7. Scope control and change rules
+
+- **Promote tasks only to solve observed problems** or unlock an explicit accepted goal; record why.
+- **Do not fork WPE** unless actual upstream changes become necessary; compilation flags are not a reason to fork.
+- **Do not lock in custom WPE** until Gate B shows it has sufficient benefit.
+- **Security is non-negotiable:** process isolation/sandbox, TLS validation, and local-file boundaries remain enabled/tested.
+- **No hard dates or velocity estimates:** progress is driven by evidence and finished vertical slices.
+- **Update this roadmap** when a milestone is closed; keep the longer architecture document for deeper rationale.
+- **Keep the root planning files authoritative:** link to them from `docs/` rather than creating independently edited copies.
+
+## 8. Audit and unresolved implementation validation
+
+Audited together with the architecture decision on 2026-10-12. The WPE **engine**, Arch **package revision**, and **2.0 API names** are distinct; the custom engine is conditional on **Gate B**. P0 means blocking the issue's own stage, not the M1 prototype. A/B benchmarking may use separate binaries for separate WPE prefixes. **No foob compile, local Arch package check, Wayland run, stripped-engine build, API dialog test, or PSS measurement is recorded in this repository yet.** The previously referenced `foob_document_audit_2026-10-12.md` is absent from this checkout; do not rely on it as available evidence. Record new runtime validation under `docs/validation/`.
+
+## 9. Authoritative references (checked 2026-10-12)
+
+- Arch package: https://archlinux.org/packages/extra/x86_64/wpewebkit/ — `wpewebkit` 2.54.1-2 on 2026-10-12 (**upstream 2.54.1**, **Arch revision -2**; verify locally).
+- WPEPlatform native integration guide: https://wpewebkit.org/blog/2026-10-06-wpe-platform.html
+- WPE FAQ and minimal launcher: https://wpewebkit.org/about/faq.html
+- WPE 2.54.1 release notes: https://wpewebkit.org/release/wpewebkit-2.54.1.html
+- WPEPlatform 2.54 stabilization: https://wpewebkit.org/blog/2026-09-16-wpewebkit-2.54.html
+- WPE 2.54.1 supported build switches: https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/OptionsWPE.cmake and https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/GStreamerDefinitions.cmake
+- Deep design rationale, API and security notes: `foob_architecture_decision.md` (companion document).

@@ -1,0 +1,7 @@
+# Historical visual mockups; retained locally, excluded from Git.
+/design-references/qvu/
+
+# Local agent configuration and credentials.
+/.agents/
+/.codex/
+/.aws/

@@ -1,0 +1,41 @@
+# Repository Guidelines
+
+## Project Structure & Module Organization
+
+Foob is currently a documentation-only repository for a minimal, keyboard-driven Wayland browser. `foob_architecture_decision.md` defines technical decisions; `foob_development_roadmap.md` defines milestones and acceptance criteria. Start with `docs/README.md`.
+
+`docs/research/qvu/` contains historical Qt experiments, not current implementation requirements. Local mockups in `design-references/qvu/` are ignored by Git and may be absent from fresh checkouts.
+
+The planned layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. These directories do not exist yet. Begin with `src/main.c` and `meson.build`; split modules as responsibilities emerge.
+
+## Build, Test, and Development Commands
+
+No build or test runner is configured yet. Environment checks from milestone M0 include:
+
+```sh
+pacman -Q wpewebkit meson ninja pkgconf gcc
+pkg-config --modversion wpe-webkit-2.0
+pkg-config --modversion wpe-platform-2.0
+```
+
+These report installed packages and available API modules; the `2.0` suffix denotes the API namespace, not the engine release.
+
+Once the Meson skeleton exists, use `meson setup build` to configure, `meson compile -C build` to build, and `meson test -C build` to run registered tests. Document the executable's launch command when implemented.
+
+## Coding Style & Naming Conventions
+
+Target C23 with GLib/GObject at the WPE integration boundary. Keep application-owned logic in ordinary C and use public WPEPlatform APIs. No formatter, linter, or indentation convention is established; choose and document a consistent convention with the first source contribution. Follow planned lowercase module names such as `local_documents.c` and descriptive fixture names such as `viewport.html`.
+
+## Testing Guidelines
+
+No testing framework or coverage threshold exists yet. Give each milestone task a repeatable acceptance test. Automate stable behavior and document manual niri resize, focus, scrolling, and shutdown checks. Record package versions, viewport dimensions, workloads, and total browser process-tree PSS for benchmarks; the under-100-MiB goal remains unverified.
+
+## Commit & Pull Request Guidelines
+
+Git history is unavailable in this checkout, so no existing commit convention can be confirmed. Use concise, imperative subjects. Keep changes small and tied to roadmap outcomes, such as `M1-03`.
+
+PR descriptions should explain behavior, link relevant tasks, and include validation evidence. Add screenshots when visual behavior changes.
+
+## Architecture & Security Boundaries
+
+Preserve the toolkit-free WPE direction: one view per window, no persistent chrome, and external PDF viewing. Keep custom engine packaging separate. Never disable TLS checks or sandbox protections to resolve compatibility failures, or commit browser profiles and credentials.
