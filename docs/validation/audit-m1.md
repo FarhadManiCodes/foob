@@ -69,7 +69,7 @@ pre-split records.
   project's existing style or are single-translation-unit false positives.
   (An earlier pass in this audit used broken include flags under zsh and was
   discarded; this is the valid run.)
-- Final re-run on revision `6088069` (no `src/` change since the measured binary): `gcc -fanalyzer` with `-Wconversion -Wshadow -Wformat=2 -Wnull-dereference` reports nothing; the ASan+UBSan build passes the 3 unit/CLI tests and all 11 nested scenarios with no UBSan runtime error and no leak attributed to foob. LeakSanitizer does report small leaks inside `libWPEWebKit`/`libdrm` (for example a 144-byte `drmGetDeviceFromDevId` allocation reached from `webkit_web_view_load_uri`); these are engine-owned and were suppressed by library (`leak:libWPEWebKit-2.0.so`, `leak:libdrm.so`).
+- Final re-run on revision `9c81515` (the revision of the final measurements): `gcc -fanalyzer` with `-Wconversion -Wshadow -Wformat=2 -Wnull-dereference` reports nothing; the ASan+UBSan build passes the 3 unit/CLI tests and all 11 nested scenarios with no UBSan runtime error and no leak attributed to foob. LeakSanitizer does report small leaks inside `libWPEWebKit`/`libdrm` (for example a 144-byte `drmGetDeviceFromDevId` allocation reached from `webkit_web_view_load_uri`); these are engine-owned and were suppressed by library (`leak:libWPEWebKit-2.0.so`, `leak:libdrm.so`).
 - Hardening (readelf): PIE, full RELRO + `BIND_NOW`, non-exec stack, stack
   protector, stack-clash protection, CET (IBT/SHSTK) markers,
   `_FORTIFY_SOURCE=3` at `-O2`. Before: PIE, partial RELRO (no `BIND_NOW`) and
@@ -94,18 +94,18 @@ job (WebKit's MiniBrowser, Arch package, stripped).
 | | `m0-m1` | `m1-audit` | MiniBrowser 2.54.1 |
 |---|---:|---:|---:|
 | File, stripped | 18,992 B | 22,520 B | 26,896 B |
-| `size` text / data / bss | 8,632 / 1,000 / 16 | 12,961 / 1,184 / 16 | 20,933 / 2,792 / 304 |
-| File with debug info (`-g`) | 43,352 B | 70,576 B | n/a (distro-stripped) |
+| `size` text / data / bss | 8,632 / 1,000 / 16 | 13,125 / 1,192 / 16 | 20,933 / 2,792 / 304 |
+| File with debug info (`-g`) | 43,352 B | 70,616 B | n/a (distro-stripped) |
 | Direct libraries | glib, gobject, WPEWebKit, libc | same | adds gio and gstreamer |
 
 Compare stripped files only: the 70 KB figure is mostly `-g` and says nothing
 about the shipped size. Like for like, foob is **smaller** than MiniBrowser
-(22.5 vs 26.9 KB; text 13.0 vs 20.9 KB) and links fewer libraries, because it has
+(22.5 vs 26.9 KB; text 13.1 vs 20.9 KB) and links fewer libraries, because it has
 no command-line settings, automation, GStreamer or cookie options.
 
-Growth since `m0-m1` is +3.5 KB stripped (+18%), +4.3 KB of text. Per object
-(text bytes): `browser.c` 2,205, `diagnostics.c` 2,165, `target.c` 1,151,
-`window_title.c` 860, `main.c` 499. Everything added is a behaviour change from
+Growth since `m0-m1` is +3.5 KB stripped (+18%), +4.5 KB of text. Per object
+(text bytes): `browser.c` 2,237, `diagnostics.c` 2,165, `target.c` 1,151,
+`window_title.c` 924, `main.c` 499. Everything added is a behaviour change from
 this audit (titles and their sanitizing, navigation policy, download cancel,
 compositor-loss and web-process-crash exits, app-id) plus the hardening flags
 (stack protector, CET markers, fortify), whose share was not separated. None of it
