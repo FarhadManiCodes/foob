@@ -8,7 +8,7 @@ Run from repository root after validation:
 
 The input is ONE directory of run records (default: the top level of docs/validation/runs,
 which does not include the suite-<time> folders that suite.py creates). Without --output
-the summary goes to docs/validation/results.json for the default directory and to
+the summary goes to docs/validation/results.json when no directory is given and to
 <directory>/results.json otherwise. An existing output file is only replaced with --replace;
 only the default call regenerates the curated file without it. An input without run records is
 rejected before anything is written. This never launches a browser or modifies the runs.
@@ -22,15 +22,16 @@ from pathlib import Path
 default_directory = Path('docs/validation/runs')
 curated = Path('docs/validation/results.json')
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-parser.add_argument('directory', nargs='?', type=Path, default=default_directory)
+parser.add_argument('directory', nargs='?', type=Path)
 parser.add_argument('--output', type=Path)
 parser.add_argument('--replace', action='store_true', help='overwrite an existing --output file')
 args = parser.parse_args()
-directory = args.directory
-# Only the default call (no directory, no --output) regenerates the curated file without
-# --replace. Paths are compared resolved, so another spelling of either path, or a
-# directory whose results.json is the curated file, still needs --replace.
-default_call = args.output is None and directory.resolve() == default_directory.resolve()
+# Only the default call (no directory and no --output given) regenerates the curated file
+# without --replace. An explicit directory never counts as the default call, whatever its
+# spelling; target paths are compared resolved, so any other way to the curated file needs
+# --replace.
+default_call = args.directory is None and args.output is None
+directory = args.directory or default_directory
 target = args.output or (curated if default_call else directory / 'results.json')
 if target.resolve() == curated.resolve() and not default_call and not args.replace:
     raise SystemExit(f'{target} is the curated file; pass --replace to overwrite it')
