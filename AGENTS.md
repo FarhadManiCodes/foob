@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Foob contains an M1 prototype for a minimal, keyboard-driven Wayland browser. `foob_architecture_decision.md` defines technical decisions; `foob_development_roadmap.md` defines milestones and acceptance criteria. Start with `docs/README.md` and check `docs/validation/handoff.md` before resuming.
+Foob contains an M1 prototype for a minimal, keyboard-driven Wayland browser. `foob_architecture_decision.md` defines technical decisions; `foob_development_roadmap.md` defines milestones and acceptance criteria. Start with `docs/README.md`, then read `docs/validation/handoff.md` (current state, rules) and `docs/validation/findings.md` (decisions, findings, ideas) before resuming, and update them in the same commit as your change.
 
 `docs/research/qvu/` contains historical Qt experiments, not current implementation requirements. Local mockups in `design-references/qvu/` are ignored by Git and may be absent from fresh checkouts.
 

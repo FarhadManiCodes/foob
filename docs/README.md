@@ -7,6 +7,9 @@ The current project scope is defined by the existing
 Implementation: [approved M0/M1 plan](plans/m0-m1.md),
 [M0 validation](validation/m0.md), and [build instructions](../README.md).
 
+**Start here:** [handoff](validation/handoff.md) (current state and rules for every agent) and
+[findings, decisions and ideas](validation/findings.md).
+
 Current [handoff](validation/handoff.md): M0/M1 P0 complete; M1 implemented and
 independently reviewed, with [runtime evidence](validation/m1.md),
 [measurements](validation/measurements.md) and

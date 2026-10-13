@@ -1,15 +1,39 @@
 # M0/M1 resumable handoff
 
-2026-10-13, branch `m0-m1`. **M0/M1 P0 complete; Gate A ready for maintainer
-review, not approved.** Maintainer returned and completed guided interaction.
-Stop before M2.
+**M0/M1 P0 complete; Gate A ready for maintainer review, not approved.** Stop before
+M2. The sections below "Revision and reproducibility" are the original M0/M1
+record and describe the unmodified `m0-m1` binary.
 
-## Audit branch (`m1-audit`)
+## Current state (living section: update it with every change)
 
-Corrections found by the M1 audit, with re-recorded measurements for the final
-binary, are described in [audit-m1.md](audit-m1.md) and
-[measurements-m1-audit.md](measurements-m1-audit.md). The original evidence below
-describes the unmodified `m0-m1` binary; Gate A remains the maintainer's decision.
+Updated 2026-10-13. **Branch `m1-audit`, in the main checkout.**
+It is 27 commits ahead of `m0-m1` (`4fb9c9c`), a clean fast-forward, **not merged**.
+Gate A is **not approved**; no M2 work is authorized.
+
+| | |
+|---|---|
+| Evidence revision | `1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19`: source SHA256 `7b3129c2…`, audit binary `916f7b03…` ([measurements-m1-audit.md](measurements-m1-audit.md)); any later C change invalidates these |
+| What is verified | Unit tests 3/3; nested suite 11/11; ASan+UBSan and `-fanalyzer` clean (engine-owned leaks suppressed); interleaved memory comparison shows no regression (blank 168.9 vs 169.0 MiB, fixture 193.3 vs 192.8, Wikipedia 330.6 vs 335.5 with one control spike) |
+| What is not | The guided keyboard checks ([guided-checks-m1-audit.md](guided-checks-m1-audit.md)); geometry probe on the final binary (host was locked); real mouse clicks on `_blank` links |
+| Raw runs | `docs/validation/runs/m1-audit-final/` (ignored by git; the original M1 runs sit beside it, untouched) |
+
+**Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
+I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
+[guided-checks-m1-audit.md](guided-checks-m1-audit.md) (maintainer's checklist), the
+roadmap section 7 (triage rule).
+
+**Open right now**
+1. Maintainer: review (Codex review in progress), run the guided checks, merge, decide Gate A.
+2. Two open findings from the Codex review, to fix as one batch after the maintainer's review so the evidence is re-recorded only once: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (the scripted-popup scenario passes vacuously; the claim "scripted requests never reach the handler" is unproven until fixed and the experiment repeated).
+3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes).
+
+**Rules for every agent (Claude, Codex, others)**
+- Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.
+- Work in the main checkout on the branch the maintainer names. No worktrees, clones or extra folders without asking. Check `git status` and `git branch --show-current`; another agent may be active.
+- Never merge, push or approve Gate A. Never add AI-attribution trailers.
+- Record every new finding, decision and idea in findings.md in the same commit as the change; add a row, never delete one.
+- Put a negative control behind each safety fix (a test that fails on the old behaviour) and say plainly what a test does not prove.
+- Keep scratch work in the session scratchpad, not in the repository tree.
 
 ## Revision and reproducibility
 

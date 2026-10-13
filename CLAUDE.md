@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project state
 
 - M0/M1 are implemented and audited (`docs/validation/audit-m1.md`). **Gate A awaits an explicit maintainer decision. Do not start M2 work** (controls, profiles, IPC, converters, custom engine) unless the maintainer authorizes it. A question about Gate A is not approval.
-- Before resuming, read `docs/validation/handoff.md`, then `foob_architecture_decision.md` and `foob_development_roadmap.md`. Do not repeat checks the handoff records as complete.
+- Before resuming, read `docs/validation/handoff.md` and `docs/validation/findings.md` (current state, decided items, open findings), then `foob_architecture_decision.md` and `foob_development_roadmap.md`. Do not repeat checks the handoff records as complete or re-argue decided items. Update both files in the same commit as any change, finding or decision.
 - New findings follow the roadmap's triage rule (section 7): fix defects in existing behaviour now, record missing features in the milestone that owns them.
 - Deferred by the maintainer: the font-language-menu glyph issue (`docs/validation/font-follow-up.md`) and the project license (M0-05). Do not attempt a fix or pick a license unprompted.
 
