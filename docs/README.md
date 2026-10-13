@@ -14,6 +14,11 @@ independently reviewed, with [runtime evidence](validation/m1.md),
 maintainer review, not approved. A [font issue](validation/font-follow-up.md)
 reported during guided Scholar testing is explicitly deferred.
 
+[Blank-memory/GPU diagnosis](validation/blank-memory.md) identifies engine,
+allocation and graphics startup costs behind the >100-MiB footprint; actual GPU
+work is confirmed for blank. [Compact results](validation/results.json) stay
+in Git; generated raw `docs/validation/runs/` outputs are ignored and kept locally.
+
 The [qvu research handoff](research/qvu/README.md) contains earlier design discussion,
 math/local-document experiments and Scholar compatibility findings. Those records
 are historical evidence, not authorization to implement the old Qt design in foob.

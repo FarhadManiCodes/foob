@@ -157,8 +157,13 @@ precise pointer targets after resize/scroll and user-initiated close/cleanup.
 Scholar search/result/scroll exploration reports no blocker; a language-menu
 [font issue is deferred](docs/validation/font-follow-up.md) at the maintainer's
 request. M1 P0 checks pass. Gate A is ready for review, **not approved**; no M2
-work is authorized by this checkpoint. Acceleration remains unverified and
-multi-monitor/fractional scaling remain untested, as explicitly allowed limits.
+work is authorized by this checkpoint. Subsequent
+[blank-memory diagnosis](docs/validation/blank-memory.md) identifies engine and
+graphics startup costs and confirms hardware GPU participation using the web
+process's amdgpu execution counters. Exact GL renderer/per-feature acceleration
+remain unmeasured. The maintainer has no second monitor; multi-monitor checks are
+unavailable and fractional scaling remains untested. Curated results are tracked;
+generated raw `docs/validation/runs/` artifacts are ignored and kept locally.
 
 Evidence to bring to the review:
 

@@ -5,6 +5,11 @@ Collected 2026-10-13 Europe/Berlin (raw timestamps use UTC). WPE Arch
 `2.54.1-2`; GCC 16.2.1; Meson 1.12.1 `debugoptimized`, `-std=c23 -O2 -g`;
 kernel `7.2.9-arch1-1`, niri `26.04-1`, Mesa `1:26.2.4-1`.
 
+Committed machine-readable evidence: [results.json](results.json). Full raw
+`runs/*.json`/`.log` artifacts are ignored and retained locally. The later
+[blank-memory diagnosis](blank-memory.md) supplements this original baseline;
+its 168–171 MiB readings are not a source/engine optimization result.
+
 ## Workloads and method
 
 - Blank: `about:blank`.
@@ -54,16 +59,16 @@ Elapsed times are engine navigation-completion durations in milliseconds.
 
 | Run | Sample 1 | Sample 2 | Sample 3 | Navigation ms |
 |---|---:|---:|---:|---:|
-| [blank-1](runs/blank-1.json) | 174.262 | 174.274 | 174.274 | 0.941 |
-| [blank-2](runs/blank-2.json) | 174.443 | 174.457 | 174.457 | 0.752 |
-| [blank-3](runs/blank-3.json) | 174.224 | 174.236 | 174.236 | 0.975 |
-| [fixture-1](runs/fixture-1.json) | 202.607 | 202.757 | 202.771 | 38.015 |
-| [fixture-2](runs/fixture-2.json) | 199.457 | 199.431 | 199.442 | 37.364 |
-| [fixture-3](runs/fixture-3.json) | 204.149 | 205.662 | 205.428 | 37.632 |
-| [wikipedia-1](runs/wikipedia-1.json) | 334.151 | 333.577 | 333.556 | 1462.888 |
-| [wikipedia-2](runs/wikipedia-2.json) | 335.004 | 333.957 | 333.937 | 1465.389 |
-| [wikipedia-3](runs/wikipedia-3.json) | 333.509 | 332.853 | 332.829 | 1538.081 |
-| [fixture warm reload](runs/fixture-warm-reload.json) | 202.500 | 202.497 | 202.497 | 8.308 reload; 39.709 initial |
+| `blank-1` | 174.262 | 174.274 | 174.274 | 0.941 |
+| `blank-2` | 174.443 | 174.457 | 174.457 | 0.752 |
+| `blank-3` | 174.224 | 174.236 | 174.236 | 0.975 |
+| `fixture-1` | 202.607 | 202.757 | 202.771 | 38.015 |
+| `fixture-2` | 199.457 | 199.431 | 199.442 | 37.364 |
+| `fixture-3` | 204.149 | 205.662 | 205.428 | 37.632 |
+| `wikipedia-1` | 334.151 | 333.577 | 333.556 | 1462.888 |
+| `wikipedia-2` | 335.004 | 333.957 | 333.937 | 1465.389 |
+| `wikipedia-3` | 333.509 | 332.853 | 332.829 | 1538.081 |
+| `fixture warm reload` | 202.500 | 202.497 | 202.497 | 8.308 reload; 39.709 initial |
 
 | Fresh-process workload | Mean of 9 samples (MiB) | Observed range (MiB) |
 |---|---:|---:|
@@ -114,3 +119,7 @@ geometry/navigation checks; all other retained logs were audited with the same
 geometry condition. This replacement uses identical source/binary/fixture hashes.
 `crash-negative-control` and `missing-local-file` are expected failure controls,
 not passing workloads or measurements.
+
+The full JSON/log/preliminary files described above are local generated artifacts,
+not tracked files in the current checkout. Reviewed values are preserved in this
+document and `results.json`; reproduction commands generate new raw artifacts.

@@ -10,6 +10,5 @@
 /build*/
 __pycache__/
 
-# Retain approved textual validation diagnostics despite global *.log ignores.
-!/docs/validation/runs/*.log
-!/docs/validation/runs/preliminary/*.log
+# Generated raw validation runs; curated results remain tracked in docs/validation/.
+/docs/validation/runs/

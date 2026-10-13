@@ -25,6 +25,7 @@ parser.add_argument('--stop', choices=['sigterm', 'sigint', 'compositor'], defau
 parser.add_argument('--lifecycle-only', action='store_true')
 parser.add_argument('--loads', type=int, default=1, help='2 for the fixture warm reload')
 parser.add_argument('--fault-web-process', action='store_true', help='negative control: kill own test web process after load')
+parser.add_argument('--memory-details', action='store_true', help='read own process smaps/DRM fdinfo after each PSS sample')
 args = parser.parse_args()
 binary = Path(args.binary).resolve()
 record = {
@@ -103,6 +104,9 @@ try:
                     time.sleep(max(0, min(0.1, target - time.monotonic())))
                 check_health(args.loads)
                 item = sample(process.pid)
+                if args.memory_details:
+                    from memory_details import details
+                    item['memory_details'] = [details(row['pid']) for row in item['processes']]
                 check_health(args.loads)
                 item['seconds_after_observed_completion'] = time.monotonic() - completion
                 tracked.update({row['pid']: row for row in item['processes']})

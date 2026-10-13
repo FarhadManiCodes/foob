@@ -1,0 +1,1895 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-10-13T08:04:42.248306+00:00",
+  "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally",
+  "measurements": {
+    "blank-1": {
+      "date_utc": "2026-10-12T22:03:02.126025+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 178444,
+          "seconds_after_completion": 10.024984611001855,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178457,
+          "seconds_after_completion": 11.024840152000252,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178457,
+          "seconds_after_completion": 12.023055614998157,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.941
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34200.333,
+        "WPENetworkProce": 28774.667,
+        "bwrap": 606.0,
+        "xdg-dbus-proxy": 879.0,
+        "WPEWebProcess": 113992.667
+      }
+    },
+    "blank-2": {
+      "date_utc": "2026-10-12T22:03:14.604202+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 178630,
+          "seconds_after_completion": 10.023945013999764,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178644,
+          "seconds_after_completion": 11.02596212500066,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178644,
+          "seconds_after_completion": 12.02570384900173,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.752
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34247.0,
+        "WPENetworkProce": 28768.667,
+        "bwrap": 610.0,
+        "xdg-dbus-proxy": 877.0,
+        "WPEWebProcess": 114136.667
+      }
+    },
+    "blank-3": {
+      "date_utc": "2026-10-12T22:03:27.085097+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 178405,
+          "seconds_after_completion": 10.023418164004397,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178418,
+          "seconds_after_completion": 11.025343339002575,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 178418,
+          "seconds_after_completion": 12.026095935005287,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.975
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34226.0,
+        "WPENetworkProce": 28824.667,
+        "bwrap": 605.0,
+        "xdg-dbus-proxy": 878.0,
+        "WPEWebProcess": 113880.0
+      }
+    },
+    "blank-attribution-1": {
+      "date_utc": "2026-10-13T07:55:18.001789+00:00",
+      "revision": "2626b5927738efb1ca81d815bbc97f514b679c4f",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 175191,
+          "seconds_after_completion": 10.16726528800018,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 175198,
+          "seconds_after_completion": 11.172149776000424,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 175198,
+          "seconds_after_completion": 12.168697756000256,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        1.036
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33483.333,
+        "WPENetworkProce": 28075.333,
+        "bwrap": 614.0,
+        "xdg-dbus-proxy": 918.0,
+        "WPEWebProcess": 112105.0
+      },
+      "middle_sample_attribution": [
+        {
+          "role": "foob",
+          "pss_kib": 33483,
+          "rollup_kib": {
+            "Pss": 33483,
+            "Pss_Anon": 20568,
+            "Pss_File": 12905,
+            "Pss_Shmem": 10
+          },
+          "threads": 10,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4151,
+            "anonymous_heap_stack_named_allocations": 14660,
+            "graphics_device_or_buffer_mapping": 8,
+            "mesa_graphics_compiler_library_mappings": 243,
+            "text_font_library_and_resource_mappings": 776,
+            "media_library_mappings": 809,
+            "webkit_library_mappings": 12697,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 12697
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 10980
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 808
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 776
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 458
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/card1",
+              "fd": "9",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "38",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        },
+        {
+          "role": "WPENetworkProce",
+          "pss_kib": 28078,
+          "rollup_kib": {
+            "Pss": 28078,
+            "Pss_Anon": 19184,
+            "Pss_File": 8894,
+            "Pss_Shmem": 0
+          },
+          "threads": 8,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4393,
+            "anonymous_heap_stack_named_allocations": 13276,
+            "mesa_graphics_compiler_library_mappings": 232,
+            "text_font_library_and_resource_mappings": 735,
+            "media_library_mappings": 687,
+            "webkit_library_mappings": 8617,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 10256
+            },
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 8617
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 760
+            },
+            {
+              "name": "/usr/lib/libsoup-3.0.so.0.8.0",
+              "pss_kib": 452
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 426
+            }
+          ],
+          "drm_clients": []
+        },
+        {
+          "role": "WPEWebProcess",
+          "pss_kib": 112105,
+          "rollup_kib": {
+            "Pss": 112105,
+            "Pss_Anon": 45644,
+            "Pss_File": 66461,
+            "Pss_Shmem": 0
+          },
+          "threads": 38,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 5122,
+            "anonymous_heap_stack_named_allocations": 36520,
+            "graphics_device_or_buffer_mapping": 0,
+            "mesa_graphics_compiler_library_mappings": 20962,
+            "text_font_library_and_resource_mappings": 4203,
+            "media_library_mappings": 667,
+            "webkit_library_mappings": 44461,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 44461
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 15852
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 14324
+            },
+            {
+              "name": "/usr/lib/libLLVM.so.23.1",
+              "pss_kib": 13403
+            },
+            {
+              "name": "/usr/lib/libgallium-26.2.4-arch1.1.so",
+              "pss_kib": 7009
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 2136
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/renderD128",
+              "fd": "11",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "39",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "10260 KiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "10260 KiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "48508 KiB",
+                "drm-shared-vram": "5144 KiB",
+                "drm-resident-vram": "48508 KiB",
+                "drm-purgeable-vram": "1536 KiB",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "48508 KiB",
+                "drm-memory-gtt": "10260 KiB",
+                "drm-memory-cpu": "0 KiB",
+                "drm-engine-gfx": "112676 ns",
+                "drm-engine-compute": "630777 ns"
+              }
+            },
+            {
+              "device": "/dev/dri/card1",
+              "fd": "25",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "41",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "blank-attribution-2": {
+      "date_utc": "2026-10-13T07:58:04.771038+00:00",
+      "revision": "2626b5927738efb1ca81d815bbc97f514b679c4f",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 175135,
+          "seconds_after_completion": 10.174480502999813,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 175143,
+          "seconds_after_completion": 11.182705057000021,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 175143,
+          "seconds_after_completion": 12.179888106999897,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.79
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33333.0,
+        "WPENetworkProce": 28105.333,
+        "bwrap": 596.0,
+        "xdg-dbus-proxy": 918.0,
+        "WPEWebProcess": 112188.0
+      },
+      "middle_sample_attribution": [
+        {
+          "role": "foob",
+          "pss_kib": 33333,
+          "rollup_kib": {
+            "Pss": 33333,
+            "Pss_Anon": 20572,
+            "Pss_File": 12751,
+            "Pss_Shmem": 10
+          },
+          "threads": 10,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4102,
+            "anonymous_heap_stack_named_allocations": 14664,
+            "graphics_device_or_buffer_mapping": 8,
+            "mesa_graphics_compiler_library_mappings": 238,
+            "text_font_library_and_resource_mappings": 785,
+            "media_library_mappings": 667,
+            "webkit_library_mappings": 12729,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 12729
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 10980
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 808
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 776
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 458
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/card1",
+              "fd": "9",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "42",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        },
+        {
+          "role": "WPENetworkProce",
+          "pss_kib": 28108,
+          "rollup_kib": {
+            "Pss": 28108,
+            "Pss_Anon": 19184,
+            "Pss_File": 8924,
+            "Pss_Shmem": 0
+          },
+          "threads": 8,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4392,
+            "anonymous_heap_stack_named_allocations": 13276,
+            "mesa_graphics_compiler_library_mappings": 229,
+            "text_font_library_and_resource_mappings": 733,
+            "media_library_mappings": 721,
+            "webkit_library_mappings": 8617,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 10256
+            },
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 8617
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 760
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 426
+            },
+            {
+              "name": "/usr/lib/libsoup-3.0.so.0.8.0",
+              "pss_kib": 424
+            }
+          ],
+          "drm_clients": []
+        },
+        {
+          "role": "WPEWebProcess",
+          "pss_kib": 112188,
+          "rollup_kib": {
+            "Pss": 112188,
+            "Pss_Anon": 45652,
+            "Pss_File": 66536,
+            "Pss_Shmem": 0
+          },
+          "threads": 38,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 5159,
+            "anonymous_heap_stack_named_allocations": 36528,
+            "mesa_graphics_compiler_library_mappings": 21008,
+            "graphics_device_or_buffer_mapping": 0,
+            "text_font_library_and_resource_mappings": 4189,
+            "media_library_mappings": 711,
+            "webkit_library_mappings": 44429,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 44429
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 15848
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 14336
+            },
+            {
+              "name": "/usr/lib/libLLVM.so.23.1",
+              "pss_kib": 13403
+            },
+            {
+              "name": "/usr/lib/libgallium-26.2.4-arch1.1.so",
+              "pss_kib": 7009
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 2136
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/renderD128",
+              "fd": "12",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "43",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "10260 KiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "10260 KiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "48508 KiB",
+                "drm-shared-vram": "5144 KiB",
+                "drm-resident-vram": "48508 KiB",
+                "drm-purgeable-vram": "1536 KiB",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "48508 KiB",
+                "drm-memory-gtt": "10260 KiB",
+                "drm-memory-cpu": "0 KiB",
+                "drm-engine-gfx": "150058 ns",
+                "drm-engine-compute": "572812 ns"
+              }
+            },
+            {
+              "device": "/dev/dri/card1",
+              "fd": "25",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "45",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "blank-attribution-3": {
+      "date_utc": "2026-10-13T07:58:17.442001+00:00",
+      "revision": "2626b5927738efb1ca81d815bbc97f514b679c4f",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 172343,
+          "seconds_after_completion": 10.161473226999988,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 172343,
+          "seconds_after_completion": 11.167945603000135,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 172343,
+          "seconds_after_completion": 12.158236172000215,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        1.064
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33599.0,
+        "WPENetworkProce": 28259.333,
+        "bwrap": 610.0,
+        "xdg-dbus-proxy": 932.0,
+        "WPEWebProcess": 108942.667
+      },
+      "middle_sample_attribution": [
+        {
+          "role": "foob",
+          "pss_kib": 33599,
+          "rollup_kib": {
+            "Pss": 33599,
+            "Pss_Anon": 20688,
+            "Pss_File": 12901,
+            "Pss_Shmem": 10
+          },
+          "threads": 10,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4194,
+            "anonymous_heap_stack_named_allocations": 14780,
+            "mesa_graphics_compiler_library_mappings": 241,
+            "graphics_device_or_buffer_mapping": 8,
+            "text_font_library_and_resource_mappings": 775,
+            "media_library_mappings": 732,
+            "webkit_library_mappings": 12729,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 12729
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 11100
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 808
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 776
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 458
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/card1",
+              "fd": "9",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "50",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        },
+        {
+          "role": "WPENetworkProce",
+          "pss_kib": 28262,
+          "rollup_kib": {
+            "Pss": 28262,
+            "Pss_Anon": 19184,
+            "Pss_File": 9078,
+            "Pss_Shmem": 0
+          },
+          "threads": 8,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 4442,
+            "anonymous_heap_stack_named_allocations": 13276,
+            "mesa_graphics_compiler_library_mappings": 237,
+            "text_font_library_and_resource_mappings": 742,
+            "media_library_mappings": 776,
+            "webkit_library_mappings": 8649,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 10256
+            },
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 8649
+            },
+            {
+              "name": "[anon:JSJITCode]",
+              "pss_kib": 2048
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 760
+            },
+            {
+              "name": "/usr/lib/libsoup-3.0.so.0.8.0",
+              "pss_kib": 427
+            },
+            {
+              "name": "/usr/lib/libicui18n.so.78.3",
+              "pss_kib": 426
+            }
+          ],
+          "drm_clients": []
+        },
+        {
+          "role": "WPEWebProcess",
+          "pss_kib": 108940,
+          "rollup_kib": {
+            "Pss": 108940,
+            "Pss_Anon": 45672,
+            "Pss_File": 63268,
+            "Pss_Shmem": 0
+          },
+          "threads": 38,
+          "mapping_group_pss_kib": {
+            "other_file_mappings": 5175,
+            "anonymous_heap_stack_named_allocations": 36548,
+            "graphics_device_or_buffer_mapping": 0,
+            "mesa_graphics_compiler_library_mappings": 21022,
+            "text_font_library_and_resource_mappings": 4220,
+            "media_library_mappings": 654,
+            "webkit_library_mappings": 41153,
+            "kernel_special_mapping": 0
+          },
+          "largest_mapping_names": [
+            {
+              "name": "/usr/lib/libWPEWebKit-2.0.so.1.11.4",
+              "pss_kib": 41153
+            },
+            {
+              "name": "(anonymous)",
+              "pss_kib": 15816
+            },
+            {
+              "name": "[anon:WKFastMalloc]",
+              "pss_kib": 14384
+            },
+            {
+              "name": "/usr/lib/libLLVM.so.23.1",
+              "pss_kib": 13403
+            },
+            {
+              "name": "/usr/lib/libgallium-26.2.4-arch1.1.so",
+              "pss_kib": 7009
+            },
+            {
+              "name": "[heap]",
+              "pss_kib": 2136
+            }
+          ],
+          "drm_clients": [
+            {
+              "device": "/dev/dri/renderD128",
+              "fd": "11",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "51",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "10260 KiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "10260 KiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "48508 KiB",
+                "drm-shared-vram": "5144 KiB",
+                "drm-resident-vram": "48508 KiB",
+                "drm-purgeable-vram": "1536 KiB",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "48508 KiB",
+                "drm-memory-gtt": "10260 KiB",
+                "drm-memory-cpu": "0 KiB",
+                "drm-engine-gfx": "135570 ns",
+                "drm-engine-compute": "528563 ns"
+              }
+            },
+            {
+              "device": "/dev/dri/card1",
+              "fd": "25",
+              "info": {
+                "drm-driver": "amdgpu",
+                "drm-client-id": "53",
+                "drm-total-cpu": "0",
+                "drm-shared-cpu": "0",
+                "drm-resident-cpu": "0",
+                "drm-purgeable-cpu": "0",
+                "drm-total-gtt": "2 MiB",
+                "drm-shared-gtt": "0",
+                "drm-resident-gtt": "2 MiB",
+                "drm-purgeable-gtt": "0",
+                "drm-total-vram": "12 KiB",
+                "drm-shared-vram": "0",
+                "drm-resident-vram": "12 KiB",
+                "drm-purgeable-vram": "0",
+                "drm-total-gds": "0",
+                "drm-shared-gds": "0",
+                "drm-resident-gds": "0",
+                "drm-purgeable-gds": "0",
+                "drm-total-gws": "0",
+                "drm-shared-gws": "0",
+                "drm-resident-gws": "0",
+                "drm-purgeable-gws": "0",
+                "drm-total-oa": "0",
+                "drm-shared-oa": "0",
+                "drm-resident-oa": "0",
+                "drm-purgeable-oa": "0",
+                "drm-total-doorbell": "0",
+                "drm-shared-doorbell": "0",
+                "drm-resident-doorbell": "0",
+                "drm-purgeable-doorbell": "0",
+                "drm-total-mmioremap": "0",
+                "drm-shared-mmioremap": "0",
+                "drm-resident-mmioremap": "0",
+                "drm-purgeable-mmioremap": "0",
+                "drm-memory-vram": "12 KiB",
+                "drm-memory-gtt": "2048 KiB",
+                "drm-memory-cpu": "0 KiB"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "fixture-1": {
+      "date_utc": "2026-10-12T22:03:39.568404+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 207470,
+          "seconds_after_completion": 10.02728937399661,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 207623,
+          "seconds_after_completion": 11.027308454999002,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 207637,
+          "seconds_after_completion": 12.025992898998084,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        38.015
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33178.333,
+        "WPENetworkProce": 30922.333,
+        "bwrap": 606.0,
+        "xdg-dbus-proxy": 900.0,
+        "WPEWebProcess": 141970.0
+      }
+    },
+    "fixture-2": {
+      "date_utc": "2026-10-12T22:03:52.178344+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 204244,
+          "seconds_after_completion": 10.022357746005582,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 204217,
+          "seconds_after_completion": 11.026338380004745,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 204229,
+          "seconds_after_completion": 12.028717449000396,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        37.364
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33363.0,
+        "WPENetworkProce": 30892.333,
+        "bwrap": 610.0,
+        "xdg-dbus-proxy": 882.0,
+        "WPEWebProcess": 138482.667
+      }
+    },
+    "fixture-3": {
+      "date_utc": "2026-10-12T22:13:41.966789+00:00",
+      "revision": "c44316e8051ae2265488ab644ae4442297a2b5fc",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 209049,
+          "seconds_after_completion": 10.028708250996715,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 210598,
+          "seconds_after_completion": 11.02887123599794,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 210358,
+          "seconds_after_completion": 12.026692508996348,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        37.632
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33220.333,
+        "WPENetworkProce": 30915.333,
+        "bwrap": 614.0,
+        "xdg-dbus-proxy": 907.0,
+        "WPEWebProcess": 144345.0
+      }
+    },
+    "fixture-warm-reload": {
+      "date_utc": "2026-10-12T22:04:59.484143+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 207360,
+          "seconds_after_completion": 10.027276768996671,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 207357,
+          "seconds_after_completion": 11.027282326002023,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 207357,
+          "seconds_after_completion": 12.027223247998336,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        39.709,
+        8.308
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33136.0,
+        "WPENetworkProce": 31318.333,
+        "bwrap": 605.0,
+        "xdg-dbus-proxy": 905.0,
+        "WPEWebProcess": 141393.667
+      }
+    },
+    "wikipedia-1": {
+      "date_utc": "2026-10-12T22:04:17.172860+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 342171,
+          "seconds_after_completion": 10.031355343999167,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 341583,
+          "seconds_after_completion": 11.031062773996382,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 341561,
+          "seconds_after_completion": 12.029274267995788,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        1462.888
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33254.0,
+        "WPENetworkProce": 47727.667,
+        "bwrap": 606.0,
+        "xdg-dbus-proxy": 870.0,
+        "WPEWebProcess": 259314.0
+      }
+    },
+    "wikipedia-2": {
+      "date_utc": "2026-10-12T22:04:31.265656+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 343044,
+          "seconds_after_completion": 10.028195726998092,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 341972,
+          "seconds_after_completion": 11.030505875001836,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 341951,
+          "seconds_after_completion": 12.027976411001873,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        1465.389
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33314.0,
+        "WPENetworkProce": 49433.0,
+        "bwrap": 614.0,
+        "xdg-dbus-proxy": 864.0,
+        "WPEWebProcess": 258097.333
+      }
+    },
+    "wikipedia-3": {
+      "date_utc": "2026-10-12T22:04:45.331244+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 341513,
+          "seconds_after_completion": 10.030901851998351,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 340841,
+          "seconds_after_completion": 11.031383212997753,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 340817,
+          "seconds_after_completion": 12.031126620000578,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        1538.081
+      ],
+      "mean_role_pss_kib": {
+        "foob": 33309.0,
+        "WPENetworkProce": 47389.0,
+        "bwrap": 606.0,
+        "xdg-dbus-proxy": 876.0,
+        "WPEWebProcess": 258877.0
+      }
+    }
+  },
+  "lifecycle_and_controls": {
+    "compositor-close": {
+      "date_utc": "2026-10-12T21:59:58.954984+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "crash-negative-control": {
+      "date_utc": "2026-10-12T22:03:01.456830+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "fail",
+      "error": "navigation failure or abnormal web-process termination",
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "missing-local-file": {
+      "date_utc": "2026-10-12T22:06:34.172807+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "fail",
+      "error": "navigation failure or abnormal web-process termination",
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "sigint": {
+      "date_utc": "2026-10-12T21:59:59.485459+00:00",
+      "revision": "ed52f712fd0bd997682494d568d34c9977821806",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "user-pointer-20261013": {
+      "date_utc": "2026-10-13T07:24:57.916055+00:00",
+      "revision": "39f0e12cf1f3ab62492f2b0a75946209aa054b5d",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "lifecycle_result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "user-scholar-20261013-repeat": {
+      "date_utc": "2026-10-13T07:30:51.748723+00:00",
+      "revision": "39f0e12cf1f3ab62492f2b0a75946209aa054b5d",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "lifecycle_result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    },
+    "user-scholar-20261013": {
+      "date_utc": "2026-10-13T07:29:10.537262+00:00",
+      "revision": "39f0e12cf1f3ab62492f2b0a75946209aa054b5d",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "lifecycle_result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 20,
+      "survivor_count": 0
+    },
+    "user-viewport-20261013": {
+      "date_utc": "2026-10-13T07:08:40.195137+00:00",
+      "revision": "39f0e12cf1f3ab62492f2b0a75946209aa054b5d",
+      "source_sha256": "6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2",
+      "binary_sha256": "9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229",
+      "lifecycle_result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0
+    }
+  },
+  "geometry_probes": {
+    "mathml-probe": {
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "geometry_reports": [
+        [
+          "viewport width=950 height=1188 scale=1.000 active=1 fullscreen=0 maximized=0 focus=1"
+        ]
+      ]
+    },
+    "scholar-probe": {
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "geometry_reports": [
+        [
+          "viewport width=950 height=1188 scale=1.000 active=1 fullscreen=0 maximized=0 focus=1"
+        ]
+      ]
+    },
+    "viewport-probe": {
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "geometry_reports": [
+        [
+          "viewport width=950 height=1188 scale=1.000 active=1 fullscreen=0 maximized=0 focus=1"
+        ],
+        [
+          "viewport width=700 height=1188 scale=1.000 active=1 fullscreen=0 maximized=0 focus=1"
+        ],
+        [
+          "viewport width=1920 height=1200 scale=1.000 active=1 fullscreen=1 maximized=0 focus=1"
+        ],
+        [
+          "viewport width=700 height=1188 scale=1.000 active=1 fullscreen=0 maximized=0 focus=1"
+        ]
+      ]
+    }
+  }
+}

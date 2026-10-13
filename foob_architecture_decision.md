@@ -29,16 +29,25 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 **Evidence levels:** installed packages/C23 compilation, native Wayland operation,
 guided input/window behavior, simple hand-written MathML/JS and total process-tree
 PSS are now verified under `docs/validation/`. Stock web-process confinement was
-observed; full security auditing remains later work. Acceleration/renderer identity,
+observed; full security auditing remains later work. Exact renderer identity/per-feature acceleration,
 custom WPE compilation and broader local-math pipelines remain unverified or
 untested. This ledger distinguishes upstream release, package revision and API suffix.
+
+**Further M1 diagnosis (2026-10-13):** [blank-memory attribution](docs/validation/blank-memory.md)
+measures 168–171 MiB in three later fresh blank launches and identifies engine,
+allocator and Mesa/LLVM startup costs. The browser's own amdgpu graphics/compute
+execution counters confirm hardware GPU participation for blank. Exact GL renderer
+string/per-feature acceleration remain unmeasured. The maintainer confirms no
+second monitor; multi-monitor checks are unavailable. Raw generated runs are now
+ignored/local; [curated results](docs/validation/results.json) remain committed.
 
 **Implementation checkpoint (2026-10-13):** the ledger combines the original
 upstream audit with installed/runtime evidence. [M0 evidence](docs/validation/m0.md) verifies the
 installed packages/C23 linkage; [M1 evidence](docs/validation/m1.md) records native
 Wayland loading/cleanup, simple math/JS, web-process confinement and
-[stock process-tree PSS](docs/validation/measurements.md). Acceleration remains
-qualified; [guided interactive acceptance](docs/validation/interactive-2026-10-13.md)
+[stock process-tree PSS](docs/validation/measurements.md). Hardware GPU participation
+for blank is now confirmed within the limits above;
+[guided interactive acceptance](docs/validation/interactive-2026-10-13.md)
 now passes and Gate A is ready for maintainer review, not approved. The M1 session is
 explicitly ephemeral; M2's ordinary persistent profile remains planned.
 
@@ -51,10 +60,10 @@ does not change the engine choice or establish long-term Scholar compatibility.
 
 - **Hardware:** x86_64 laptop with an integrated AMD GPU.
 - **Kernel driver:** `amdgpu` (confirmed by `lspci -nnk`); the active Mesa userspace renderer is **not yet verified**.
-- **Operating environment:** Arch Linux, native Wayland session under **niri**, `WAYLAND_DISPLAY=wayland-1`; actual WPE rendering/input/window behavior verified. Mesa EGL/render-device evidence collected; exact GPU renderer and end-to-end acceleration remain unverified.
+- **Operating environment:** Arch Linux, native Wayland session under **niri**, `WAYLAND_DISPLAY=wayland-1`; actual WPE rendering/input/window behavior verified. Mesa EGL/render-device evidence collected; hardware GPU work for blank confirmed by amdgpu counters; exact GL renderer/per-feature acceleration remain unmeasured.
 - **Application standard:** **C23** (`c_std=c23` in Meson), installed compiler/Meson support verified by clean builds and independent review. Prefer standard C23 language features where practical; GLib convenience macros such as `g_autoptr` themselves depend on compiler-specific cleanup attributes, so do not imply a strictly extension-free ISO C build. C23 is an application compilation choice, independent of WPE's C ABI.
 - **Event loop and object integration:** **GLib/GObject** because WPE's supported C API exposes GObject types, signals and GLib asynchronous/event-loop integration. GLib is **not** GTK and does not add a visible GUI toolkit. Prefer ordinary C for application-owned data and business logic, using GLib/GObject at the WPE integration boundary.
-- **Hardware validation:** Actual stock-WPE operation on this machine passes M1's native rendering, resize/input and lifecycle checks. Mesa EGL and render-device access support a hardware graphics path, but end-to-end acceleration remains unverified. The initial probe lacked `glxinfo`/`eglinfo`; no diagnostic packages were installed.
+- **Hardware validation:** Stock-WPE operation passes M1's rendering/resize/input/lifecycle checks; amdgpu execution counters now confirm hardware GPU work for blank. Exact GL renderer and per-feature acceleration remain unmeasured. The initial probe lacked `glxinfo`/`eglinfo`; no diagnostic packages were installed.
 
 ## Goals
 
@@ -131,7 +140,7 @@ Use one persistent browser profile for ordinary browsing storage and logins. M4 
 
 ## Machine verification (read-only)
 
-**Hardware identification completed on 2026-10-12:** x86_64 laptop with an integrated AMD GPU, kernel `amdgpu`, niri Wayland session (`wayland-1`). The `pcilib` warning about reading the unrelated `00:08.3/label` sysfs entry is non-fatal: the GPU and active driver were identified successfully. `glxinfo` and `eglinfo` were unavailable; this is **not** evidence of software rendering. The actual WPE Wayland view has now passed M1 validation; precise acceleration/renderer confirmation remains outstanding. The original read-only probe below is retained for reproducibility.
+**Hardware identification completed on 2026-10-12:** x86_64 laptop with an integrated AMD GPU, kernel `amdgpu`, niri Wayland session (`wayland-1`). The `pcilib` warning about reading the unrelated `00:08.3/label` sysfs entry is non-fatal: the GPU and active driver were identified successfully. `glxinfo` and `eglinfo` were unavailable; this is **not** evidence of software rendering. The actual WPE Wayland view has now passed M1 validation; hardware GPU participation for blank is now confirmed; exact GL renderer/per-feature confirmation remains outstanding. The original read-only probe below is retained for reproducibility.
 
 ```bash
 printf '\n== Model ==\n'

@@ -20,6 +20,10 @@ Stop before M2.
   interactive process monitor. Browser source/binary and benchmark fixture stay
   unchanged; raw records include exact hashes. Resolve latest evidence revision
   with `git log -1 --format='%H' -- docs/validation/interactive-2026-10-13.md`.
+- Blank-memory/GPU diagnosis starts from `2626b59`; browser source/binary remain
+  unchanged. See [blank-memory.md](blank-memory.md) and [results.json](results.json).
+  Generated raw `docs/validation/runs/` artifacts are ignored and kept locally;
+  curated results and reproduction scripts are committed.
 
 Read AGENTS.md, root architecture/roadmap, approved plan, and this handoff.
 Inspect Git status and existing evidence before resuming; do not repeat completed
@@ -43,6 +47,13 @@ checks merely because this is a new context.
   geometry changes throughout settling, and all retained logs satisfy that check.
 - Automatic tile-width/fullscreen geometry and visual fixture inspection; simple
   arithmetic JS and hand-written MathML visually pass.
+- Three additional blank attribution launches measure 168.304–171.092 MiB PSS,
+  mean 170.143 MiB. Web process dominates (~108.5 MiB), application ~32.7,
+  network ~27.5, sandbox helpers ~1.5. Mapping/kernel accounting identifies
+  engine/allocator and Mesa/LLVM startup costs; no optimization or source change.
+- Hardware GPU participation now confirmed for blank: each web process's amdgpu
+  render client has nonzero graphics/compute execution counters. Exact GL renderer
+  string and per-feature/every-frame acceleration remain unmeasured.
 - Guided user resize/height/focus/typing/click/counter/navigation/scroll/maximize-
   column/fullscreen checks pass. Precise crosshair clicks after resize/scroll
   land within ±10 CSS px of expected centers. Four user closes exit 0 without
@@ -61,8 +72,9 @@ checks merely because this is a new context.
 
 - All required M1 P0 checks pass; [desktop checklist](desktop-checklist.md) is
   complete. Gate A requires an explicit maintainer decision before any M2 work.
-- Graphics: Wayland and Mesa EGL/render-device evidence available; end-to-end
-  acceleration remains unverified. Multi-monitor/fractional scale unavailable.
+- Graphics: hardware GPU participation confirmed for blank; exact GL renderer
+  and per-feature/every-frame acceleration not measured. Maintainer confirms no
+  second monitor; multi-monitor checks unavailable. Fractional scale untested.
 - Font-language menu glyphs: [P1 follow-up](font-follow-up.md) with supplied image;
   no cause established or fix attempted, per the maintainer's request.
 - Observed Scholar exploration is not sustained compatibility; persistent-profile
@@ -72,6 +84,8 @@ checks merely because this is a new context.
   system configuration change attempted.
 - Under-100-MiB stretch target not met: mean PSS blank 174.318 MiB, fixture
   202.412 MiB, Wikipedia 333.708 MiB. No custom-engine work or security weakening.
+  Additional blank attribution mean 170.143 MiB is a later diagnostic observation,
+  not a replacement baseline or evidence of a memory improvement.
 - Blank/Wikipedia warm reloads untested; local warm reload measured separately.
 - Full sandbox/TLS/resource-policy audit remains later-milestone scope. Observed
   stock web process has seccomp/new namespaces; network/UI confinement differs.
@@ -90,11 +104,12 @@ The decision is whether to accept the measured stock-WPE prototype as a sound
 baseline and authorize M2, or require a specific M1 correction first. Evidence
 covers C23 build/API review, native rendering/input/window behavior, clean
 shutdown, three-workload process-tree PSS and exploratory Scholar behavior.
-The >100-MiB measurements, deferred font issue, unverified acceleration and
+The >100-MiB measurements, deferred font issue, limits of GPU verification and
 untested display-scale cases remain disclosed limitations, not pending repeats
 of the desktop checks already passed. A question about Gate A is not approval.
 
 Evidence index: [M0](m0.md), [M1](m1.md), [measurements](measurements.md),
-[independent review](c23-review.md), [raw runs](runs/),
+[independent review](c23-review.md), [curated results](results.json),
+[blank memory/GPU diagnosis](blank-memory.md), local ignored raw `runs/`,
 [guided interaction](interactive-2026-10-13.md), [font follow-up](font-follow-up.md),
 [approved implementation plan](../plans/m0-m1.md).

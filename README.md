@@ -60,6 +60,12 @@ Each opens a test window; do this when desktop interaction is available.
 The suite checks all browser descendants, including sandbox helpers and the D-Bus
 proxy, and checks their disappearance after shutdown.
 
+Generated `docs/validation/runs/` outputs are ignored. Commit reviewed Markdown
+and compact `docs/validation/results.json`; regenerate the latter with
+`python3 tests/benchmark/summarize.py`. See
+[blank memory/GPU attribution](docs/validation/blank-memory.md) for the optional
+`--memory-details` collector and current findings.
+
 For guided interaction, `python3 tests/benchmark/interactive.py --uri URI
 --output /tmp/foob-interactive.json` keeps the window open until the user closes
 it, then records exit/process cleanup. Choose a new output path for each run.

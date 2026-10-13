@@ -5,6 +5,12 @@ desktop checks pass, M1 P0 complete, Gate A ready for maintainer review and not
 approved. The review sections below record their state before user validation;
 their historical limitations do not mean today's desktop checks are pending.
 
+Raw reports used for review are now ignored and retained locally; committed
+[results.json](results.json) and Markdown preserve curated evidence. Subsequent
+[blank diagnosis](blank-memory.md) adds hardware GPU execution evidence without
+changing the reviewed browser source/binary. The new optional attribution helper
+does not imply another independent source review was performed.
+
 Requested fresh-context read-only reviewer: `/root/c23_review`.
 Initial review completed 2026-10-13 local time; parent M0 commit `ed52f71`.
 Reviewed implementation was uncommitted and identified by exact hashes:
