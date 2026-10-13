@@ -9,7 +9,7 @@ delete one. Change its status and link the commit.
   milestone; the roadmap line is named), `decided` (maintainer choice, do not
   re-argue), `deferred` (maintainer postponed), `wontfix` (reason given).
 - **Source:** `Maintainer`, `Claude` (the implementing agent), `Codex`, `Review-1`
-  (Opus 5.5 merge review), `Review-2` (Sonnet 5.5 merge review).
+  (Opus 5.5 merge review), `Review-2` (Sonnet 5.5 merge review), `Review-3` (`/code-review high` security pass before merging to main).
 - Findings that are not for the current milestone get a roadmap line naming their
   source (triage rule, roadmap section 7).
 
@@ -88,6 +88,16 @@ delete one. Change its status and link the commit.
 | F-38 | `interactive.py` recorded `lifecycle_result: fail` but exited 0 | Codex (P2) | fixed: exits 1 unless the lifecycle passed. Negative control with `--binary /bin/false`: old rc 0, new rc 1 | `tests/benchmark/interactive.py` |
 | F-39 | After F-37 the suite writes to `runs/suite-<time>/`, but `summarize.py` read only the top level of `runs/`, so the README command republished old measurements (or empty ones on a fresh checkout), and the explicit-directory mode wrote only into the ignored folder | Codex (P2) | fixed: `summarize.py [dir] [--output FILE] [--replace]` summarizes one chosen run folder; an existing output (and the curated file) needs `--replace`; input with no run records is rejected before anything is written. Default behaviour (top-level runs to `docs/validation/results.json`) is unchanged and reproduced the same content. Checked: suite folder summarized to a new file (10 measurements), existing output and curated file refused, empty folder rejected | `tests/benchmark/summarize.py`, README |
 | F-40 | A nested compositor that started but never reported its sockets within 15 s was left running when the scenario failed | Codex (P2) | fixed: `start_compositor()` terminates and reaps the child before re-raising. Negative control with a fake `niri` that sleeps: old runner left 1 process, new runner 0 | `tests/nested_lifecycle.py` |
+| F-41 | Security review (Review-3, `/code-review high`): the remote-to-local rule is enforced only for NEW_WINDOW decisions; NAVIGATION_ACTION and RESPONSE fall through to WebKit | Review-3 | carried: M2-03 note 1 (unify navigation policy); WebKit refuses remote-to-`file:` today (audit-m1.md defect 5) | roadmap M2-03 |
+| F-42 | Review-3: new-window trust uses the main frame, so a remote iframe in a local page inherits local trust | Review-3 | carried: same as F-12 (D-09, M4); not reachable with today's inputs (local pages are the user's own files, none embeds frames) | roadmap M4 trust row |
+| F-43 | Review-3: sanitizer misses invisible and blank characters (U+00AD, U+2800, U+17B4/17B5, U+FFF9-FFFC, U+1D173-1D17A) | Review-3 | **open**: proposed fix now, same class as F-15: strip all Unicode format characters (category Cf, keeping U+200C/D) plus the listed fillers, with unit tests | `src/window_title.c` |
+| F-44 | Review-3: local and remote titles share the ` — foob` suffix, so a remote page can imitate a local title | Review-3 | carried: D-01 design plus M2-03 note 2; a trust cue is an M2-12 idea (I-01) | roadmap M2-03 |
+| F-45 | Review-3: title trust is recomputed only on title change, not on URI change | Review-3 | carried: F-26, M2-03 note 3, I-03 | roadmap M2-03 |
+| F-46 | Review-3: `about:blank` is always trusted, though a document there may inherit an origin | Review-3 | carried: D-09, M4; not exploitable today (navigating a remote page to `about:blank` ends its scripts and no popup exists) | roadmap M4 trust row |
+| F-47 | Review-3: `g_uri_get_port(uri) <= UINT16_MAX` is always true (unset port is -1); GLib and WebKit parse URIs differently | Review-3 | **open**: remove the dead check and pin the behaviour with unit tests. Probe: backslash and odd-port URIs differ between parsers only for remote URLs (`http://good.com\.evil.com/`), never in the local/remote classification of a `file:` URL, so no exploitable difference found | `src/target.c` |
+| F-48 | Review-3: downloads rely on one cancel handler (no RESPONSE-level ignore); permission defaults are unobserved; nested test scans only for payload bytes | Review-3 | carried: M3-03 (add: ignore non-displayable responses before a download object exists; test for any new file), M3-05 (F-34) | roadmap M3-03, M3-05 |
+| F-49 | Review-3: `display_disconnected` calls `_exit(3)` without tearing down helpers | Review-3 | wontfix: same as F-27; the `compositor-lost` scenario checks that every helper exits | `src/browser.c` |
+| F-50 | Review-3: `policy_server.py` trusts `Content-Length` (non-numeric or negative values raise or read to EOF) | Review-3 | **open**: test tool on loopback only; clamp and validate | `tests/policy_server.py` |
 
 **Result of F-31:** the earlier claim "scripted requests never reach foob's policy
 handler" was unproven because the scenario and the first debug experiment used the same
