@@ -85,7 +85,9 @@ belongs to the custom-engine milestone.
 
 Regression pairing (new vs `m0-m1` binary, same tooling): blank 168.8 vs 168.9,
 local fixture 193.1 vs 193.3, Wikipedia 332.7 vs 332.9, Semantic Scholar 441.2
-vs 442.5 MiB; all loads `status=ok` with equal timings. (Google Scholar was not
+vs 442.5 MiB; all loads `status=ok` with equal timings. Latency, 8 interleaved
+launches each: process start to `load-finished` median 107 ms (new) vs 108 ms
+(baseline); SIGTERM to exit 7 ms vs 8 ms. (Google Scholar was not
 loaded in this audit.)
 
 ## Relationship with WebKit/WPE, against upstream MiniBrowser
