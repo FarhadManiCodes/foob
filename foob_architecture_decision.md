@@ -33,8 +33,14 @@ pre-implementation audit. [M0 evidence](docs/validation/m0.md) now verifies the
 installed packages/C23 linkage; [M1 evidence](docs/validation/m1.md) records native
 Wayland loading/cleanup, simple math/JS, web-process confinement and
 [stock process-tree PSS](docs/validation/measurements.md). Acceleration remains
-qualified; interactive acceptance and Gate A are pending. The M1 session is
+qualified; [guided interactive acceptance](docs/validation/interactive-2026-10-13.md)
+now passes and Gate A is ready for maintainer review, not approved. The M1 session is
 explicitly ephemeral; M2's ordinary persistent profile remains planned.
+
+Guided Scholar testing reported no blocker for the observed search/result/scroll
+flow, with a small [font-coverage/fallback observation](docs/validation/font-follow-up.md)
+explicitly deferred by the maintainer. The cause has not been investigated; this
+does not change the engine choice or establish long-term Scholar compatibility.
 
 ## Target machine and language/runtime decision
 

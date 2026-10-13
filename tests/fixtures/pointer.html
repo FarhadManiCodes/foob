@@ -1,0 +1,73 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foob M1 pointer alignment targets</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 20px/1.5 sans-serif; color: #132b35; background: #edf2f4; }
+  header { padding: 12px 24px; background: #163c4b; color: white; }
+  p, table { margin: 16px 24px; }
+  #arena { position: relative; margin: 24px; height: 55vh; min-height: 260px; border: 2px solid #d06c20; background: white; }
+  .target { position: absolute; width: 44px; height: 44px; transform: translate(-50%, -50%); border: 2px solid #163c4b; border-radius: 50%; background: #ffeaa8; cursor: crosshair; padding: 0; }
+  .target::before, .target::after { content: ''; position: absolute; background: #163c4b; pointer-events: none; }
+  .target::before { width: 2px; height: 30px; top: 5px; left: 19px; }
+  .target::after { width: 30px; height: 2px; top: 19px; left: 5px; }
+  #a { left: 40px; top: 40px; }
+  #b { left: calc(100% - 40px); top: 40px; }
+  #c { left: 50%; top: 50%; }
+  #d { left: calc(100% - 40px); top: calc(100% - 40px); }
+  .label { position: absolute; left: 48px; top: 2px; color: #132b35; font: 18px sans-serif; }
+  table { border-collapse: collapse; font-size: 17px; }
+  th, td { padding: 6px 10px; border: 1px solid #387286; text-align: left; }
+  #result { padding: 12px; border: 2px solid #387286; background: white; overflow-wrap: anywhere; }
+  #ruler { height: 80vh; margin: 24px; background: repeating-linear-gradient(#edf2f4 0 95px, #b8d3dc 95px 100px); }
+  footer { padding: 20px 24px; background: #d06c20; }
+</style>
+<header><strong>Pointer alignment</strong> — <span id="geometry"></span></header>
+<p>Click the center of each crosshair (A, B, C, D). Aim within 10 CSS px of the center.
+Resize narrow/wide and repeat. Then scroll, click a visible target and repeat.
+Expected coordinates come from the target's layout; actual coordinates come from the pointer event.</p>
+<p id="result">No target click yet.</p>
+<table><thead><tr><th>Target</th><th>Expected center (client CSS px)</th><th>Clicks within 10 px</th></tr></thead>
+<tbody id="centers"></tbody></table>
+<div id="arena">
+  <button id="a" class="target" aria-label="Target A"><span class="label">A</span></button>
+  <button id="b" class="target" aria-label="Target B"><span class="label">B</span></button>
+  <button id="c" class="target" aria-label="Target C"><span class="label">C</span></button>
+  <button id="d" class="target" aria-label="Target D"><span class="label">D</span></button>
+</div>
+<p>Scroll ruler below; the target centers in the table update on resize and scroll.</p>
+<div id="ruler"></div>
+<footer>END — <a href="#">Return to top</a></footer>
+<script>
+  const ids = ['a', 'b', 'c', 'd'];
+  const hits = Object.fromEntries(ids.map(id => [id, 0]));
+  function center(id) {
+    const rect = document.getElementById(id).getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  }
+  function update() {
+    document.getElementById('geometry').textContent = `${innerWidth} × ${innerHeight} CSS px; DPR ${devicePixelRatio}; scrollY ${Math.round(scrollY)}`;
+    document.getElementById('centers').replaceChildren(...ids.map(id => {
+      const point = center(id), row = document.createElement('tr');
+      for (const value of [id.toUpperCase(), `${point.x.toFixed(1)}, ${point.y.toFixed(1)}`, hits[id]]) {
+        const cell = document.createElement('td');
+        cell.textContent = value;
+        row.append(cell);
+      }
+      return row;
+    }));
+  }
+  for (const id of ids) document.getElementById(id).addEventListener('click', event => {
+    const expected = center(id);
+    const dx = event.clientX - expected.x, dy = event.clientY - expected.y;
+    const near = Math.abs(dx) <= 10 && Math.abs(dy) <= 10;
+    if (near) hits[id]++;
+    document.getElementById('result').textContent =
+      `${near ? 'CENTER HIT' : 'Outside center tolerance — try the center'} ${id.toUpperCase()}: expected (${expected.x.toFixed(1)}, ${expected.y.toFixed(1)}), actual (${event.clientX.toFixed(1)}, ${event.clientY.toFixed(1)}); delta (${dx.toFixed(1)}, ${dy.toFixed(1)}) CSS px`;
+    update();
+  });
+  addEventListener('resize', update);
+  addEventListener('scroll', update);
+  update();
+</script>

@@ -1,7 +1,7 @@
 # foob — Staged Development Roadmap
 
 **Document type:** Execution plan / agile-style milestones  
-**Status:** M0 P0 complete; M1 implemented, interactive acceptance pending; subsequent stages provisional
+**Status:** M0/M1 P0 complete; Gate A ready for maintainer review, not approved; subsequent stages provisional
 **Created:** 2026-10-12  
 **Working project name:** `foob`  
 **Companion document:** [`foob_architecture_decision.md`](./foob_architecture_decision.md) — technical decisions, API investigation, security boundaries and research notes.
@@ -138,22 +138,27 @@ If needed, inspect package details with `pacman -Si wpewebkit`; install missing 
 - [x] **M1-01 / P0:** Create a `WebKitWebView` through the stable WPEPlatform API, using `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)`; run a GLib main loop.
 - [x] **M1-02 / P0:** Select/use the **Wayland** backend (`WPE_PLATFORM=wayland` for explicit testing) and load a **trusted** CLI URI or harmless default HTTPS page. Full validation/policy for arbitrary input and unsupported schemes belongs to M2.
 - [x] **M1-03 / P0:** Quit on the WPE view's `closed` signal; release owned GObjects; confirm no leftover application subprocesses after normal exit.
-- [ ] **M1-04 / P0:** Verify niri tiling, resize, maximize/fullscreen where applicable, focus and mouse scrolling; use the WPE-managed toplevel rather than writing another xdg-shell implementation.
-- [ ] **M1-05 / P0:** Verify simple keyboard input in an HTML text box and navigation/link clicking; observe whether rendering is GPU accelerated, or record inability to verify.
+- [x] **M1-04 / P0:** Verify niri tiling, resize, maximize/fullscreen where applicable, focus and mouse scrolling; use the WPE-managed toplevel rather than writing another xdg-shell implementation.
+- [x] **M1-05 / P0:** Verify simple keyboard input in an HTML text box and navigation/link clicking; observe whether rendering is GPU accelerated, or record inability to verify.
 - [x] **M1-06 / P0:** Measure **total browser process-tree PSS** at fixed viewport/idle intervals for `about:blank`, a known local HTML fixture, and Wikipedia; record cold/warm starts separately.
 - [x] **M1-07 / P1:** Test one simple local **MathML** fixture and an uncomplicated JS page; record pass/fail without implementing the preview pipeline yet.
 - [x] **M1-08 / P1:** Capture runtime warnings, WPE/GLib errors, compositor-related observations and reproducible failure cases.
-- [ ] **M1-09 / P1:** Explore Google Scholar on stock WPE with default browser identity: submit a search, open a result and scroll. Record the session/profile configuration, immediate access, challenges, any attempted manual clearance and its outcome. Unresolved blocking prompts investigation, not automatic engine rejection; do not assess restart reliability before persistent profiles exist. Do not import Qt cookies, spoof headers, or weaken security to obtain a baseline. See the [qvu navigation and Dooble observations](docs/research/qvu/findings/scholar-navigation-and-dooble.md) for the unresolved failure that motivated this check. This task does not require M2's profile management or M3's download/dialog integration.
+- [x] **M1-09 / P1:** Explore Google Scholar on stock WPE with default browser identity: submit a search, open a result and scroll. Record the session/profile configuration, immediate access, challenges, any attempted manual clearance and its outcome. Unresolved blocking prompts investigation, not automatic engine rejection; do not assess restart reliability before persistent profiles exist. Do not import Qt cookies, spoof headers, or weaken security to obtain a baseline. See the [qvu navigation and Dooble observations](docs/research/qvu/findings/scholar-navigation-and-dooble.md) for the unresolved failure that motivated this check. This task does not require M2's profile management or M3's download/dialog integration.
 
 ### Gate A — stop, review and decide next implementation tasks
 
 Checkpoint 2026-10-13: [M1 runtime evidence](docs/validation/m1.md),
 [PSS measurements](docs/validation/measurements.md),
 [independent review](docs/validation/c23-review.md), and
-[handoff](docs/validation/handoff.md). M1-04/M1-05 remain incomplete pending the
-[user desktop checklist](docs/validation/desktop-checklist.md). One Scholar query
-displayed results, but M1-09 search-form/result/scroll interaction remains pending.
-Gate A is not ready/approved; no M2 work is authorized by this checkpoint.
+[handoff](docs/validation/handoff.md). The maintainer completed the
+[desktop checklist](docs/validation/desktop-checklist.md), with
+[guided session evidence](docs/validation/interactive-2026-10-13.md), including
+precise pointer targets after resize/scroll and user-initiated close/cleanup.
+Scholar search/result/scroll exploration reports no blocker; a language-menu
+[font issue is deferred](docs/validation/font-follow-up.md) at the maintainer's
+request. M1 P0 checks pass. Gate A is ready for review, **not approved**; no M2
+work is authorized by this checkpoint. Acceleration remains unverified and
+multi-monitor/fractional scaling remain untested, as explicitly allowed limits.
 
 Evidence to bring to the review:
 

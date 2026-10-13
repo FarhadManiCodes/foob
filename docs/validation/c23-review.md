@@ -90,3 +90,9 @@ checked all ten accepted logs for expected navigation counts, no failure markers
 and no differing post-completion geometry. This strengthens the earlier review,
 which inspected sampled geometry only. No remaining blocking review finding;
 source/binary unchanged, no GUI test or Gate A approval. M1 interaction pending.
+
+Later maintainer-guided interaction (2026-10-13) now passes the required desktop
+checks; see [the separate runtime evidence](interactive-2026-10-13.md). Browser
+source/binary hashes remain identical to this review. This updates milestone
+acceptance evidence without implying that the reviewer performed GUI tests or
+approved Gate A. The font-menu observation is explicitly deferred by the maintainer.

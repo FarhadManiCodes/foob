@@ -1,8 +1,9 @@
-# M1 interactive desktop checklist — pending
+# M1 interactive desktop checklist — passed
 
-The maintainer chose to save these checks for later on 2026-10-13 (local time).
-M1 remains incomplete; Gate A has not been approved. No input-automation tools
-were installed. Fill in **pass / fail / not tested** and observations per step.
+The maintainer completed the required checks on 2026-10-13 (local time), after
+the initial deferral. See [guided session evidence](interactive-2026-10-13.md)
+and paired raw logs/process records. M1 P0 checks pass; Gate A is ready for
+review and has not been approved. No input-automation tools were installed.
 
 ```sh
 FOOB_DIAGNOSTICS=1 ./build/foob file://$PWD/tests/fixtures/viewport.html
@@ -13,16 +14,16 @@ resize count and scroll position. Log reports the WPE logical viewport/scale.
 
 | Step | Expected observation | Current status |
 |---|---|---|
-| Initial page | Header/edges complete, no black strips, stale stretch or cropping; CSS viewport equals WPE logical dimensions | Not tested by user |
-| Resize tile wide → narrow → wide | Orange 25vh box and full-width border follow window; breakpoint at 800px; resize count increments | Not tested by user |
-| Click orange box after resize | Visible click location agrees with reported `clientX/clientY`; no coordinate offset | Not tested |
-| Focus another app then return | Caret/focus restores, input responds normally | Not tested |
-| Type disposable text | Characters appear at clicked caret, input-event count increases; no input contents in diagnostics | Not tested |
-| JavaScript counter button | Each click increments counter exactly once, including after resize | Not tested by user |
-| Local navigation link | Separate green page says “Local link navigation PASS”; return link works | Not tested |
-| Mouse/touchpad scrolling | Ruler moves smoothly, sticky header updates scrollY; orange END footer reachable; scroll offset correct after resize | Not tested |
-| Supported maximize/fullscreen transitions | Page fits each state and returns to tiled geometry; no stale frame/input mismatch | Not tested by user |
-| Close via compositor binding | Window disappears and diagnostics say `closed`; browser/descendants disappear | Automated close pass; user repeat pending |
+| Initial page | Header/edges complete, no black strips, stale stretch or cropping; CSS viewport equals WPE logical dimensions | Pass — user confirms initial 950×1188/DPR 1 |
+| Resize tile wide → narrow → wide | Orange 25vh box and full-width border follow window; breakpoint at 800px; resize count increments | Pass — user confirmation and diagnostic geometry |
+| Click orange box after resize | Visible click location agrees with reported `clientX/clientY`; no coordinate offset | Pass — strengthened with separate crosshair target fixture, narrow/wide/scroll hits within ±10 CSS px |
+| Focus another app then return | Caret/focus restores, input responds normally | Pass — user confirmation and focus diagnostics |
+| Type disposable text | Characters appear at clicked caret, input-event count increases; no input contents in diagnostics | Pass — user confirmation |
+| JavaScript counter button | Each click increments counter exactly once, including after resize | Pass — user confirms exact increments after state changes |
+| Local navigation link | Separate green page says “Local link navigation PASS”; return link works | Pass — user screenshot and return confirmation |
+| Mouse/touchpad scrolling | Ruler moves smoothly, sticky header updates scrollY; orange END footer reachable; scroll offset correct after resize | Pass — user confirmation |
+| Supported maximize/fullscreen transitions | Page fits each state and returns to tiled geometry; no stale frame/input mismatch | Pass — niri maximize-column/fullscreen and return; xdg maximized state not asserted |
+| Close via compositor binding | Window disappears and diagnostics say `closed`; browser/descendants disappear | Pass — two user closes, exit 0/no tracked survivors |
 
 An automated niri geometry probe supplements these checks but cannot prove
 typing, clicking, scrolling or user-perceived responsiveness. No browser shortcut
@@ -39,3 +40,8 @@ open a result and scroll. Record immediate access and any challenge; complete a
 challenge manually only if available. Do not repeatedly automate searches,
 import cookies or change security settings. No persistence claim is possible
 until M2. See the M1 record for the initial exploration outcome.
+
+Guided Scholar check on 2026-10-13: user reports the search/result/scroll flow
+seems OK with no blocker. Requested manual rerun exposed a small language-menu
+glyph issue, [explicitly deferred](font-follow-up.md). No challenge was reported;
+no persistence or long-term reliability claim. See guided session evidence.

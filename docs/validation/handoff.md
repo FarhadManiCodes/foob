@@ -1,7 +1,8 @@
 # M0/M1 resumable handoff
 
-2026-10-13, branch `m0-m1`. **M0 P0 complete; M1 incomplete; Gate A not approved.**
-Maintainer chose to save desktop interaction for later. Stop before M2.
+2026-10-13, branch `m0-m1`. **M0/M1 P0 complete; Gate A ready for maintainer
+review, not approved.** Maintainer returned and completed guided interaction.
+Stop before M2.
 
 ## Revision and reproducibility
 
@@ -13,6 +14,11 @@ Maintainer chose to save desktop interaction for later. Stop before M2.
   current documentation head with `git rev-parse HEAD`.
 - Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
 - Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
+- Guided interaction starts from `39f0e12cf1f3ab62492f2b0a75946209aa054b5d`.
+  The evidence commit adds a separate pointer-target fixture and a standard-library
+  interactive process monitor. Browser source/binary and benchmark fixture stay
+  unchanged; raw records include exact hashes. Resolve latest evidence revision
+  with `git log -1 --format='%H' -- docs/validation/interactive-2026-10-13.md`.
 
 Read AGENTS.md, root architecture/roadmap, approved plan, and this handoff.
 Inspect Git status and existing evidence before resuming; do not repeat completed
@@ -36,22 +42,28 @@ checks merely because this is a new context.
   geometry changes throughout settling, and all retained logs satisfy that check.
 - Automatic tile-width/fullscreen geometry and visual fixture inspection; simple
   arithmetic JS and hand-written MathML visually pass.
-- One Scholar query rendered results without an observed challenge. User
-  form/result/scroll interactions and persistence remain untested.
+- Guided user resize/height/focus/typing/click/counter/navigation/scroll/maximize-
+  column/fullscreen checks pass. Precise crosshair clicks after resize/scroll
+  land within ±10 CSS px of expected centers. Four user closes exit 0 without
+  tracked survivors. See [interactive evidence](interactive-2026-10-13.md).
+- Scholar guided search/result/scroll exploration reports no blocker or challenge.
+  A requested repeat exposed a small language-menu glyph issue, explicitly
+  deferred by the maintainer. Persistence/long-term reliability remain untested.
 - Fresh read-only reviewer found no source/ownership/API/C23 blocking defect;
   tooling findings fixed, negative control tested, focused follow-up clears them.
 - Test-window captures inspected and deleted; no input tools/packages installed
   and no desktop/lid/power/idle settings changed.
 
-## Outstanding acceptance and limitations
+## Deferred work, review boundary and limitations
 
-- **M1-04 / M1-05 P0:** user typing, pointer coordinate alignment after resize,
-  link navigation, mouse scrolling, focus transitions and supported maximize/
-  fullscreen interactions. Resume [desktop-checklist.md](desktop-checklist.md).
+- All required M1 P0 checks pass; [desktop checklist](desktop-checklist.md) is
+  complete. Gate A requires an explicit maintainer decision before any M2 work.
 - Graphics: Wayland and Mesa EGL/render-device evidence available; end-to-end
   acceleration remains unverified. Multi-monitor/fractional scale unavailable.
-- **M1-09 P1:** search-form submit/result opening/scrolling/challenge observation
-  with user interaction. Current single-query access is not sustained compatibility.
+- Font-language menu glyphs: [P1 follow-up](font-follow-up.md) with supplied image;
+  no cause established or fix attempted, per the maintainer's request.
+- Observed Scholar exploration is not sustained compatibility; persistent-profile
+  and restart tests remain M2, and longer-term observations remain later work.
 - **M0-05 P1:** license decision deferred to maintainer; no license invented.
 - Accessibility warnings persist because the system a11y bus is masked. No
   system configuration change attempted.
@@ -62,16 +74,16 @@ checks merely because this is a new context.
   stock web process has seccomp/new namespaces; network/UI confinement differs.
 
 No unresolved blocking independent-review finding or known persistent process
-leak. M1 remains incomplete because required user interaction is outstanding.
+leak. The deferred font observation does not block Gate A. No M2 work started.
 
 ## Next action
 
-Launch the trusted fixture with `FOOB_DIAGNOSTICS=1 ./build/foob
-file://$PWD/tests/fixtures/viewport.html`, guide the checklist,
-record pass/fail and actual geometry. Fix defects within M1, rerun affected
-checks, then submit complete evidence for the maintainer's **Gate A** decision.
+Review the completed runtime, measurement, independent-review and interactive
+evidence for the maintainer's **Gate A** decision. Keep the font follow-up and
+explicit graphics/display/memory limits visible in that decision.
 Do not add M2 controls, profiles, IPC, converters or custom engine beforehand.
 
 Evidence index: [M0](m0.md), [M1](m1.md), [measurements](measurements.md),
 [independent review](c23-review.md), [raw runs](runs/),
+[guided interaction](interactive-2026-10-13.md), [font follow-up](font-follow-up.md),
 [approved implementation plan](../plans/m0-m1.md).

@@ -50,11 +50,16 @@ error-message text, cookies and input contents. Navigation completion timing is
 cancelled on shutdown. Engine/system warnings can still appear with diagnostics
 disabled.
 
-The [desktop checklist](docs/validation/desktop-checklist.md) and
-[validation/handoff](docs/validation/handoff.md) describe the remaining M1 work.
+The [desktop checklist](docs/validation/desktop-checklist.md) passes; the
+[validation/handoff](docs/validation/handoff.md) records Gate A readiness and
+the [deferred font observation](docs/validation/font-follow-up.md).
 The standard-library Python scripts under `tests/benchmark/` need desktop access
 and readable process PSS. Run `python3 tests/benchmark/suite.py` for serial fresh
 launches and a separate local warm-reload control. No Python packages are needed.
 Each opens a test window; do this when desktop interaction is available.
 The suite checks all browser descendants, including sandbox helpers and the D-Bus
 proxy, and checks their disappearance after shutdown.
+
+For guided interaction, `python3 tests/benchmark/interactive.py --uri URI
+--output /tmp/foob-interactive.json` keeps the window open until the user closes
+it, then records exit/process cleanup. Choose a new output path for each run.

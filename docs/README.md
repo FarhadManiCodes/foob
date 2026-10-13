@@ -7,10 +7,12 @@ The current project scope is defined by the existing
 Implementation: [approved M0/M1 plan](plans/m0-m1.md),
 [M0 validation](validation/m0.md), and [build instructions](../README.md).
 
-Current [handoff](validation/handoff.md): M0 P0 complete; M1 implemented and
+Current [handoff](validation/handoff.md): M0/M1 P0 complete; M1 implemented and
 independently reviewed, with [runtime evidence](validation/m1.md),
 [measurements](validation/measurements.md) and
-[desktop checks pending](validation/desktop-checklist.md). Gate A is not approved.
+[desktop checks passed](validation/desktop-checklist.md). Gate A is ready for
+maintainer review, not approved. A [font issue](validation/font-follow-up.md)
+reported during guided Scholar testing is explicitly deferred.
 
 The [qvu research handoff](research/qvu/README.md) contains earlier design discussion,
 math/local-document experiments and Scholar compatibility findings. Those records
@@ -23,5 +25,5 @@ Reference mockups are in `design-references/qvu/` and are excluded from Git. The
 illustrate the earlier layout only; foob's current single-view, toolkit-free scope
 supersedes that layout.
 
-This transfer adds documentation and reference images only. No qvu source code,
+The historical transfer added documentation and reference images only. No qvu source code,
 build outputs, private browser profiles, captures or credentials were imported.
