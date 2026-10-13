@@ -18,6 +18,7 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 | 4 | **Silent downloads.** An attachment response was saved into `~/Downloads` with no prompt. | Probe against the baseline: `payload.bin` appeared. `tests/nested_lifecycle.py download-cancelled` streams a 300 MiB attachment from a loopback server and passes only if the server sees the transfer abort after under 1 MiB, the stream stays stopped, and no file holding the payload exists in the download, cache, data or temp directories (all redirected below a temp dir). On the baseline the server is still streaming after 10 s and the test fails (negative control); the earlier one-off run saw 81 MiB sent and `.wkdownload` files there versus 0.1 MiB and no files now. | Cancel every download on `WebKitNetworkSession::download-started` until M3-03 designs an explicit per-download decision (requirement and acceptance criteria added to the roadmap). |
 | 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked (tested). The positive click path needs real input and is a guided check below. Separate window deferred to roadmap M2-11. |
 | 6 | **Web process crash left a blank or frozen window** with no signal. | `tests/nested_lifecycle.py web-process-crash` SIGKILLs the exact `WPEWebProcess`: the baseline stays running (negative control), the fix exits with code 4 and no survivors. | Handle `web-process-terminated`: stop the loop and return `FOOB_EXIT_ENGINE_LOST` (4) through `foob_browser_run()`, so the normal teardown runs. Reload-once recovery stays in roadmap M3-07. |
+| 7 | **Unstable window app-id.** niri reported `org.webkit.app-<sha256 of the executable's absolute path>`, so compositor window rules could not match foob and broke whenever the binary moved. | Nested niri, `niri msg -j windows`: the hash equals the SHA256 of the absolute binary path. Setting the GLib program name to a valid application ID before the view exists changes it; a name without a dot is ignored and the hash returns. Every `tests/nested_lifecycle.py` scenario now asserts the app-id; the baseline binary fails it. | `g_set_prgname("dev.foob.Browser")` in `foob_browser_new()` (name chosen by the maintainer). M2-04 passes explicit profile directories, so the program name does not decide any storage path. |
 
 ## Design changes (behaviour unchanged)
 
@@ -154,11 +155,11 @@ Decided (maintainer, 2026-10-13):
    window (Shift-click) and the resources windows would share are roadmap M2-11.
 5. **Web process crash** exits at once with code 4 (option chosen by the
    maintainer); reload-once recovery is roadmap M3-07.
+6. **Window app-id** is `dev.foob.Browser` (maintainer's choice), stable across
+   binary locations.
 
 Still open:
 
-6. **Window app-id.** WPE exposes no setter; the app-id comes from the program
-   name. Not yet checked against what niri reports.
 7. **JIT-off opt-in** for an untrusted-site mode: keep the default on; revisit
    with M2 profiles.
 8. **Branch and Gate A.** The M1 evidence (hashes, guided checks) describes the

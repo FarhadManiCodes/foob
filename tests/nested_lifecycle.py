@@ -62,7 +62,7 @@ def windows(socket):
 
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
-             load_status='ok', extra_env=None, after_load=None):
+             load_status='ok', extra_env=None, after_load=None, expected_app_id='dev.foob.Browser'):
     if selected and name not in selected:
         return
     compositor, display, socket = start_compositor()
@@ -79,6 +79,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         wait_for(lambda: any(w['pid'] == browser.pid and w['title'] == expected_title
                              for w in windows(socket)),
                  10, f'{name}: window title never became {expected_title!r}')
+        assert window['app_id'] == expected_app_id, f"{name}: app-id {window['app_id']!r}"
         if after_load:
             after_load(browser)
         time.sleep(1)

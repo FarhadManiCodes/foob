@@ -125,8 +125,17 @@ static gboolean unix_signal(gpointer user_data)
     return G_SOURCE_CONTINUE;
 }
 
+/*
+ * The engine derives the Wayland app-id from the GLib program name, but only
+ * when it is a valid application ID; otherwise it uses org.webkit.app- plus a
+ * hash of the executable path, which changes whenever the binary moves. A fixed
+ * id lets compositor window rules match foob. Must be set before the view exists.
+ */
+static constexpr char app_id[] = "dev.foob.Browser";
+
 FoobBrowser *foob_browser_new(bool diagnostics)
 {
+    g_set_prgname(app_id);
     g_autoptr(WPEDisplay) display = wpe_display_wayland_new();
     if (!wpe_display_connect(display, nullptr))
         return nullptr;
