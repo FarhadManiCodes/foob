@@ -16,8 +16,8 @@ result. <b>Item numbers match the checklist.</b> The dark panel at the bottom is
 page's own log and confirms that each click registered. The window title must read <code>Policy fixture (local) — foob</code>.</p>
 <ol start="15">
   <li><a href="linked.html" target="_blank">New-window link to another local file</a><br>
-    Expected: opens in <b>this</b> window ("Local link navigation PASS"); the link
-    there returns to the viewport fixture.</li>
+    Expected: opens in <b>this</b> window ("Local link navigation PASS"); it has
+    two links, one to the viewport fixture and one back to this page.</li>
   <li><a href="https://en.wikipedia.org/wiki/Mathematics" target="_blank">New-window link to a remote page</a><br>
     Expected: opens in this window (local pages may go to remote pages).</li>
   <li><button id="open">window.open() to https://example.org/ from a click</button><br>

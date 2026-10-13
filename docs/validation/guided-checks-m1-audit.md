@@ -51,7 +51,7 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 15 | New-window link to another local file | opens in the same window; its link returns to the viewport fixture | |
+| 15 | New-window link to another local file | opens in the same window ("Local link navigation PASS"); its second link comes back to this page (the first goes to the viewport fixture) | |
 | 16 | New-window link to a remote page | opens in the same window | |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | |
 | 18 | Window title | `Policy fixture (local) — foob` | |
