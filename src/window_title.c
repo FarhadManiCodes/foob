@@ -18,15 +18,31 @@ static bool is_visible_or_needed_format(gunichar c)
 /* Invisible characters that can hide or reorder text, or pad it with blank-looking runs:
  * every category Cf format character (bidi controls, zero width characters, soft
  * hyphen, interlinear annotation, musical format characters, tag characters, ...) except
- * the ones above, plus the invisible characters outside Cf: combining grapheme joiner,
- * Hangul and halfwidth fillers, Khmer inherent vowels, Braille blank, object
- * replacement character and variation selector supplement. */
+ * the ones above, plus the rest of Unicode's Default_Ignorable_Code_Point set, which
+ * renderers draw as nothing: combining grapheme joiner, Hangul and halfwidth fillers,
+ * Khmer inherent vowels, Mongolian free variation selectors, the unassigned U+2065,
+ * U+FFF0-FFF8 and U+E0000-E0FFF (with the variation selector supplement). Variation
+ * selectors 1-16 (U+FE00-FE0F) stay, like the joiners: emoji presentation needs U+FE0F.
+ * Also removed although not default-ignorable: Braille blank and object replacement. */
 static bool is_invisible_format(gunichar c)
 {
     if (g_unichar_type(c) == G_UNICODE_FORMAT)
         return !is_visible_or_needed_format(c);
     return c == 0x034f || c == 0x115f || c == 0x1160 || c == 0x17b4 || c == 0x17b5 ||
-        c == 0x2800 || c == 0x3164 || c == 0xffa0 || c == 0xfffc || (c >= 0xe0000 && c <= 0xe01ef);
+        (c >= 0x180b && c <= 0x180f) || c == 0x2065 || c == 0x2800 || c == 0x3164 ||
+        c == 0xffa0 || (c >= 0xfff0 && c <= 0xfff8) || c == 0xfffc || (c >= 0xe0000 && c <= 0xe0fff);
+}
+
+/* Code points whose bidi class is, or by default would be, right-to-left (R or AL):
+ * the Hebrew to Arabic Extended-A blocks, Hebrew and Arabic presentation forms, and the
+ * right-to-left supplementary ranges. Unassigned code points there count too, because
+ * bidi algorithms give them their block's default class. Bidi controls such as U+200F
+ * are format characters and already removed from untrusted titles. */
+static bool may_be_right_to_left(gunichar c)
+{
+    return (c >= 0x0590 && c <= 0x08ff) || (c >= 0xfb1d && c <= 0xfdff) ||
+        (c >= 0xfe70 && c <= 0xfeff) || (c >= 0x10800 && c <= 0x10fff) ||
+        (c >= 0x1e800 && c <= 0x1efff);
 }
 
 /* Builds a valid-UTF-8 copy with control characters (C0, DEL and C1) as spaces;
@@ -50,6 +66,24 @@ static char *normalize(const char *page_title, bool trusted)
     return g_string_free(out, FALSE);
 }
 
+/*
+ * A title whose first strong character is right-to-left makes the whole line
+ * right-to-left in renderers that pick the direction from the text (Pango's
+ * default), which moves " — foob" to the visual start. An untrusted title that
+ * may contain such a character therefore starts with U+200E LEFT-TO-RIGHT MARK;
+ * the page text itself still displays right to left.
+ */
+static const char *direction_prefix(const char *clean, bool trusted)
+{
+    if (trusted)
+        return "";
+    for (const char *p = clean; *p; p = g_utf8_next_char(p)) {
+        if (may_be_right_to_left(g_utf8_get_char(p)))
+            return "\u200e";
+    }
+    return "";
+}
+
 char *foob_window_title(const char *page_title, bool trusted)
 {
     if (!page_title)
@@ -61,7 +95,7 @@ char *foob_window_title(const char *page_title, bool trusted)
     glong limit = trusted ? trusted_max_chars : untrusted_max_chars;
     if (g_utf8_strlen(clean, -1) > limit) {
         g_autofree char *head = g_utf8_substring(clean, 0, limit);
-        return g_strconcat(head, "… — foob", nullptr);
+        return g_strconcat(direction_prefix(head, trusted), head, "… — foob", nullptr);
     }
-    return g_strconcat(clean, " — foob", nullptr);
+    return g_strconcat(direction_prefix(clean, trusted), clean, " — foob", nullptr);
 }

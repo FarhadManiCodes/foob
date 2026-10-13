@@ -97,4 +97,4 @@ to 700x1188 (one column), fullscreen 1920x1200 (fullscreen=1, two columns), rest
 is a zombie web process that was already reaped). The narrow and fullscreen
 screenshots were inspected (layout correct, title bar shows the CSS size) and deleted.
 The earlier failure on `9c81515` was swaylock being active on the host. The probe
-ran twice on `d9ea90d`; the second run's result is the one recorded.
+ran twice on `d9ea90d`; the second run's result is the one recorded. Since F-57 the probe writes its log, record and screenshots into a new private directory (printed at start; `--output-dir` names one that must not exist yet) instead of fixed `/tmp/foob-<label>*` paths.

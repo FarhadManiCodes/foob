@@ -1,6 +1,9 @@
 """Scoped niri geometry/visual probe, without input injection or desktop edits.
 
-Captures only the browser test window to /tmp; inspect/delete captures afterward.
+Captures only the browser test window. The log, record and screenshots go into a new
+directory readable only by you (--output-dir, which must not exist yet, or a fresh
+$TMPDIR/foob-probe-<label>-* by default), so a rerun never replaces an earlier probe and
+other local users cannot read the captures; inspect/delete it afterward.
 This supplements but cannot replace user pointer/typing/scroll observations.
 """
 import argparse
@@ -9,6 +12,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 import time
 
 from process_tree import browser_tree, processes, survivors
@@ -18,8 +22,15 @@ parser.add_argument('--uri', required=True)
 parser.add_argument('--label', required=True)
 parser.add_argument('--binary', default='build/foob')
 parser.add_argument('--resize', action='store_true')
+parser.add_argument('--output-dir', type=Path, help='new directory for the outputs (must not exist)')
 args = parser.parse_args()
-log = Path(f'/tmp/foob-{args.label}.log')
+if args.output_dir:
+    args.output_dir.mkdir(mode=0o700)  # refuses an existing directory
+    output = args.output_dir.resolve()  # niri writes the screenshots, from its own directory
+else:
+    output = Path(tempfile.mkdtemp(prefix=f'foob-probe-{args.label}-'))  # mode 0700
+print(f'writing to {output}', flush=True)
+log = output / f'foob-{args.label}.log'
 tracked = {}
 record = {'result': 'fail', 'captures': []}
 
@@ -39,7 +50,7 @@ def settle():
 
 def capture(name):
     health()
-    path = f'/tmp/foob-{args.label}-{name}.png'
+    path = str(output / f'foob-{args.label}-{name}.png')
     action('screenshot-window', '--path', path)
     record['captures'].append(path)
     record.setdefault('geometry', []).append(re.findall(r'viewport .*', log.read_text())[-1:])
@@ -110,6 +121,6 @@ with log.open('w') as stream:
         if record['survivors_after_10s']:
             record['result'] = 'fail'
         record['tracked_processes'] = tracked
-Path(f'/tmp/foob-{args.label}.json').write_text(json.dumps(record, indent=2) + '\n')
+(output / f'foob-{args.label}.json').write_text(json.dumps(record, indent=2) + '\n')
 print(json.dumps(record, indent=2))
 raise SystemExit(0 if record['result'] == 'pass' else 1)

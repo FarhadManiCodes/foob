@@ -33,6 +33,13 @@ static void check(const char *page_title, bool trusted, const char *expected)
 #define OBJECT_REPLACEMENT "\xef\xbf\xbc"  /* U+FFFC */
 #define MUSICAL_FORMAT "\xf0\x9d\x85\xb3"  /* U+1D173 musical symbol begin beam */
 #define ARABIC_NUMBER_SIGN "\xd8\x80"  /* U+0600, a visible format character */
+#define LRM "\xe2\x80\x8e"  /* U+200E left-to-right mark, added before right-to-left text */
+#define MONGOLIAN_FVS1 "\xe1\xa0\x8b"  /* U+180B free variation selector one */
+#define MONGOLIAN_FVS4 "\xe1\xa0\x8f"  /* U+180F free variation selector four */
+#define UNASSIGNED_2065 "\xe2\x81\xa5"  /* U+2065, default ignorable */
+#define UNASSIGNED_FFF0 "\xef\xbf\xb0"  /* U+FFF0, default ignorable */
+#define UNASSIGNED_E0FFF "\xf3\xa0\xbf\xbf"  /* U+E0FFF, default ignorable */
+#define VS16 "\xef\xb8\x8f"  /* U+FE0F emoji presentation selector */
 
 /* Same expectation for untrusted (remote) and trusted (local) content. */
 static void check_both(const char *page_title, const char *expected)
@@ -93,14 +100,39 @@ static void test_invisible_characters(void)
           false, "paypalxyz \u2014 foob");
     check(BRAILLE_BLANK BRAILLE_BLANK, false, "foob");
     check("a" SHY "b" BRAILLE_BLANK "c", true, "a" SHY "b" BRAILLE_BLANK "c \u2014 foob");
-    /* Visible format characters (Arabic number sign) stay. */
-    check("a" ARABIC_NUMBER_SIGN "1", false, "a" ARABIC_NUMBER_SIGN "1 \u2014 foob");
-    /* The joiners stay: Persian and emoji text need them. */
+    /* Review-4: the rest of the default-ignorable set (Mongolian free variation
+     * selectors, unassigned default-ignorable code points). */
+    check("Pay" MONGOLIAN_FVS1 "pal" MONGOLIAN_FVS4 UNASSIGNED_2065 UNASSIGNED_FFF0 UNASSIGNED_E0FFF,
+          false, "Paypal \u2014 foob");
+    /* Visible format characters (Arabic number sign) stay; Arabic is right to left. */
+    check("a" ARABIC_NUMBER_SIGN "1", false, LRM "a" ARABIC_NUMBER_SIGN "1 \u2014 foob");
+    /* The joiners and the emoji presentation selector stay: Persian and emoji text need them. */
     check("\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645", false,
-          "\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645 \u2014 foob");
+          LRM "\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645 \u2014 foob");
+    check("\u2764" VS16, false, "\u2764" VS16 " \u2014 foob");
     /* Local: C1 is still a control character; invisible format characters are kept. */
     check("a" CSI "b", true, "a b \u2014 foob");
     check("a" ZWSP "b", true, "a" ZWSP "b \u2014 foob");
+}
+
+static void test_direction(void)
+{
+    /* Review-4: a leading right-to-left letter must not make the line right to left. */
+    check("\u05d0 Bank", false, LRM "\u05d0 Bank \u2014 foob");
+    check("Bank \u0628\u0646\u0643", false, LRM "Bank \u0628\u0646\u0643 \u2014 foob");
+    /* An unassigned code point in a right-to-left block counts as right to left. */
+    check("\U0001EFFFx", false, LRM "\U0001EFFFx \u2014 foob");
+    /* A page-supplied right-to-left mark is removed, not trusted to set the direction. */
+    check(RLM "Bank", false, "Bank \u2014 foob");
+    /* Left-to-right and neutral titles are unchanged; so is local content. */
+    check("Bank 123", false, "Bank 123 \u2014 foob");
+    check("\u05d0 Bank", true, "\u05d0 Bank \u2014 foob");
+    /* Cut titles keep the mark. */
+    g_autofree char *filler = g_strnfill(300, 'a');
+    g_autofree char *long_rtl = g_strconcat("\u05d0", filler, nullptr);
+    g_autofree char *cut = foob_window_title(long_rtl, false);
+    g_assert_true(g_str_has_prefix(cut, LRM "\u05d0"));
+    g_assert_true(g_str_has_suffix(cut, "… — foob"));
 }
 
 static void test_long_title(void)
@@ -134,6 +166,7 @@ int main(int argc, char *argv[])
     g_test_add_func("/window-title/protocol-requirements", test_protocol_requirements);
     g_test_add_func("/window-title/trust-levels", test_trust_levels);
     g_test_add_func("/window-title/invisible-characters", test_invisible_characters);
+    g_test_add_func("/window-title/direction", test_direction);
     g_test_add_func("/window-title/long-title", test_long_title);
     return g_test_run();
 }

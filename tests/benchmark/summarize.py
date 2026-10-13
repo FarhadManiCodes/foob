@@ -9,8 +9,8 @@ Run from repository root after validation:
 The input is ONE directory of run records (default: the top level of docs/validation/runs,
 which does not include the suite-<time> folders that suite.py creates). Without --output
 the summary goes to docs/validation/results.json for the default directory and to
-<directory>/results.json otherwise. An existing output file is only replaced with --replace
-(the default curated file is regenerated as before), and an input without run records is
+<directory>/results.json otherwise. An existing output file is only replaced with --replace;
+only the default call regenerates the curated file without it. An input without run records is
 rejected before anything is written. This never launches a browser or modifies the runs.
 """
 import argparse
@@ -27,11 +27,15 @@ parser.add_argument('--output', type=Path)
 parser.add_argument('--replace', action='store_true', help='overwrite an existing --output file')
 args = parser.parse_args()
 directory = args.directory
-target = args.output or (curated if directory == default_directory else directory / 'results.json')
-if target.exists() and not args.replace and target != curated:
-    raise SystemExit(f'{target} exists; choose a new --output or pass --replace')
-if target == curated and args.output and not args.replace:
+# Only the default call (no directory, no --output) regenerates the curated file without
+# --replace. Paths are compared resolved, so another spelling of either path, or a
+# directory whose results.json is the curated file, still needs --replace.
+default_call = args.output is None and directory.resolve() == default_directory.resolve()
+target = args.output or (curated if default_call else directory / 'results.json')
+if target.resolve() == curated.resolve() and not default_call and not args.replace:
     raise SystemExit(f'{target} is the curated file; pass --replace to overwrite it')
+if target.exists() and not default_call and not args.replace:
+    raise SystemExit(f'{target} exists; choose a new --output or pass --replace')
 result = {'schema_version': 1, 'generated_utc': datetime.now(timezone.utc).isoformat(),
           'raw_artifacts': 'docs/validation/runs/ is ignored; preserved locally',
           'measurements': {}, 'lifecycle_and_controls': {}, 'geometry_probes': {}}
