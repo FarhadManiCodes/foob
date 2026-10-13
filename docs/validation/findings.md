@@ -82,6 +82,7 @@ delete one. Change its status and link the commit.
 | F-33 | A PDF URL opens inline in the stock engine's PDF.js viewer (save, print, annotate buttons), against the "external PDF viewer, no embedded renderer" decision | Maintainer (guided check row 12) | decided D-19: keep as is; save-button requirement carried to M3-03/M3-04 | roadmap M3-04, audit-m1.md |
 | F-34 | Camera/microphone request: no prompt, `OverconstrainedError`, "no device found amongst 0 devices"; the permission default could not be observed | Maintainer (guided check row 11) | carried: M3-05 (roadmap note) | roadmap M3-05 |
 | F-35 | `tests/nested_lifecycle.py` ran nothing and exited 0 when the requested scenario name was misspelled or obsolete (`web-process-crsh`), so a typo reported success | Codex (P2) | fixed: every requested name must match a scenario, otherwise the runner exits non-zero and lists the known names. Negative control: the old runner returned 0 for `web-process-crsh`, the new one 1; a mistyped flag such as `--keeep` is rejected the same way | `tests/nested_lifecycle.py` |
+| F-36 | Fixture launch 1 failed for both builds in the evidence run ("navigation changed after requested completion") | Maintainer asked why | explained, trigger not proven: the page loaded twice because the fixture reloaded itself (its Reload button or `?warm=1`, which was not used); a deliberate reload reproduces the signature; 0 failures in 28 other fixture launches (12 hands-off repeats this session). Most likely input to the new window during the run. The collector's guard worked as designed | measurements-m1-audit.md |
 
 **Result of F-31:** the earlier claim "scripted requests never reach foob's policy
 handler" was unproven because the scenario and the first debug experiment used the same
@@ -113,4 +114,5 @@ evidence only from scratch builds, not from a committed test (D-12).
 | I-04 | `create` handler so `window.open` can navigate the same window | M2-11 / M3-01; decide with popup policy |
 | I-05 | Untrusted-site mode with JIT off | M5-10 |
 | I-06 | Hardening-vs-feature split of the +3.5 KB binary growth | measure by building without hardening flags |
+| I-08 | A benchmark-only fixture without the "Reload this fixture" button would stop a stray click from invalidating a run (F-36) | changes the fixture hash recorded since M1, so only if it recurs |
 | I-07 | Run `desktop_probe.py` on the final binary | done on `d9ea90d` (pass, 2026-10-13); repeat after any C change |

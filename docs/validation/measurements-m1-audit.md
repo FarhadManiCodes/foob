@@ -53,11 +53,22 @@ and control (audit blank, control blank, audit fixture, control fixture, audit
 Wikipedia, control Wikipedia, repeated four times), plus one warm-reload run for the
 audit binary, so that session drift hits both builds equally.
 
-**Failed launch, repeated:** fixture launch 1 failed for both builds ("navigation
-changed after requested completion; idle interval invalid"; both runs started within a
-few seconds of each other, probably an interaction with the desktop during the run).
-The failed records are kept in `results-m1-audit.json`; launch 5 repeats the fixture
-workload for both builds, so each build has four valid fixture launches (2-5).
+**Failed launch, repeated (F-36):** fixture launch 1 failed for both builds
+("navigation changed after requested completion; idle interval invalid"; the two runs
+started 6 s apart). What the logs show: after the normal load (36 and 42 ms) the page
+loaded **once more** (9 and 14 ms, the faster load of a cached page), then the collector
+rejected the run. The viewport fixture reloads itself in two ways only: its "Reload this
+fixture" button, or the `?warm=1` URL, which these runs did not use. A deliberate
+`?warm=1` run reproduces exactly this log shape and error. So foob loaded the page twice
+because the page asked to reload, and the collector correctly refused the run instead
+of recording a bad number. What is **not proven** is who pressed the button; the most
+likely cause is input to the freshly opened window (the window takes focus on launch and
+the maintainer was using the desktop). Evidence against a foob or engine fault: the
+same two launches were the only failures in 28 fixture launches of both builds (8
+valid ones in this run, 12 hands-off repeats afterwards, 8 in the earlier run) and
+both builds failed together. The failed records are kept in `results-m1-audit.json`;
+launch 5 repeats the fixture workload for both builds, so each build has four valid
+fixture launches (2-5). Do not touch mouse or keyboard while a measurement runs.
 
 ## Results: audit binary
 
