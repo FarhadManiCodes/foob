@@ -35,10 +35,10 @@ ends on an "Echo page" that says **PASS** or **FAIL** in large text.
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | |
 | 8 | Link with `download` attribute | nothing happens; no file saved | |
-| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window with a green **PASS** (POST, 15 bytes); a red FAIL (GET, 0 bytes) means the body was lost | |
+| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window with a green **PASS** (POST, 15 bytes); a red FAIL (GET, 0 bytes) means the body was lost | **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)" |
 | 10 | File input (record only, M3-02) | what happens? | |
 | 11 | Camera and microphone request (record only, M3-05) | prompt? the page log shows `camera/microphone: <error name>` | |
-| 12 | PDF link (record only, M3-04) | what is shown? | |
+| 12 | PDF link (record only, M3-04) | what is shown? | Recorded (maintainer, 2026-10-13): the stock engine shows the PDF **inline** in a PDF.js viewer (toolbar with search, zoom, annotate, print, save). Carried to M3-04 |
 | 13 | Right-click on the page (record only, M3-01) | context menu shown? | |
 | 14 | Window title in `niri msg windows` | `Policy fixture (remote) — foob`; app-id `dev.foob.Browser` | |
 

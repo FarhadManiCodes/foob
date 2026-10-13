@@ -181,7 +181,7 @@ loaded in this audit.)
 | Expired TLS certificate | load refused (`g-tls-error-quark` code 2) | Correct; TLS never weakened. |
 | HTTP 401 Basic | page stays loading, no prompt, no window title | **Known, accepted for M1** (maintainer: it fails visibly and is a useful signal). Prompt design is roadmap M2-10. |
 | Attachment download | silently saved | Fixed, see defect 4. |
-| PDF URL | `load-finished status=ok`; what is shown was not verified | Open: external PDF handoff is M3-04. |
+| PDF URL | `load-finished status=ok`; guided check (maintainer): the page is shown **inline in the engine's PDF.js viewer** (toolbar with search, zoom, annotate, print, save) | Open: external PDF handoff is M3-04; see the M3-04 note. |
 
 ## Decisions
 
