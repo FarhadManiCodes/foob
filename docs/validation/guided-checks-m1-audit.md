@@ -27,15 +27,15 @@ should do nothing; if the window changes to an "Echo FAIL" page, foob submitted 
 
 | # | Item on the page | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens "Second page" in the same window | Old behaviour **PASS** (maintainer, real click, 2026-10-13); re-check pending |
+| 1 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens "Second page" in the same window | Old behaviour **PASS** (maintainer, real click, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
 | 2 | Ordinary link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
-| 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, 2026-10-13); passed on the old behaviour, re-check pending |
+| 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, 2026-10-13); passed on the old behaviour |
 | 4 | Ordinary link to a local file | nothing happens | Page log: "click registered on item 4" (maintainer, 2026-10-13) |
 | 5 | `window.open()` from a click | nothing happens; the page log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | **PASS** (maintainer, 2026-10-13) |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | **PASS** (maintainer, 2026-10-13): server printed `GET /attachment.bin 200`; no file in `~/Downloads` (listing checked) |
 | 8 | Link with `download` attribute | nothing happens; no file saved | **PASS** (maintainer, 2026-10-13): server printed `GET /plain.bin 200`; no file saved (listing checked) |
-| 9 | Submit a POST form (`target=_blank`) | nothing happens; the server prints no `POST /echo` (D-21). A red FAIL page means foob submitted it. Earlier expectation, now void: green PASS (POST, 15 bytes) | Old behaviour **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)"; re-check pending |
+| 9 | Submit a POST form (`target=_blank`) | nothing happens; the server prints no `POST /echo` (D-21). A red FAIL page means foob submitted it. Earlier expectation, now void: green PASS (POST, 15 bytes) | Old behaviour **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)"; re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
 | 10 | File input (record only, M3-02) | what happens? | Recorded (maintainer, 2026-10-13): **no file picker opens**; the input does nothing. Carried to M3-02 |
 | 11 | Camera and microphone request (record only, M3-05) | prompt? the page log shows `camera/microphone: <error name>` | Recorded (maintainer, 2026-10-13): no prompt; page log `camera/microphone: OverconstrainedError`; terminal: "Audio capture was requested but no device was found amongst 0 devices". The engine sees no capture device, so the **permission default is untested** (carried to M3-05) |
 | 12 | PDF link (record only, M3-04) | what is shown? | Recorded (maintainer, 2026-10-13): the stock engine shows the PDF **inline** in a PDF.js viewer (toolbar with search, zoom, annotate, print, save). Decided to keep as is (D-19) |
@@ -51,8 +51,8 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 15 | New-window link to another local file | nothing happens (D-21). Earlier expectation, now void: opens "Local link navigation PASS" in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-check pending |
-| 16 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-check pending |
+| 15 | New-window link to another local file | nothing happens (D-21). Earlier expectation, now void: opens "Local link navigation PASS" in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
+| 16 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 18 | Window title | `Policy fixture (local) — foob` | **PASS** (verified by Claude, 2026-10-13: window title `Policy fixture (local) — foob`, app-id `dev.foob.Browser` read from `niri msg -j windows`; the maintainer was unsure; also asserted by the nested suite) |
 
