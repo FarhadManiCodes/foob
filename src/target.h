@@ -17,4 +17,13 @@ bool foob_target_is_valid(const char *target);
  */
 bool foob_uri_is_local(const char *uri);
 
+/*
+ * Whether the application may itself navigate the view from from_uri to
+ * to_uri (used for links that ask for a new window). The destination must pass
+ * the same allowlist as a startup target, and remote content must never
+ * navigate to local content: an application-initiated load bypasses WebKit's
+ * own remote-to-local check, so this function has to enforce it.
+ */
+bool foob_navigation_allowed(const char *from_uri, const char *to_uri);
+
 #endif

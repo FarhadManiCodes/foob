@@ -15,6 +15,8 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 | 1 | **Compositor loss leaves the browser spinning.** If the compositor exits or crashes, `foob` keeps running at ~23% CPU on the dead socket with its helper processes alive. | Nested niri killed under the baseline binary: still alive 5 s later, state `R`, helpers present. `tests/nested_lifecycle.py` hangs on the baseline and passes on the fix. | Handle `WPEDisplay::disconnected`, exit immediately with new code 3 (`FOOB_EXIT_DISPLAY_LOST`), as upstream MiniBrowser does. Helpers exit when their IPC peer disappears (verified: no survivors). |
 | 2 | Startup allowlist accepted `https://example.org:99999/` and URIs with raw spaces/control characters; GLib's parser tolerates both. | New C unit test `tests/test_target.c`, failed on first run. | Reject ports above 65535 and any byte <= 0x20 or 0x7f before parsing. |
 | 3 | `WebKitWebView::close` (page `window.close()`) was ignored. | Upstream handles it; single view means quit. | Connect `close` and stop the loop. Not exercised by a test: WebKit only honours `window.close()` for script-opened windows. |
+| 4 | **Silent downloads.** An attachment response was saved into `~/Downloads` with no prompt. | Probe against the baseline: `payload.bin` appeared; `tests/nested_lifecycle.py download-cancelled` fails on the baseline (negative control, download directory redirected to a temp dir) and passes now. | Cancel every download on `WebKitNetworkSession::download-started` until M3-03 designs an explicit per-download decision (requirement and acceptance criteria added to the roadmap). |
+| 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked (tested). The positive click path needs real input and is a guided check below. Separate window deferred to roadmap M2-11. |
 
 ## Design changes (behaviour unchanged)
 
@@ -126,21 +128,54 @@ loaded in this audit.)
 | Settings / features | WebKit defaults | explicit feature flags for developer use | Defaults are the recommendation for a browser; revisit with the M2 policy. |
 | Memory pressure | not set | not set | Tested; no benefit. |
 
-## Open decisions for the maintainer
+## Behavior of unhandled WebKit signals (probed in a nested compositor)
 
-1. **Window title.** Decided (maintainer): follow the page title with a
-   ` — foob` suffix; remote titles untrusted, local content trusted. Implemented
-   and tested.
-2. **Web process crash.** Today the window goes blank and stays. Options: reload
-   once, show an error page, or exit with a distinct code. M2 policy.
-3. **Window app-id.** WPE exposes no setter; current app-id comes from the
-   program name. Confirm that suits compositor window rules.
-4. **JIT-off.** Keep default on. Do you want an opt-in low-memory/untrusted mode
-   in M2 profiles?
-5. **Host compositor closed-lid state.** With the laptop lid closed the host niri
-   ignored `close-window` and showed no focused window; this made the original
-   `--stop compositor` benchmark mode time out for both binaries. It is an
-   environment state, not an application defect; the nested test replaces it.
+| Probe | Result | Verdict |
+|---|---|---|
+| `alert()` / `confirm()` / `prompt()` | auto-dismissed immediately (`false` / `null`), page continues | Safe default; roadmap M3-01 defines real handling. |
+| `window.open()` without user gesture | `null`, no window | Safe; unchanged. |
+| Geolocation / Notification permission | denied (`code 1` / `denied`) | Safe default; M3-05 reviews permission defaults. |
+| Expired TLS certificate | load refused (`g-tls-error-quark` code 2) | Correct; TLS never weakened. |
+| HTTP 401 Basic | page stays loading, no prompt, no window title | **Known, accepted for M1** (maintainer: it fails visibly and is a useful signal). Prompt design is roadmap M2-10. |
+| Attachment download | silently saved | Fixed, see defect 4. |
+| PDF URL | `load-finished status=ok`; what is shown was not verified | Open: external PDF handoff is M3-04. |
+
+## Decisions
+
+Decided (maintainer, 2026-10-13):
+
+1. **Window title** follows the page title with a ` — foob` suffix; remote titles
+   untrusted, local content trusted. Implemented and tested.
+2. **Downloads** are cancelled until M3; the no-silent-download requirement and
+   acceptance criteria are in the roadmap (M3-03 and the M3 exit).
+3. **HTTP authentication** is left as is (roadmap M2-10).
+4. **Links asking for a new window** navigate the current window; a separate
+   window (Shift-click) and the resources windows would share are roadmap M2-11.
+
+Still open:
+
+5. **Web process crash.** Today the window goes blank or frozen. Options: reload
+   once, then exit with a distinct code if it crashes again; or exit at once.
+   Roadmap M3-07 covers crash recovery.
+6. **Window app-id.** WPE exposes no setter; the app-id comes from the program
+   name. Not yet checked against what niri reports.
+7. **JIT-off opt-in** for an untrusted-site mode: keep the default on; revisit
+   with M2 profiles.
+8. **Branch and Gate A.** The M1 evidence (hashes, guided checks) describes the
+   unmodified `m0-m1` binary. Either Gate A reviews `m0-m1` as is and this
+   branch lands afterwards as labeled corrections, or it is merged first and the
+   guided checks are repeated.
+9. **Host compositor closed-lid state.** With the lid closed the host niri
+   ignored `close-window` and focused nothing, which made the original
+   `--stop compositor` benchmark mode time out for both binaries. Environment
+   state, not an application defect; the nested test replaces it.
+
+## Guided checks still needed (real input, maintainer at the keyboard)
+
+I cannot synthesize input (no input tools installed, by the maintainer's rule), so
+these are unverified: click a `target=_blank` link and confirm it opens in the
+same window; click a link from a remote page to a `file:` URL and confirm
+nothing happens; right-click, `<input type=file>`, camera/microphone prompts.
 
 ## Reproduce
 

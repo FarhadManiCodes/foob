@@ -1,6 +1,6 @@
 """Lifecycle checks against a disposable nested niri; the real compositor is never touched.
 
-python3 tests/nested_lifecycle.py build/foob
+python3 tests/nested_lifecycle.py build/foob [scenario-name ...]
 
 Needs a desktop session with niri installed (the nested compositor opens as a
 window) and no extra packages. Each scenario starts a fresh nested niri with an
@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
 
 binary = str(Path(sys.argv[1]).resolve())
+selected = set(sys.argv[2:])  # empty means every scenario
 scratch = Path(tempfile.mkdtemp(prefix='foob-nested-'))
 (scratch / 'min.kdl').write_text('// empty nested test config\ninput { }\n')
 
@@ -60,20 +61,26 @@ def windows(socket):
     return json.loads(result.stdout) if result.returncode == 0 else []
 
 
-def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'):
+def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
+             load_status='ok', extra_env=None, after_load=None):
+    if selected and name not in selected:
+        return
     compositor, display, socket = start_compositor()
     errors = scratch / f'{name}.err'
     try:
         browser = subprocess.Popen([binary, uri], stderr=errors.open('w'),
                                    env={**os.environ, 'WAYLAND_DISPLAY': display,
-                                        'FOOB_DIAGNOSTICS': '1'},
+                                        'FOOB_DIAGNOSTICS': '1', **(extra_env or {})},
                                    start_new_session=True)
-        wait_for(lambda: 'load-finished status=ok' in errors.read_text(), 15, 'page did not load')
+        wait_for(lambda: f'load-finished status={load_status}' in errors.read_text(), 15,
+                 f'{name}: expected load status {load_status!r}')
         window = wait_for(lambda: [w for w in windows(socket) if w['pid'] == browser.pid],
                           10, 'no compositor window for the browser')[0]
         wait_for(lambda: any(w['pid'] == browser.pid and w['title'] == expected_title
                              for w in windows(socket)),
                  10, f'{name}: window title never became {expected_title!r}')
+        if after_load:
+            after_load(browser)
         time.sleep(1)
         tracked = browser_tree(browser.pid, processes())
         stop(compositor, socket, window, browser)
@@ -101,8 +108,21 @@ def close_window(compositor, socket, window, browser):
 (scratch / 'hostile.html').write_text(
     '<!doctype html><meta charset=utf-8><title>  Pay\u202eevil   \u2066 page\x07  </title>x',
     encoding='utf-8')
+(scratch / 'payload.bin').write_bytes(b'x' * 5000)
+
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        if self.path.endswith('.bin'):
+            self.send_header('Content-Disposition', 'attachment; filename="payload.bin"')
+        super().end_headers()
+
+    def log_message(self, *arguments):
+        pass
+
+
 server = http.server.ThreadingHTTPServer(
-    ('127.0.0.1', 0), functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(scratch)))
+    ('127.0.0.1', 0), functools.partial(Handler, directory=str(scratch)))
 threading.Thread(target=server.serve_forever, daemon=True).start()
 
 fixture = Path(__file__).resolve().parent / 'fixtures' / 'viewport.html'
@@ -112,6 +132,40 @@ scenario('title-follows-page', 0, lambda c, s, w, b: b.send_signal(signal.SIGTER
 scenario('title-remote-sanitized', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')
+# Downloads are cancelled until M3 designs a policy. GLib reads the download
+# directory from $XDG_CONFIG_HOME/user-dirs.dirs, so a failure lands in a temp
+# directory and never in the real ~/Downloads.
+downloads = scratch / 'downloads'
+downloads.mkdir()
+(scratch / 'xdg').mkdir()
+(scratch / 'xdg' / 'user-dirs.dirs').write_text(f'XDG_DOWNLOAD_DIR="{downloads}"\n')
+
+
+def no_download_file(browser):
+    time.sleep(4)
+    assert browser.poll() is None, 'browser exited during download'
+    assert not list(downloads.iterdir()), f'download was saved: {list(downloads.iterdir())}'
+
+
+scenario('download-cancelled', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+         uri=f'http://127.0.0.1:{server.server_port}/payload.bin', load_status='failed',
+         extra_env={'XDG_CONFIG_HOME': str(scratch / 'xdg')}, after_load=no_download_file)
+
+# A script-created link has no user gesture, so its new-window request stays blocked.
+(scratch / 'second.html').write_text('<!doctype html><title>second</title>second')
+(scratch / 'scripted.html').write_text(
+    '<!doctype html><title>first</title><script>'
+    'var a=document.createElement("a");a.href="second.html";a.target="_blank";'
+    'document.body.appendChild(a);a.click();window.open("second.html");</script>first')
+
+
+def still_first(browser):
+    time.sleep(3)
+
+
+scenario('new-window-without-gesture-blocked', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+         uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
+         expected_title='first \u2014 foob', after_load=still_first)
 scenario('compositor-close', 0, close_window)
 scenario('sigterm', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM))
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))

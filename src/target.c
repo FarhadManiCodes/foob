@@ -49,3 +49,10 @@ bool foob_uri_is_local(const char *uri)
     return parsed && g_ascii_strcasecmp(g_uri_get_scheme(parsed), "file") == 0 &&
         is_local_file_uri(uri);
 }
+
+bool foob_navigation_allowed(const char *from_uri, const char *to_uri)
+{
+    if (!to_uri || !foob_target_is_valid(to_uri))
+        return false;
+    return foob_uri_is_local(from_uri) || !foob_uri_is_local(to_uri);
+}

@@ -63,6 +63,33 @@ static void test_local_uri(void)
     g_assert_false(foob_uri_is_local(nullptr));
 }
 
+static void test_navigation(void)
+{
+    static const struct { const char *from; const char *to; bool allowed; } cases[] = {
+        { "https://a.example/", "https://b.example/x", true },
+        { "https://a.example/", "http://b.example/", true },
+        { "file:///tmp/a.html", "https://b.example/", true },
+        { "file:///tmp/a.html", "file:///tmp/b.html", true },
+        { "about:blank", "https://b.example/", true },
+        { "https://a.example/", "file:///etc/passwd", false },
+        { "https://a.example/", "file://localhost/etc/passwd", false },
+        { "https://a.example/", "about:blank", false },
+        { nullptr, "file:///tmp/b.html", false },
+        { nullptr, "https://b.example/", true },
+        { "file:///tmp/a.html", "javascript:alert(1)", false },
+        { "file:///tmp/a.html", "data:text/html,x", false },
+        { "file:///tmp/a.html", "mailto:a@b.example", false },
+        { "file:///tmp/a.html", "https://user:pw@b.example/", false },
+        { "file:///tmp/a.html", "https://b.example:99999/", false },
+        { "file:///tmp/a.html", "", false },
+        { "file:///tmp/a.html", nullptr, false },
+    };
+    for (size_t i = 0; i < G_N_ELEMENTS(cases); i++) {
+        g_test_message("navigation[%zu]", i);
+        g_assert_cmpint(foob_navigation_allowed(cases[i].from, cases[i].to), ==, cases[i].allowed);
+    }
+}
+
 static void test_long_input(void)
 {
     g_autofree char *path = g_strnfill(1024 * 1024, 'a');
@@ -78,6 +105,7 @@ int main(int argc, char *argv[])
     g_test_add_func("/target/accepted", test_accepted);
     g_test_add_func("/target/rejected", test_rejected);
     g_test_add_func("/target/local-uri", test_local_uri);
+    g_test_add_func("/target/navigation", test_navigation);
     g_test_add_func("/target/long-input", test_long_input);
     return g_test_run();
 }

@@ -185,6 +185,8 @@ Evidence to bring to the review:
 - [ ] **M2-01 / P0:** Implement explicit, minimal keyboard shortcut policy through `WPEView::event`; forward unrelated input to the webpage.
 - [ ] **M2-02 / P0:** Support command-line URL opening; back, forward, reload, stop, and **copy current URL** (without a permanent address bar).
 - [ ] **M2-03 / P0:** Define ordinary HTTP(S), `file:`, downloads, unknown schemes, and target=`_blank` behavior; reject unsafe external-command interpolation.
+
+  **Decided in the M1 audit (2026-10-13), implemented on `m1-audit`:** links that ask for a new window (`target=_blank`, `window.open`) navigate the **current** window, only for a user gesture and only if `foob_navigation_allowed()` accepts the destination (same allowlist as startup targets; remote content never navigates to local content). Requests without a user gesture stay blocked. M2-03 still has to define unknown schemes (`mailto:`, custom schemes are currently ignored for new-window links) and the remaining policy. Opening a **separate** window (for example Shift-click) is deferred to M2-11.
 - [ ] **M2-04 / P0:** Add dedicated XDG profile/data/cache directories using `webkit_network_session_new(data_dir, cache_dir)` and the web view's `network-session` property; verify persistence after restart. The browser's `WebKitWebContext` and session have distinct responsibilities.
 - [ ] **M2-05 / P1:** Verify text selection, clipboard copy/paste, Unicode/compose input and focus in website forms.
 - [ ] **M2-06 / P1:** Log navigation failures, abnormal process exits, and useful troubleshooting details.
@@ -194,6 +196,8 @@ Evidence to bring to the review:
   In bounded diagnostics, record navigation/redirects, response status where available, resource failures and subsequent JavaScript errors in sequence. Distinguish initial site rejection, challenge-page loading/interaction failure, and loss of clearance after successful manual completion. Verify available WPE diagnostic hooks; disclose missing observations and do not infer causation from console errors alone. Keep sensitive URLs, cookies and request bodies out of routine logs.
 
 
+- [ ] **M2-10 / P1:** Decide HTTP authentication (401/407 Basic/Digest) without persistent chrome. **Known M1 behavior, deliberately left unchanged:** foob does not answer WebKit's `authenticate` request, so such a page stays loading and unauthenticated; this fails visibly and is a useful signal until a prompt exists. Credentials must never be logged or persisted unintentionally. Test with a local server returning 401.
+- [ ] **M2-11 / P2:** Decide whether and how a second window is opened (for example Shift-click on a link). Define which resources windows share (browser process, network session, cache, cookies, WebKit processes) and the memory/security consequences before implementing; the current design is one view per process.
 - [ ] **M2-07 / P2:** Evaluate a transient URL launcher/prompt; **do not** choose an overlay, toolbar, tabs or IPC before an actual use case requires them.
 
   This defers URL-entry UI, not M2-09's required find-query interaction. Implement only the transient interaction needed for accepted reading controls; do not expand it into a general browser interface.
@@ -216,6 +220,8 @@ Evidence to bring to the review:
 - [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures.
 - [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads.
 - [ ] **M3-03 / P0:** WebKit-managed downloads with validated destinations, file-name collisions, cancellation/failure reporting and authenticated PDF links.
+
+  **No silent downloads (requirement from the M1 audit, 2026-10-13).** No download may start, and no file may be created, without an explicit user decision. M1 probing showed that WebKit's default saved an attachment response into `~/Downloads` with no prompt. Until this task is complete foob cancels every download (`WebKitNetworkSession::download-started` -> `webkit_download_cancel`) because there is no UI to ask yet. M3-03 replaces that interim default with an explicit per-download decision on a validated destination. Acceptance fixtures (local server, download directory redirected to a temporary directory through `XDG_CONFIG_HOME/user-dirs.dirs`): `Content-Disposition: attachment`, a link with the `download` attribute, a `blob:` download, a download started by a script without a user gesture, and a PDF link. For each, **before** the user accepts, no file, partial file or temporary file exists; after acceptance the file lands only in the validated destination, never overwrites silently, and leaves nothing behind when cancelled. Replace the `download-cancelled` scenario in `tests/nested_lifecycle.py` with accept/cancel/never-silent scenarios and keep a negative control that fails on a build with WebKit's default behavior.
 - [ ] **M3-04 / P0:** Open downloaded PDFs through a carefully controlled external reader/desktop mechanism; avoid launching raw page-supplied commands.
 - [ ] **M3-05 / P0:** Verify TLS error handling, permission defaults and **effective runtime** sandbox isolation. The older `webkit_web_context_{get,set}_sandbox_enabled` accessors are **not available in WPE 2.0**; use current build/runtime evidence rather than coding against those symbols. **Do not disable sandbox/TLS checks to make a site work**.
 - [ ] **M3-06 / P1:** Test Wikipedia, Scholar and Semantic Scholar search/forms/links and representative ChatGPT/Claude/Gemini editing/login/upload flows, documenting incompatibilities.
@@ -225,7 +231,7 @@ Evidence to bring to the review:
 
 - [ ] **M3-07 / P1:** Basic crash recovery, safe shutdown with downloads active and sensible user-visible errors without conventional chrome.
 
-**Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
+**Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads **with no file created before explicit user action**, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
 
 ## M4 — Local documents, math and offline research
 

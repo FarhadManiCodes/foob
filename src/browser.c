@@ -54,6 +54,39 @@ static void web_view_close([[maybe_unused]] WebKitWebView *web_view, gpointer us
 }
 
 /*
+ * Interim safety default until M3 designs download policy: no download starts
+ * without an explicit user decision, and there is no UI to ask yet, so every
+ * download is cancelled before a destination is chosen.
+ */
+static void download_started([[maybe_unused]] WebKitNetworkSession *session,
+                             WebKitDownload *download, gpointer user_data)
+{
+    foob_diagnostics_log(((FoobBrowser *)user_data)->diagnostics, "download-cancelled");
+    webkit_download_cancel(download);
+}
+
+/*
+ * Links that ask for a new window (target=_blank, user-triggered window.open)
+ * navigate this window instead: one view per window. Requests without a user
+ * gesture stay blocked, as do destinations that fail foob_navigation_allowed().
+ * Opening a separate window is a later decision (roadmap M2).
+ */
+static gboolean decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *decision,
+                              WebKitPolicyDecisionType type, [[maybe_unused]] gpointer user_data)
+{
+    if (type != WEBKIT_POLICY_DECISION_TYPE_NEW_WINDOW_ACTION)
+        return FALSE;  /* Default handling. */
+    WebKitNavigationAction *action =
+        webkit_navigation_policy_decision_get_navigation_action(WEBKIT_NAVIGATION_POLICY_DECISION(decision));
+    const char *destination = webkit_uri_request_get_uri(webkit_navigation_action_get_request(action));
+    webkit_policy_decision_ignore(decision);
+    if (webkit_navigation_action_is_user_gesture(action) &&
+        foob_navigation_allowed(webkit_web_view_get_uri(web_view), destination))
+        webkit_web_view_load_uri(web_view, destination);
+    return TRUE;
+}
+
+/*
  * The compositor connection is gone (compositor exited or crashed). Without
  * this handler the process keeps spinning on the dead socket. An orderly
  * teardown would talk to the lost display, so exit immediately as upstream's
@@ -95,6 +128,8 @@ FoobBrowser *foob_browser_new(bool diagnostics)
     g_signal_connect(view, "closed", G_CALLBACK(view_closed), browser);
     g_signal_connect(browser->web_view, "close", G_CALLBACK(web_view_close), browser);
     g_signal_connect(display, "disconnected", G_CALLBACK(display_disconnected), browser);
+    g_signal_connect(session, "download-started", G_CALLBACK(download_started), browser);
+    g_signal_connect(browser->web_view, "decide-policy", G_CALLBACK(decide_policy), browser);
     if (diagnostics) {
         browser->diagnostics = foob_diagnostics_new(browser->web_view, view);
         foob_diagnostics_log(browser->diagnostics, "backend=%s session=ephemeral",
@@ -122,6 +157,7 @@ void foob_browser_free(FoobBrowser *browser)
     foob_diagnostics_free(browser->diagnostics);
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_wpe_view(browser->web_view), browser);
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_display(browser->web_view), browser);
+    g_signal_handlers_disconnect_by_data(webkit_web_view_get_network_session(browser->web_view), browser);
     g_signal_handlers_disconnect_by_data(browser->web_view, browser);
     webkit_web_view_stop_loading(browser->web_view);
     g_object_unref(browser->web_view);
