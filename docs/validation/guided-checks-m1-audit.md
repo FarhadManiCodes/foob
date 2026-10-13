@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). The F-51/F-52 fix changed how `target=_blank` works, so rows 1, 3, 9, 15 and 16 and the new rows 19 and 20 need a real click again: see [Re-check after F-51/F-52](#re-check-after-f-51f-52) (pending).** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows were done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). D-21 then changed what `target=_blank` does (nothing now, the old rows passed with "opens in this window"), so rows 1, 3, 9, 15 and 16 and the new row 19 need a real click again: see [Re-check after D-21](#re-check-after-d-21) (pending).** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -23,19 +23,19 @@ and the camera request returned. The terminal prints nothing for these checks ex
 server's `GET` lines. In a third terminal, `niri msg windows` shows the window title and
 app-id. You do not need to fill the table: tell Claude the item number and what you saw.
 There is no reload key; to restart a page, close the window and start it again. Item 9
-ends on an "Echo page" that says **PASS** or **FAIL** in large text.
+should do nothing; if the window changes to an "Echo FAIL" page, foob submitted the form.
 
 | # | Item on the page | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | opens in the same window ("Second page"). A forced-gesture scratch test saw this work; this checks a real click | **PASS** (maintainer, real click, 2026-10-13) |
+| 1 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens "Second page" in the same window | Old behaviour **PASS** (maintainer, real click, 2026-10-13); re-check pending |
 | 2 | Ordinary link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
-| 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, 2026-10-13) |
+| 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, 2026-10-13); passed on the old behaviour, re-check pending |
 | 4 | Ordinary link to a local file | nothing happens | Page log: "click registered on item 4" (maintainer, 2026-10-13) |
 | 5 | `window.open()` from a click | nothing happens; the page log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | **PASS** (maintainer, 2026-10-13) |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | **PASS** (maintainer, 2026-10-13): server printed `GET /attachment.bin 200`; no file in `~/Downloads` (listing checked) |
 | 8 | Link with `download` attribute | nothing happens; no file saved | **PASS** (maintainer, 2026-10-13): server printed `GET /plain.bin 200`; no file saved (listing checked) |
-| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window with a green **PASS** (POST, 15 bytes); a red FAIL (GET, 0 bytes) means the body was lost | **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)" |
+| 9 | Submit a POST form (`target=_blank`) | nothing happens; the server prints no `POST /echo` (D-21). A red FAIL page means foob submitted it. Earlier expectation, now void: green PASS (POST, 15 bytes) | Old behaviour **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)"; re-check pending |
 | 10 | File input (record only, M3-02) | what happens? | Recorded (maintainer, 2026-10-13): **no file picker opens**; the input does nothing. Carried to M3-02 |
 | 11 | Camera and microphone request (record only, M3-05) | prompt? the page log shows `camera/microphone: <error name>` | Recorded (maintainer, 2026-10-13): no prompt; page log `camera/microphone: OverconstrainedError`; terminal: "Audio capture was requested but no device was found amongst 0 devices". The engine sees no capture device, so the **permission default is untested** (carried to M3-05) |
 | 12 | PDF link (record only, M3-04) | what is shown? | Recorded (maintainer, 2026-10-13): the stock engine shows the PDF **inline** in a PDF.js viewer (toolbar with search, zoom, annotate, print, save). Decided to keep as is (D-19) |
@@ -51,30 +51,30 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 15 | New-window link to another local file | opens in the same window ("Local link navigation PASS"); its second link comes back to this page (the first goes to the viewport fixture) | **PASS** (maintainer, 2026-10-13); it opened "Local link navigation PASS" in the same window. The original page's only link led to the viewport fixture, which confused the walk-through; a link back to this page was added (`da48866`) |
-| 16 | New-window link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
+| 15 | New-window link to another local file | nothing happens (D-21). Earlier expectation, now void: opens "Local link navigation PASS" in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-check pending |
+| 16 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-check pending |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 18 | Window title | `Policy fixture (local) — foob` | **PASS** (verified by Claude, 2026-10-13: window title `Policy fixture (local) — foob`, app-id `dev.foob.Browser` read from `niri msg -j windows`; the maintainer was unsure; also asserted by the nested suite) |
 
-## Re-check after F-51/F-52
+## Re-check after D-21
 
-The second security review (F-51, F-52) replaced the new-window handler: foob no longer
-loads a `target=_blank` request itself; an injected script turns a user's click on a
-`_blank` link, or a `_blank` form submission, into the page's own `_top` navigation.
-Scripted requests cannot exercise that path (the script acts only on trusted events), so
-these rows need real clicks on the new binary. Use the commands above with a new
-`--output` path. Row 9's echo page now also shows `Sec-Fetch-Site`, and counts `none`
-(foob sent the request instead of the page) as FAIL.
+The second security review (F-51, F-52) showed that loading a page's `target=_blank`
+request from foob drops the asking frame's sandbox and Fetch Metadata. An injected script
+that avoided this was tried and then removed (D-21): foob now ignores every new-window
+request, so a `target=_blank` link or form does nothing until M2-03. Scripted requests
+cannot exercise a real click (the nested scenario `blank-form-does-not-navigate` covers
+trusted script submits), so these rows need real clicks on the new binary. Use the
+commands above with a new `--output` path; the server terminal now prints the method
+(`GET`, `POST`) of each request.
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | opens "Second page" in the same window | pending |
+| 1 | New-window link to a remote page | nothing happens; no `GET /second.html` on the server | pending |
 | 3 | New-window link to a local file | nothing happens | pending |
-| 9 | Submit a POST form (`target=_blank`) | green **PASS**: POST, 15 bytes, `same-origin` (the old binary shows `none`, so FAIL) | pending |
-| 15 | Local page: new-window link to another local file | opens "Local link navigation PASS" in the same window | pending |
-| 16 | Local page: new-window link to a remote page | opens in the same window | pending |
+| 9 | Submit a POST form (`target=_blank`) | nothing happens; no `POST /echo` on the server | pending |
+| 15 | Local page: new-window link to another local file | nothing happens | pending |
+| 16 | Local page: new-window link to a remote page | nothing happens | pending |
 | 19 | Remote page: link inside the sandboxed frame | the frame says `click registered`; nothing else happens (the window stays on the fixture) | pending |
-| 20 | Remote page: empty-target link in the frame under `<base target="_blank">` (F-59) | the whole window opens "Second page" | pending |
 
 ## Optional repeat of the click-position check
 

@@ -21,11 +21,12 @@ The window title (see
 the hidden direction override and the extra spaces in this page's title are removed.</p>
 <ol>
   <li><a href="second.html" target="_blank">New-window link to a remote page</a><br>
-    Expected: opens in <b>this</b> window ("Second page").</li>
+    Expected: <b>nothing happens</b> (foob ignores new-window requests until M2-03 decides;
+    the server terminal shows no <code>GET /second.html</code>).</li>
   <li><a href="second.html">Ordinary link to a remote page</a> (control)<br>
     Expected: opens in this window.</li>
   <li><a href="@LOCAL_FILE@" target="_blank">New-window link to a local file</a><br>
-    Expected: <b>nothing happens</b> (remote content never opens local content).</li>
+    Expected: <b>nothing happens</b>.</li>
   <li><a href="@LOCAL_FILE@">Ordinary link to a local file</a><br>
     Expected: nothing happens (WebKit refuses it).</li>
   <li><button id="open">window.open() from a click</button><br>
@@ -41,9 +42,8 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li><form method="post" action="echo" target="_blank">
       <input name="field" value="hello"><input type="hidden" name="b" value="1"> <button>Submit a POST form</button>
     </form>
-    Expected: opens "Echo page" in this window saying <b>POST</b>,
-    <b>15 bytes</b> (<code>field=hello&amp;b=1</code>) and <b>same-origin</b>. A GET with
-    0 bytes means the form body was lost; <code>none</code> means foob, not the page, sent it.</li>
+    Expected: <b>nothing happens</b>; the server terminal shows no <code>POST /echo</code>
+    (a red FAIL page means foob submitted the form).</li>
 </ol>
 <h2>Record only (features arrive in M3; note what happens today)</h2>
 <ol start="10">
@@ -56,15 +56,12 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li>Right-click anywhere on the page.<br>
     Record: is a context menu shown? (M3-01)</li>
 </ol>
-<h2>Added after the second security review</h2>
+<h2>Sandboxed frame</h2>
 <ol start="19">
   <li>Click the link inside this sandboxed frame (it may open popups but not navigate this window):<br>
     <iframe sandbox="allow-scripts allow-popups" src="sandboxed.html" style="width:100%;height:3em;border:1px solid #2b1d13"></iframe><br>
     Expected: the frame says <code>click registered</code>, and <b>nothing else happens</b>
     (this window stays on the fixture).</li>
-  <li>Click the link inside this frame (its page has <code>&lt;base target="_blank"&gt;</code> and the link an empty target):<br>
-    <iframe src="base-target.html" style="width:100%;height:3em;border:1px solid #2b1d13"></iframe><br>
-    Expected: the <b>whole window</b> opens "Second page".</li>
 </ol>
 <div id="log">log (what the page saw)</div>
 <script>
