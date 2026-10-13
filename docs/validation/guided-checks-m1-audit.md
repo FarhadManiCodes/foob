@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: all 18 rows were done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). D-21 then changed what `target=_blank` does (nothing now, the old rows passed with "opens in this window"), so rows 1, 3, 9, 15 and 16 and the new row 19 need a real click again: see [Re-check after D-21](#re-check-after-d-21) (pending).** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows were done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). D-21 then changed what `target=_blank` does (nothing now); rows 1, 3, 9, 15, 16 and the new row 19 were clicked again on `4e9b6c2` and pass, see [Re-check after D-21](#re-check-after-d-21). Optional pointer and geometry checks below were done earlier.** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -69,12 +69,19 @@ commands above with a new `--output` path; the server terminal now prints the me
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | nothing happens; no `GET /second.html` on the server | pending |
-| 3 | New-window link to a local file | nothing happens | pending |
-| 9 | Submit a POST form (`target=_blank`) | nothing happens; no `POST /echo` on the server | pending |
-| 15 | Local page: new-window link to another local file | nothing happens | pending |
-| 16 | Local page: new-window link to a remote page | nothing happens | pending |
-| 19 | Remote page: link inside the sandboxed frame | the frame says `click registered`; nothing else happens (the window stays on the fixture) | pending |
+| 1 | New-window link to a remote page | nothing happens; no `GET /second.html` on the server | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing happened |
+| 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing happened |
+| 9 | Submit a POST form (`target=_blank`) | nothing happens; no `POST /echo` on the server | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing happened; the server log shows no `POST /echo` |
+| 15 | Local page: new-window link to another local file | nothing happens | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing happened |
+| 16 | Local page: new-window link to a remote page | nothing happens | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing happened |
+| 19 | Remote page: link inside the sandboxed frame | the frame says `click registered`; nothing else happens (the window stays on the fixture) | **PASS** (maintainer, real click, 2026-10-13, `4e9b6c2`): nothing else happened; the window stayed on the fixture |
+
+Run on `4e9b6c2` (clean tree, binary `6e650bf4…`) with `interactive.py` against `policy_server.py`;
+raw records stay local. Remote run: lifecycle pass, exit 0, no survivors; local run: the same.
+Server log of the remote run: one `GET /second.html` in total (the item 2 control, an ordinary link,
+which opened "Second page" as expected), no `POST /echo`, and the attachment, plain download and PDF
+requests of rows 7, 8 and 12, which the maintainer clicked again (downloads stayed cancelled).
+Nothing new was found.
 
 ## Optional repeat of the click-position check
 
