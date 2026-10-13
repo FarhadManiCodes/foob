@@ -32,9 +32,15 @@ the hidden direction override and the extra spaces in this page's title are remo
     terminal shows <code>GET /attachment.bin</code> (the request still reaches the server).</li>
   <li><a href="plain.bin" download>Link with the download attribute</a><br>
     Expected: nothing happens; no file is saved.</li>
+  <li><form method="post" action="echo" target="_blank">
+      <input name="field" value="hello"><input type="hidden" name="b" value="1"> <button>Submit a POST form</button>
+    </form>
+    Expected: opens "Echo page" in this window saying <b>POST</b> and
+    <b>15 bytes</b> (<code>field=hello&amp;b=1</code>). A GET with 0 bytes means the
+    form body was lost.</li>
 </ol>
 <h2>Record only (features arrive in M3; note what happens today)</h2>
-<ol start="9">
+<ol start="10">
   <li><input type="file" id="file"> Choose a file.<br>
     Record: does a picker open, nothing, or something else? (M3-02)</li>
   <li><button id="camera">Request camera and microphone</button><br>

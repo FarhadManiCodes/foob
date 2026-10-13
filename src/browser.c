@@ -71,7 +71,8 @@ static void download_started([[maybe_unused]] WebKitNetworkSession *session,
 
 /*
  * Links and forms that ask for a new window (target=_blank) navigate this
- * window instead: one view per window. Requests without a user gesture stay
+ * window instead: one view per window. The original request is loaded, not just
+ * its URI, so a POST form keeps its method and body. Requests without a user gesture stay
  * blocked, as do destinations that fail foob_navigation_allowed(). window.open()
  * is unsupported: WebKit reports it through the "create" signal, which is not
  * handled, so it returns null (roadmap M2-11 and M3-01 decide popups). Opening a
@@ -88,7 +89,7 @@ static gboolean decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *dec
     webkit_policy_decision_ignore(decision);
     if (webkit_navigation_action_is_user_gesture(action) &&
         foob_navigation_allowed(webkit_web_view_get_uri(web_view), destination))
-        webkit_web_view_load_uri(web_view, destination);
+        webkit_web_view_load_request(web_view, webkit_navigation_action_get_request(action));
     return TRUE;
 }
 

@@ -24,7 +24,7 @@ roadmap section 7 (triage rule).
 
 **Open right now**
 1. Maintainer: review (Codex review in progress), run the guided checks, merge, decide Gate A.
-2. Two open findings from the Codex review, to fix as one batch after the maintainer's review so the evidence is re-recorded only once: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (the scripted-popup scenario passes vacuously; the claim "scripted requests never reach the handler" is unproven until fixed and the experiment repeated).
+2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) is fixed in the source (uncommitted evidence: hashes above are now stale); **F-31** (the scripted-popup scenario passes vacuously; the claim "scripted requests never reach the handler" is unproven until fixed and the experiment repeated) is still open. Re-record the evidence once, after F-31.
 3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes).
 
 **Rules for every agent (Claude, Codex, others)**

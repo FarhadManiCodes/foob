@@ -57,7 +57,7 @@ delete one. Change its status and link the commit.
 | F-10 | Blocked-request scenarios asserted nothing after waiting | Review-1 | fixed (re-check title and load count); see F-31 | commit 31debfd, `tests/nested_lifecycle.py` |
 | F-11 | Stale "Decision needed" rows in audit-m1.md | Review-1 | fixed | audit-m1.md |
 | F-12 | Trust judged by the main frame, not the frame that asked (remote iframe in a local page) | Review-1 | carried (M4 trust row) | roadmap open-decisions table |
-| F-13 | `webkit_web_view_load_uri` drops method, body and referrer: a POST `target=_blank` form becomes a GET | Review-1, **Codex (P2)** | **open**, see F-30 | `src/browser.c`, roadmap M2-03 note 4 |
+| F-13 | `webkit_web_view_load_uri` drops method, body and referrer: a POST `target=_blank` form becomes a GET | Review-1, Codex (P2) | fixed with F-30 | `src/browser.c`, roadmap M2-03 note 4 |
 | F-14 | `wpe_view_get_toplevel()` can be null | Review-1 | fixed | `src/browser.c` |
 | F-15 | Title sanitizer let C1, zero-width, tag and filler characters through | Review-1, Review-2 | fixed (blocklist widened, unit tests); homoglyphs and a page-supplied trailing `— foob` remain (M2-03 note 2) | `src/window_title.c` |
 | F-16 | `_FORTIFY_SOURCE` comment wrong; caller-defined levels were redefined | Review-1, Review-2 | fixed (checks Meson `c_args`, six cases tested) | `meson.build` |
@@ -74,7 +74,7 @@ delete one. Change its status and link the commit.
 | F-27 | `display_disconnected` calls `_exit(3)` even after a requested shutdown | Review-2 | wontfix: deliberate, matches upstream | `src/browser.c` |
 | F-28 | Diagnostics pointer left dangling after free | Review-2 | fixed (set to null) | `src/browser.c` |
 | F-29 | `target.h` said "not an M2 policy" while exporting `foob_navigation_allowed()` | Review-2 | fixed (wording) | `src/target.h` |
-| **F-30** | **POST `target=_blank` forms lose their body.** Preserve method and payload (use the action's request) or reject such submissions explicitly; never convert silently | **Codex (P2)** | **open** | `src/browser.c` decide_policy |
+| F-30 | POST `target=_blank` forms lose their body. Preserve method and payload (use the action's request) or reject such submissions explicitly; never convert silently | Codex (P2) | fixed: `webkit_web_view_load_request` with the action's request. Scratch experiment with a forced user gesture: before `Echo GET 0 bytes`, after `Echo POST 15 bytes`. No automated test (needs a gesture; D-12); guided check row 9; evidence needs re-recording once F-31 is done | `src/browser.c` decide_policy, audit-m1.md defect 5 |
 | **F-31** | **`scripted-new-window-requests-do-not-navigate` passes vacuously:** the script runs in the head before `document.body` exists, so it throws before `a.click()` and `window.open()`. Add an explicit body (or wait for DOM ready) and assert the probes ran; keep a negative control | **Codex (P2)** | **open** | `tests/nested_lifecycle.py` scripted.html |
 
 **Consequence of F-31:** the statement "scripted requests never reach foob's policy

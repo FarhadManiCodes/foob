@@ -29,11 +29,12 @@ app-id while the page is open.
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | |
 | 8 | Link with `download` attribute | nothing happens; no file saved | |
-| 9 | File input (record only, M3-02) | what happens? | |
-| 10 | Camera and microphone request (record only, M3-05) | prompt? log shows a permission error | |
-| 11 | PDF link (record only, M3-04) | what is shown? | |
-| 12 | Right-click on the page (record only, M3-01) | context menu shown? | |
-| 13 | Window title in `niri msg windows` | `Policy fixture (remote) — foob`; app-id `dev.foob.Browser` | |
+| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window saying POST and 15 bytes (a GET with 0 bytes means the body was lost) | |
+| 10 | File input (record only, M3-02) | what happens? | |
+| 11 | Camera and microphone request (record only, M3-05) | prompt? log shows a permission error | |
+| 12 | PDF link (record only, M3-04) | what is shown? | |
+| 13 | Right-click on the page (record only, M3-01) | context menu shown? | |
+| 14 | Window title in `niri msg windows` | `Policy fixture (remote) — foob`; app-id `dev.foob.Browser` | |
 
 ## Local page (trusted)
 
@@ -44,10 +45,10 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 14 | New-window link to another local file | opens in the same window; its link returns to the viewport fixture | |
-| 15 | New-window link to a remote page | opens in the same window | |
-| 16 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | |
-| 17 | Window title | `Policy fixture (local) — foob` | |
+| 15 | New-window link to another local file | opens in the same window; its link returns to the viewport fixture | |
+| 16 | New-window link to a remote page | opens in the same window | |
+| 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | |
+| 18 | Window title | `Policy fixture (local) — foob` | |
 
 ## Optional repeat of the click-position check
 

@@ -36,12 +36,30 @@ class Handler(http.server.BaseHTTPRequestHandler):
         elif path == '/attachment.bin':
             self.reply(200, 'application/octet-stream', b'x' * 1_000_000,
                        'attachment; filename="attachment.bin"')
+        elif path == '/echo':
+            self.reply_echo('GET', b'')
         elif path == '/sample.pdf':
             self.reply(200, 'application/pdf', PDF)
         elif path == '/plain.bin':
             self.reply(200, 'application/octet-stream', b'x' * 1_000_000)
         else:
             self.reply(404, 'text/plain', b'not found')
+
+    def do_POST(self):
+        length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(min(length, 65536))
+        if self.path.split('?')[0] == '/echo':
+            self.reply_echo('POST', body)
+        else:
+            self.reply(404, 'text/plain', b'not found')
+
+    def reply_echo(self, method, body):
+        # The title carries the result so it is readable in the window title.
+        page = (f'<!doctype html><meta charset="utf-8"><title>Echo {method} {len(body)} bytes</title>'
+                f'<h1>Echo page</h1><p>Request method: <b>{method}</b>, body: <b>{len(body)} bytes</b> '
+                f'(expected for the fixture form: POST, 15 bytes).</p>'
+                f'<p><a href="/">Back to the policy fixture</a></p>').encode('utf-8')
+        self.reply(200, 'text/html; charset=utf-8', page)
 
     def reply(self, status, content_type, body, disposition=None):
         self.send_response(status)
