@@ -1,18 +1,22 @@
 """Lifecycle checks against a disposable nested niri; the real compositor is never touched.
 
-python3 tests/nested_lifecycle.py build/foob [scenario-name ...]
+python3 tests/nested_lifecycle.py build/foob [--keep] [scenario-name ...]
 
 Needs a desktop session with niri installed (the nested compositor opens as a
 window) and no extra packages. Each scenario starts a fresh nested niri with an
 empty config, so no user autostart program runs. Checked: exit code, and that
-no browser helper process survives the exit.
+no browser helper process survives the exit. The scratch directory under
+$TMPDIR is removed after a fully passing run; after a failure, or with --keep,
+its path is printed so the logs can be read.
 """
+import atexit
 import functools
 import http.server
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -24,8 +28,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
 
 binary = str(Path(sys.argv[1]).resolve())
-selected = set(sys.argv[2:])  # empty means every scenario
+keep = '--keep' in sys.argv[2:]
+selected = set(sys.argv[2:]) - {'--keep'}  # empty means every scenario
 scratch = Path(tempfile.mkdtemp(prefix='foob-nested-'))
+all_passed = False
+
+
+def remove_scratch():
+    if all_passed and not keep:
+        shutil.rmtree(scratch, ignore_errors=True)
+    else:
+        print(f'scratch directory kept: {scratch}', file=sys.stderr)
+
+
+atexit.register(remove_scratch)
 (scratch / 'min.kdl').write_text('// empty nested test config\ninput { }\n')
 
 
@@ -216,3 +232,4 @@ def kill_web_process(compositor, socket, window, browser):
 
 # A dead web process leaves nothing to show: the browser exits with status 4.
 scenario('web-process-crash', 4, kill_web_process)
+all_passed = True
