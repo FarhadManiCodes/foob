@@ -90,7 +90,7 @@ Means differ by 0.55 MiB (audit higher), 0.06 MiB (audit lower) and 1.5 MiB (aud
 all inside the spread of the launches of each build. Navigation times agree: blank 0.25-0.57 ms
 against 0.26-0.41 ms, fixture 15.6-16.1 against 15.6-17.5, Wikipedia 493-536 against 517-544 ms.
 This session was about three times faster than the previous one for **both** builds, and the
-audit build's higher Wikipedia navigation time seen in `89c1ecf` and `0af4314` (F-62) did not
+audit build's higher Wikipedia navigation time seen in `89c1ecf` and `0af4314` did not
 appear: it was most likely the busy sessions and live network loads, not the binary, though the
 earlier sessions cannot be re-run to prove that. Twelve samples are repeated observations of
 four launches, not twelve independent launches.
