@@ -17,6 +17,7 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 | 3 | `WebKitWebView::close` (page `window.close()`) was ignored. | Upstream handles it; single view means quit. | Connect `close` and stop the loop. Not exercised by a test: WebKit only honours `window.close()` for script-opened windows. |
 | 4 | **Silent downloads.** An attachment response was saved into `~/Downloads` with no prompt. | Probe against the baseline: `payload.bin` appeared. `tests/nested_lifecycle.py download-cancelled` streams a 300 MiB attachment from a loopback server and passes only if the server sees the transfer abort after under 1 MiB, the stream stays stopped, and no file holding the payload exists in the download, cache, data or temp directories (all redirected below a temp dir). On the baseline the server is still streaming after 10 s and the test fails (negative control); the earlier one-off run saw 81 MiB sent and `.wkdownload` files there versus 0.1 MiB and no files now. | Cancel every download on `WebKitNetworkSession::download-started` until M3-03 designs an explicit per-download decision (requirement and acceptance criteria added to the roadmap). |
 | 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked (tested). The positive click path needs real input and is a guided check below. Separate window deferred to roadmap M2-11. |
+| 6 | **Web process crash left a blank or frozen window** with no signal. | `tests/nested_lifecycle.py web-process-crash` SIGKILLs the exact `WPEWebProcess`: the baseline stays running (negative control), the fix exits with code 4 and no survivors. | Handle `web-process-terminated`: stop the loop and return `FOOB_EXIT_ENGINE_LOST` (4) through `foob_browser_run()`, so the normal teardown runs. Reload-once recovery stays in roadmap M3-07. |
 
 ## Design changes (behaviour unchanged)
 
@@ -151,12 +152,11 @@ Decided (maintainer, 2026-10-13):
 3. **HTTP authentication** is left as is (roadmap M2-10).
 4. **Links asking for a new window** navigate the current window; a separate
    window (Shift-click) and the resources windows would share are roadmap M2-11.
+5. **Web process crash** exits at once with code 4 (option chosen by the
+   maintainer); reload-once recovery is roadmap M3-07.
 
 Still open:
 
-5. **Web process crash.** Today the window goes blank or frozen. Options: reload
-   once, then exit with a distinct code if it crashes again; or exit at once.
-   Roadmap M3-07 covers crash recovery.
 6. **Window app-id.** WPE exposes no setter; the app-id comes from the program
    name. Not yet checked against what niri reports.
 7. **JIT-off opt-in** for an untrusted-site mode: keep the default on; revisit

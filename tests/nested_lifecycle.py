@@ -203,3 +203,15 @@ scenario('compositor-close', 0, close_window)
 scenario('sigterm', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM))
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))
 scenario('compositor-lost', 3, lambda c, s, w, b: c.kill())
+
+
+def kill_web_process(compositor, socket, window, browser):
+    # Exact PIDs from the browser's own process tree; never a name pattern.
+    web = [pid for pid, item in browser_tree(browser.pid, processes()).items()
+           if item['name'] == 'WPEWebProcess']
+    assert len(web) == 1, f'expected one web process, found {web}'
+    os.kill(web[0], signal.SIGKILL)
+
+
+# A dead web process leaves nothing to show: the browser exits with status 4.
+scenario('web-process-crash', 4, kill_web_process)

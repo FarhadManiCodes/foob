@@ -18,6 +18,7 @@ struct FoobBrowser {
     GMainLoop *loop;
     WebKitWebView *web_view;
     FoobDiagnostics *diagnostics;  /* nullptr unless diagnostics are enabled. */
+    int exit_status;               /* Result of foob_browser_run(). */
 };
 
 /* Mirrors the page title into the compositor-visible window title. */
@@ -87,6 +88,20 @@ static gboolean decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *dec
 }
 
 /*
+ * The web process crashed or was killed; the page is gone and the window would
+ * stay blank or frozen with no signal. Exit with a distinct status so the
+ * failure is visible and the launcher can react. Reloading once is roadmap M3-07.
+ */
+static void web_process_terminated([[maybe_unused]] WebKitWebView *web_view,
+                                   [[maybe_unused]] WebKitWebProcessTerminationReason reason,
+                                   gpointer user_data)
+{
+    FoobBrowser *browser = user_data;
+    browser->exit_status = FOOB_EXIT_ENGINE_LOST;
+    stop_loop(browser);
+}
+
+/*
  * The compositor connection is gone (compositor exited or crashed). Without
  * this handler the process keeps spinning on the dead socket. An orderly
  * teardown would talk to the lost display, so exit immediately as upstream's
@@ -130,6 +145,8 @@ FoobBrowser *foob_browser_new(bool diagnostics)
     g_signal_connect(display, "disconnected", G_CALLBACK(display_disconnected), browser);
     g_signal_connect(session, "download-started", G_CALLBACK(download_started), browser);
     g_signal_connect(browser->web_view, "decide-policy", G_CALLBACK(decide_policy), browser);
+    g_signal_connect(browser->web_view, "web-process-terminated",
+                     G_CALLBACK(web_process_terminated), browser);
     if (diagnostics) {
         browser->diagnostics = foob_diagnostics_new(browser->web_view, view);
         foob_diagnostics_log(browser->diagnostics, "backend=%s session=ephemeral",
@@ -138,7 +155,7 @@ FoobBrowser *foob_browser_new(bool diagnostics)
     return browser;
 }
 
-void foob_browser_run(FoobBrowser *browser, const char *target)
+int foob_browser_run(FoobBrowser *browser, const char *target)
 {
     guint sources[] = {
         g_unix_signal_add(SIGINT, unix_signal, browser),
@@ -148,6 +165,7 @@ void foob_browser_run(FoobBrowser *browser, const char *target)
     g_main_loop_run(browser->loop);
     for (size_t i = 0; i < G_N_ELEMENTS(sources); i++)
         g_source_remove(sources[i]);
+    return browser->exit_status;
 }
 
 void foob_browser_free(FoobBrowser *browser)

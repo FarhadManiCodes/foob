@@ -14,8 +14,9 @@ typedef struct FoobBrowser FoobBrowser;
 /* Returns nullptr when the native Wayland display cannot be reached. */
 FoobBrowser *foob_browser_new(bool diagnostics);
 
-/* Loads the already validated target and blocks until the browser stops. */
-void foob_browser_run(FoobBrowser *browser, const char *target);
+/* Loads the already validated target and blocks until the browser stops.
+ * Returns EXIT_SUCCESS, or FOOB_EXIT_ENGINE_LOST if the web process died. */
+int foob_browser_run(FoobBrowser *browser, const char *target);
 
 void foob_browser_free(FoobBrowser *browser);
 

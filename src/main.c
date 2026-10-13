@@ -22,6 +22,5 @@ int main(int argc, char *argv[])
         fputs("foob: could not connect to native Wayland\n", stderr);
         return FOOB_EXIT_START_FAILED;
     }
-    foob_browser_run(browser, target);
-    return EXIT_SUCCESS;
+    return foob_browser_run(browser, target);
 }
