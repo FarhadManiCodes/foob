@@ -2,6 +2,7 @@
 import hashlib
 from pathlib import Path
 import re
+import subprocess
 
 
 def source_manifest(root='src'):
@@ -11,6 +12,17 @@ def source_manifest(root='src'):
     assert files, f'no .c/.h files under {root!r}; run from the repository root'
     listing = ''.join(f'{digest}  {name}\n' for name, digest in files.items())
     return hashlib.sha256(listing.encode()).hexdigest(), files
+
+
+def provenance(binary):
+    """What a record must say about what it measured: revision, dirty tree, source and binary hashes."""
+    digest, files = source_manifest()
+    return {
+        'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+        'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], text=True)),
+        'source_sha256': digest, 'source_files': files,
+        'binary_sha256': hashlib.sha256(Path(binary).read_bytes()).hexdigest(),
+    }
 
 
 def processes():

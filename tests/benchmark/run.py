@@ -5,7 +5,6 @@ Requires desktop access and readable /proc/*/smaps_rollup. Never disables sandbo
 """
 import argparse
 from datetime import datetime, timezone
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,7 +13,7 @@ import signal
 import subprocess
 import time
 
-from process_tree import browser_tree, processes, sample, source_manifest, survivors
+from process_tree import browser_tree, processes, provenance, sample, survivors
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--binary', default='build/foob')
@@ -28,15 +27,11 @@ parser.add_argument('--fault-web-process', action='store_true', help='negative c
 parser.add_argument('--memory-details', action='store_true', help='read own process smaps/DRM fdinfo after each PSS sample')
 args = parser.parse_args()
 binary = Path(args.binary).resolve()
-source_digest, source_files = source_manifest()
 record = {
     'date_utc': datetime.now(timezone.utc).isoformat(), 'workload': args.label,
     'condition': ('warm reload within a fresh ephemeral session' if args.loads > 1
                   else 'fresh process, ephemeral session') + '; OS caches uncontrolled',
-    'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
-    'source_sha256': source_digest, 'source_files': source_files,
-    'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
-    'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], text=True)),
+    **provenance(binary),
     'protocol': '3 samples 1s apart, first >=10s after successful final load completion',
     'stop': args.stop, 'samples': [],
 }

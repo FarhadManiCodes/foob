@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
-  "generated_utc": "2026-10-13T20:52:33.041908+00:00",
+  "generated_utc": "2026-10-13T21:06:22.803407+00:00",
   "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally",
   "measurements": {
     "blank-1": {
       "date_utc": "2026-10-13T20:46:58.326976+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -77,6 +78,7 @@
     "blank-2": {
       "date_utc": "2026-10-13T20:48:16.905255+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -148,6 +150,7 @@
     "blank-3": {
       "date_utc": "2026-10-13T20:49:35.473480+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -219,6 +222,7 @@
     "blank-4": {
       "date_utc": "2026-10-13T20:50:54.018819+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -290,6 +294,7 @@
     "control-blank-1": {
       "date_utc": "2026-10-13T20:47:10.729657+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -361,6 +366,7 @@
     "control-blank-2": {
       "date_utc": "2026-10-13T20:48:29.395795+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -432,6 +438,7 @@
     "control-blank-3": {
       "date_utc": "2026-10-13T20:49:47.961964+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -503,6 +510,7 @@
     "control-blank-4": {
       "date_utc": "2026-10-13T20:51:06.509089+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -574,6 +582,7 @@
     "control-fixture-1": {
       "date_utc": "2026-10-13T20:47:35.841674+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -645,6 +654,7 @@
     "control-fixture-2": {
       "date_utc": "2026-10-13T20:48:54.497142+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -716,6 +726,7 @@
     "control-fixture-3": {
       "date_utc": "2026-10-13T20:50:13.067917+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -787,6 +798,7 @@
     "control-fixture-4": {
       "date_utc": "2026-10-13T20:51:31.492380+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -858,6 +870,7 @@
     "control-wikipedia-1": {
       "date_utc": "2026-10-13T20:48:02.723850+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -929,6 +942,7 @@
     "control-wikipedia-2": {
       "date_utc": "2026-10-13T20:49:21.271797+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1000,6 +1014,7 @@
     "control-wikipedia-3": {
       "date_utc": "2026-10-13T20:50:39.949069+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1071,6 +1086,7 @@
     "control-wikipedia-4": {
       "date_utc": "2026-10-13T20:51:58.235063+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1142,6 +1158,7 @@
     "fixture-1": {
       "date_utc": "2026-10-13T20:47:23.232626+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1213,6 +1230,7 @@
     "fixture-2": {
       "date_utc": "2026-10-13T20:48:41.888172+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1284,6 +1302,7 @@
     "fixture-3": {
       "date_utc": "2026-10-13T20:50:00.453821+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1355,6 +1374,7 @@
     "fixture-4": {
       "date_utc": "2026-10-13T20:51:18.999076+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1426,6 +1446,7 @@
     "fixture-warm-reload": {
       "date_utc": "2026-10-13T20:52:12.436832+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
@@ -1498,6 +1519,7 @@
     "wikipedia-1": {
       "date_utc": "2026-10-13T20:47:48.436719+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1569,6 +1591,7 @@
     "wikipedia-2": {
       "date_utc": "2026-10-13T20:49:06.988622+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1640,6 +1663,7 @@
     "wikipedia-3": {
       "date_utc": "2026-10-13T20:50:25.674373+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
@@ -1711,6 +1735,7 @@
     "wikipedia-4": {
       "date_utc": "2026-10-13T20:51:43.983653+00:00",
       "revision": "0af4314ddbb85cc637222f459da9bb2acbdaacf0",
+      "source_dirty": false,
       "source_sha256": "498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9",
       "binary_sha256": "6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",

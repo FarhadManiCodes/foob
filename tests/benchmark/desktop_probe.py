@@ -7,6 +7,7 @@ other local users cannot read the captures; inspect/delete it afterward.
 This supplements but cannot replace user pointer/typing/scroll observations.
 """
 import argparse
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -15,7 +16,7 @@ import subprocess
 import tempfile
 import time
 
-from process_tree import browser_tree, processes, survivors
+from process_tree import browser_tree, processes, provenance, survivors
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
@@ -32,7 +33,8 @@ else:
 print(f'writing to {output}', flush=True)
 log = output / f'foob-{args.label}.log'
 tracked = {}
-record = {'result': 'fail', 'captures': []}
+record = {'date_utc': datetime.now(timezone.utc).isoformat(), **provenance(Path(args.binary).resolve()),
+          'result': 'fail', 'captures': []}  # provenance is taken before the browser starts
 
 
 def action(*arguments):

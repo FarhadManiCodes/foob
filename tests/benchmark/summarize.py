@@ -10,8 +10,8 @@ The input is ONE directory of run records (default: the top level of docs/valida
 which does not include the suite-<time> folders that suite.py creates). Without --output
 the summary goes to docs/validation/results.json when no directory is given and to
 <directory>/results.json otherwise. An existing output file is only replaced with --replace;
-only the default call regenerates the curated file without it. An input without run records is
-rejected before anything is written. This never launches a browser or modifies the runs.
+only the default call regenerates the curated file without it. An input without run records, or holding a file that is not a run record (for example
+another summary), is rejected before anything is written. This never launches a browser or modifies the runs.
 """
 import argparse
 from collections import Counter, defaultdict
@@ -41,13 +41,21 @@ result = {'schema_version': 1, 'generated_utc': datetime.now(timezone.utc).isofo
           'raw_artifacts': 'docs/validation/runs/ is ignored; preserved locally',
           'measurements': {}, 'lifecycle_and_controls': {}, 'geometry_probes': {}}
 
+def is_run_record(raw):
+    """A raw run is an object with a run outcome; a summary written by this script is not one."""
+    return (isinstance(raw, dict) and 'schema_version' not in raw
+            and any(key in raw for key in ['samples', 'geometry', 'result', 'lifecycle_result', 'exit_code']))
+
+
 records = [path for path in sorted(directory.glob('*.json')) if path.name != 'results.json']
 if not records:
     raise SystemExit(f'no run records (*.json) in {directory}; nothing written')
 for path in records:
     raw = json.loads(path.read_text())
+    if not is_run_record(raw):
+        raise SystemExit(f'{path} is not a run record (a summary, or no run result); nothing written')
     samples = raw.get('samples', [])
-    common = {key: raw[key] for key in ['date_utc', 'revision', 'source_sha256', 'binary_sha256',
+    common = {key: raw[key] for key in ['date_utc', 'revision', 'source_dirty', 'source_sha256', 'binary_sha256',
                                        'condition', 'result', 'lifecycle_result', 'exit_code', 'error'] if key in raw}
     common['tracked_identity_count'] = len(raw.get('tracked_processes', {}))
     common['survivor_count'] = len(raw.get('survivors_after_10s', {}))
