@@ -37,6 +37,7 @@ delete one. Change its status and link the commit.
 | D-18 | Binary size is tracked as a quality signal: record stripped size and `size` per object each milestone; explain growth over about 10%. |
 | D-19 | PDFs open inline in the stock engine's PDF.js viewer; keep it as is for now (2026-10-13). The viewer's save button must still obey the M3-03 download rule. |
 | D-20 | Removing accessibility (`USE_ATK` off) from the custom engine is a requested evaluation, tracked as roadmap M5-11; the a11y-bus warnings stay until then (2026-10-13). |
+| D-21 | Maintainer explicitly authorized merging `m1-audit` into `m0-m1` and deleting the local audit branch. Fast-forward through `ced9c6c`; final review found no actionable regressions and registered tests pass 3/3. Gate A remains unapproved; no M2 authorization (2026-10-13). |
 
 ## Findings register
 

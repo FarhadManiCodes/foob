@@ -6,8 +6,11 @@ record and describe the unmodified `m0-m1` binary.
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-13. **Branch `m1-audit`, in the main checkout.**
-It is 39 commits ahead of `m0-m1` (`4fb9c9c`), a clean fast-forward, **not merged**.
+Updated 2026-10-13. **Branch `m0-m1`, in the main checkout.**
+The maintainer authorized merging `m1-audit` and deleting the local audit branch.
+The audit was fast-forwarded into `m0-m1` through `ced9c6c`; the local audit branch
+was deleted. The final review found no actionable regressions; all three registered
+Meson tests pass. Interactive lifecycle checks were not rerun for the merge.
 Gate A is **not approved**; no M2 work is authorized.
 
 | | |
@@ -15,7 +18,7 @@ Gate A is **not approved**; no M2 work is authorized.
 | Evidence revision | `9abb6fea5b61ec4c71632a4468daef5fe255cc29`: source SHA256 `0c7dc10f…`, audit binary `b77d3271…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents; any C change invalidates these |
 | What is verified | Unit tests 3/3; nested suite 11/11; ASan+UBSan and `-fanalyzer` clean (engine-owned leaks suppressed); interleaved memory comparison shows no regression (blank 165.0 vs 165.7 MiB, fixture 192.8 vs 191.4, Wikipedia 330.8 vs 325.2 with one audit-launch spike); binary 22,520 B stripped (unchanged) |
 | Maintainer checks done | All 18 guided rows, the `pointer.html` click-position check (within 10 CSS px) and the geometry probe on `d9ea90d` (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)) |
-| What is not | Multi-monitor and fractional scaling (unavailable here, M6-07); the maintainer's own review, merge and Gate A decision |
+| What is not | Multi-monitor and fractional scaling (unavailable here, M6-07); the maintainer's Gate A decision |
 | Raw runs | `docs/validation/runs/m1-audit-9abb6fe/` (this evidence); `m1-audit-final/` is the superseded `1fae570` set; both ignored by git, the original M1 runs sit beside them, untouched |
 
 **Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
@@ -24,7 +27,7 @@ I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
 roadmap section 7 (triage rule).
 
 **Open right now**
-1. Maintainer: finish the review, merge, decide Gate A. The 18 guided checks are done (all pass or recorded); optional: `pointer.html` (geometry probe done on `d9ea90d`).
+1. Maintainer: decide Gate A. Review and merge are complete. The 18 guided checks are done (all pass or recorded); `pointer.html` and the geometry probe were checked on `d9ea90d`.
 2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified and the evidence was re-recorded on `9abb6fe`.
 3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes).
 
