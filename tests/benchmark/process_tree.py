@@ -1,6 +1,15 @@
 """Linux browser-process identity, PSS and cleanup helpers; no external deps."""
+import hashlib
 from pathlib import Path
 import re
+
+
+def source_manifest(root='src'):
+    """SHA256 of every application source file, keyed by path, plus one combined digest."""
+    files = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+             for path in sorted(Path(root).rglob('*')) if path.suffix in ('.c', '.h')}
+    listing = ''.join(f'{digest}  {name}\n' for name, digest in files.items())
+    return hashlib.sha256(listing.encode()).hexdigest(), files
 
 
 def processes():

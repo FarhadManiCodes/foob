@@ -12,7 +12,7 @@ from pathlib import Path
 import subprocess
 import time
 
-from process_tree import browser_tree, processes, survivors
+from process_tree import browser_tree, processes, source_manifest, survivors
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
@@ -23,10 +23,11 @@ output.parent.mkdir(parents=True, exist_ok=True)
 if output.exists() or output.with_suffix('.log').exists():
     raise SystemExit('Choose a new output path to preserve existing evidence')
 binary = Path('build/foob').resolve()
+source_digest, source_files = source_manifest()
 record = {
     'date_utc': datetime.now(timezone.utc).isoformat(),
     'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
-    'source_sha256': hashlib.sha256(Path('src/main.c').read_bytes()).hexdigest(),
+    'source_sha256': source_digest, 'source_files': source_files,
     'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
     'mode': 'user interaction; ephemeral session; acceptance recorded separately',
 }
