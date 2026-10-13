@@ -12,23 +12,23 @@ Arch `2.54.1-2`; GCC `16.2.1+r23+gd564253eb6c8-1`; Meson 1.12.1 `debugoptimized`
 `-std=c23 -O2 -g` plus the hardening flags in [audit-m1.md](audit-m1.md); kernel
 `7.2.9-arch1-1`; niri `26.04-1`; Mesa `1:26.2.4-1`. Machine-readable records:
 [results-m1-audit.json](results-m1-audit.json); raw `runs/*.json` and `.log` files
-stay ignored and local (`docs/validation/runs/m1-audit-0af4314/`).
+stay ignored and local (`docs/validation/runs/m1-audit-679fb9a/`).
 
 ## Inputs
 
 | | |
 |---|---|
-| Revision | `0af4314ddbb85cc637222f459da9bb2acbdaacf0` (`m0-m1`, the D-21 commit), tree clean (`source_dirty: false` in every record) |
-| Source SHA256 (`src/*.c`, `src/*.h`) | `498cc823f10d7fb5fbbbd6e5cf4b64121596ad12837593062df6d0b8469338e9` |
-| Audit binary SHA256 | `6e650bf4c639189970805f45dabef613e1966328330765b520f35baef4bebb06` |
+| Revision | `679fb9ad…` (full hash in every record; `m0-m1`, after the final review fixes F-66 to F-68), tree clean (`source_dirty: false` in every record) |
+| Source SHA256 (`src/*.c`, `src/*.h`) | `667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158` |
+| Audit binary SHA256 | `e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459` |
 | Control binary SHA256 | `3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb` (unchanged) |
 | Fixtures | `viewport.html` unchanged from `m0-m1`; `linked.html` gained a back link and the policy fixtures changed after the first audit measurement, none of them used by these workloads except `viewport.html` |
 
 Earlier measurements of this branch (revisions `2dfe12d`, `9c81515`, `1fae570`,
-`9abb6fe` and `89c1ecf`, source hashes `7b3129c2…` for `1fae570`, `0c7dc10f…` for `9abb6fe` and `d306ff47…` for `89c1ecf`) are
+`9abb6fe`, `89c1ecf` and `0af4314`, source hashes `7b3129c2…` for `1fae570`, `0c7dc10f…` for `9abb6fe`, `d306ff47…` for `89c1ecf` and `498cc823…` for `0af4314`) are
 superseded: each change to C source (sanitizer, exit-status handling, the
 `_FORTIFY_SOURCE` check, the new-window handler that loads the action's request, the
-title sanitizer, the URI allowlist, and now the removal of the same-window script) invalidates the hashes. They showed the
+title sanitizer, the URI allowlist, the removal of the same-window script, and now the trimmed cut title) invalidates the hashes. They showed the
 same picture (audit and control within a few MiB). Later commits change only tests,
 fixtures and documents.
 
@@ -64,53 +64,46 @@ Values are the three samples per launch in MiB.
 
 | Run | Sample 1 | Sample 2 | Sample 3 | Navigation ms |
 |---|---:|---:|---:|---:|
-| `blank-1` | 170.473 | 170.479 | 170.450 | 0.945 |
-| `blank-2` | 170.600 | 170.611 | 170.611 | 0.699 |
-| `blank-3` | 170.507 | 170.518 | 170.518 | 0.862 |
-| `blank-4` | 171.012 | 171.059 | 171.059 | 0.657 |
-| `fixture-1` | 197.307 | 197.310 | 197.310 | 37.515 |
-| `fixture-2` | 195.076 | 195.081 | 195.081 | 39.206 |
-| `fixture-3` | 195.406 | 195.409 | 195.409 | 36.460 |
-| `fixture-4` | 195.431 | 195.436 | 195.436 | 36.655 |
-| `wikipedia-1` | 330.619 | 330.619 | 330.604 | 1679.067 |
-| `wikipedia-2` | 329.993 | 329.993 | 329.971 | 1665.163 |
-| `wikipedia-3` | 356.430 | 356.000 | 356.023 | 1703.266 |
-| `wikipedia-4` | 328.493 | 328.493 | 328.470 | 1668.119 |
-| `fixture-warm-reload` | 197.986 | 197.982 | 197.982 | 8.714 reload; 36.986 initial |
+| `blank-1` | 171.858 | 171.872 | 171.872 | 0.319 |
+| `blank-2` | 169.710 | 169.724 | 169.724 | 0.247 |
+| `blank-3` | 170.001 | 170.015 | 170.015 | 0.574 |
+| `blank-4` | 169.780 | 169.794 | 169.794 | 0.427 |
+| `fixture-1` | 196.229 | 196.233 | 196.233 | 16.059 |
+| `fixture-2` | 194.102 | 194.105 | 194.105 | 16.085 |
+| `fixture-3` | 194.267 | 194.271 | 194.271 | 15.586 |
+| `fixture-4` | 194.122 | 194.725 | 194.725 | 15.988 |
+| `wikipedia-1` | 332.481 | 330.860 | 330.849 | 493.384 |
+| `wikipedia-2` | 331.474 | 329.853 | 329.841 | 525.160 |
+| `wikipedia-3` | 328.751 | 327.130 | 327.118 | 518.733 |
+| `wikipedia-4` | 335.229 | 333.608 | 333.597 | 535.914 |
+| `fixture-warm-reload` | 196.535 | 196.540 | 196.540 | 5.246 reload; 16.744 initial |
 
 ## Results: audit versus control, interleaved
 
 | Workload | Audit mean (MiB) | Audit range | Control mean (MiB) | Control range |
 |---|---:|---|---:|---|
-| Blank | 170.658 (12 samples) | 170.450-171.059 | 170.705 (12) | 170.373-171.648 |
-| Local fixture | 195.808 (12) | 195.076-197.310 | 196.160 (12) | 194.963-197.281 |
-| Wikipedia | 336.309 (12) | 328.470-356.430 | 329.730 (12) | 328.407-331.052 |
+| Blank | 170.347 (12 samples) | 169.710-171.872 | 169.796 (12) | 169.697-169.904 |
+| Local fixture | 194.782 (12) | 194.102-196.233 | 194.841 (12) | 194.028-196.580 |
+| Wikipedia | 330.899 (12) | 327.118-335.229 | 329.412 (12) | 325.886-332.880 |
 
-Means differ by 0.05 MiB (audit lower), 0.35 MiB (audit lower) and 6.6 MiB (audit higher).
-The Wikipedia gap comes from one launch: `wikipedia-3` read 356.0-356.4 MiB, 26 MiB above the
-other three audit launches (328.5-330.6), which agree with the control's four (328.4-331.1).
-Without it the audit mean is 329.7 MiB against 329.7 for the control. The same kind of
-single launch spike has appeared before in both builds (see below), so it is not read as a
-property of the binary, but it is one launch, not proof. Wikipedia navigation times: audit
-1665-1703 ms against control 1450-1610 ms in these four pairs, the audit build slower in
-all four. Five more interleaved Wikipedia pairs (order alternated, kept in
-`runs/m1-audit-0af4314-nav/`) gave audit 1489-2565 ms (median 1611) against control
-1547-1611 ms (median 1586) and PSS 328.1-333.1 against 327.1-330.9 MiB, with no consistent
-sign (audit faster in two pairs). Over all nine pairs the audit median is 1668 ms against
-1586 ms (about 5% slower), inside the spread of live network loads; this is not explained
-and not claimed as noise or as a real cost. Blank (0.66-0.95 ms against 0.48-0.94 ms) and
-fixture (36.5-39.2 ms against 36.6-38.1 ms) agree. Twelve samples are repeated observations
-of four launches, not twelve independent launches.
+Means differ by 0.55 MiB (audit higher), 0.06 MiB (audit lower) and 1.5 MiB (audit higher),
+all inside the spread of the launches of each build. Navigation times agree: blank 0.25-0.57 ms
+against 0.26-0.41 ms, fixture 15.6-16.1 against 15.6-17.5, Wikipedia 493-536 against 517-544 ms.
+This session was about three times faster than the previous one for **both** builds, and the
+audit build's higher Wikipedia navigation time seen in `89c1ecf` and `0af4314` (F-62) did not
+appear: it was most likely the busy sessions and live network loads, not the binary, though the
+earlier sessions cannot be re-run to prove that. Twelve samples are repeated observations of
+four launches, not twelve independent launches.
 
 Single-launch spikes occur in both builds and in every attempt: blank launches 5-12 MiB
-away from the others (here `wikipedia-3` of the audit build)
+away from the others (here none; the `wikipedia-3` audit launch at 356 MiB in the previous session, `0af4314`, was one)
 and one Wikipedia launch 15-30 MiB high in earlier runs. They are session state, not a
 property of either binary, and they are why launches are interleaved and repeated.
 
 ## Why these numbers differ from `measurements.md` and from the earlier runs
 
 `measurements.md` reports blank 174.3, fixture 202.4 and Wikipedia 333.7 MiB. In the
-session of the earlier run (`89c1ecf`) the **control** (the old code) read 166.2, 194.5 and 327.4 MiB; in this one it reads 170.7, 196.2 and 329.7 MiB, so the lower
+session of an earlier run (`89c1ecf`) the **control** (the old code) read 166.2, 194.5 and 327.4 MiB; in this one it reads 169.8, 194.8 and 329.4 MiB, so the lower
 numbers are session drift (system state, caches, library mapping sharing), not an
 improvement from this branch. Do not cite it as one. Compare builds only within one
 session, as above. The earlier [blank-memory diagnosis](blank-memory.md) saw the same 158-171 MiB
@@ -121,7 +114,7 @@ range for the original binary.
 - `meson test -C build`: 3 of 3 pass (`target` and `window_title` unit tests,
   startup URI contract). A clean `git archive` export builds without warnings.
 - `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 12 of
-  12 scenarios pass (re-run on `0af4314`), each with exact-PID survivor checks and an app-id assertion:
+  12 scenarios pass (re-run on `679fb9a`), each with exact-PID survivor checks and an app-id assertion:
   `title-follows-page`, `title-remote-sanitized`, `download-cancelled` (300 MiB
   stream aborted after under 16 MiB, nothing on disk),
   `scripted-new-window-requests-do-not-navigate` (re-checked after a 3 s wait),
@@ -142,12 +135,12 @@ range for the original binary.
   without the probes having run (Codex F-31). Since D-21 `decide_policy` ignores every
   new-window request; there is no gesture check and no remote-to-`file:` check on this
   path to test (`foob_navigation_allowed` is covered by its unit test only).
-- Repeated on revision `0af4314`: `gcc -fanalyzer` with `-Wall -Wextra -Wconversion
+- Repeated on revision `679fb9a`: `gcc -fanalyzer` with `-Wall -Wextra -Wconversion
   -Wshadow -Wformat=2 -Wnull-dereference` on every translation unit (exit 0, no
   warning); ASan+UBSan build (engine-owned leaks suppressed by library) passes the 3
   unit/CLI tests and all 12 nested scenarios, and the run with logs kept shows no
   `runtime error` and no sanitizer report in any scenario. Binary 22,520 B stripped
-  (unchanged; text 13,107 B, 13,324 B at `89c1ecf`); a clean `git archive`
+  (unchanged; text 13,125 B, 13,324 B at `89c1ecf`); a clean `git archive`
   build has no warnings and passes 3/3. Startup and exit latency results: [audit-m1.md](audit-m1.md).
 
 ## Not covered
