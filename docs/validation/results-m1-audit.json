@@ -1,1109 +1,1141 @@
 {
- "schema_version": 1,
- "generated_utc": "2026-10-13T15:32:07.377804+00:00",
- "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally",
- "note": "Records without a control- prefix are the m1-audit binary; control-* records are a build of the unmodified m0-m1 source, measured interleaved in the same session. Control records carry the audit tree source_sha256 because the collector hashes the working tree; only binary_sha256 identifies the control build.",
- "measurements": {
-  "blank-1": {
-   "date_utc": "2026-10-13T15:26:39.032422+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.28
-   ],
-   "samples": [
-    {
-     "pss_kib": 172469,
-     "seconds_after_observed_completion": 10.013091195000015,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
+  "schema_version": 1,
+  "generated_utc": "2026-10-13T19:01:32.297017+00:00",
+  "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally (this evidence: docs/validation/runs/m1-audit-9abb6fe/)",
+  "note": "Records without a control- prefix are the m1-audit binary; control-* records are a build of the unmodified m0-m1 source, measured interleaved in the same session. Control records carry the audit tree source_sha256 because the collector hashes the working tree; only binary_sha256 identifies the control build. Launch 1 of the fixture workload failed for both builds (\"navigation changed after requested completion; idle interval invalid\") and is kept as a failed record; launch 5 repeats it for both builds.",
+  "measurements": {
+    "blank-1": {
+      "date_utc": "2026-10-13T18:53:31.336499+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.96
+      ],
+      "samples": [
+        {
+          "pss_kib": 170958,
+          "seconds_after_observed_completion": 10.027685765999195,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 170965,
+          "seconds_after_observed_completion": 11.027300123001623,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 170965,
+          "seconds_after_observed_completion": 12.026198902000033,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
     },
-    {
-     "pss_kib": 172482,
-     "seconds_after_observed_completion": 11.011129201000585,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
+    "blank-2": {
+      "date_utc": "2026-10-13T18:54:34.251873+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1.139
+      ],
+      "samples": [
+        {
+          "pss_kib": 167618,
+          "seconds_after_observed_completion": 10.026941733995045,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167623,
+          "seconds_after_observed_completion": 11.026274756994098,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167585,
+          "seconds_after_observed_completion": 12.026817635000043,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
     },
-    {
-     "pss_kib": 172482,
-     "seconds_after_observed_completion": 12.011834607998026,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
+    "blank-3": {
+      "date_utc": "2026-10-13T18:55:52.703492+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.891
+      ],
+      "samples": [
+        {
+          "pss_kib": 167677,
+          "seconds_after_observed_completion": 10.027681807005138,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167698,
+          "seconds_after_observed_completion": 11.027178672004084,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167702,
+          "seconds_after_observed_completion": 12.02564490000077,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "blank-4": {
+      "date_utc": "2026-10-13T18:57:11.156800+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.793
+      ],
+      "samples": [
+        {
+          "pss_kib": 169573,
+          "seconds_after_observed_completion": 10.022645753000688,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 169585,
+          "seconds_after_observed_completion": 11.025679236998258,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 169585,
+          "seconds_after_observed_completion": 12.026311665998946,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-blank-1": {
+      "date_utc": "2026-10-13T18:53:43.831396+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.877
+      ],
+      "samples": [
+        {
+          "pss_kib": 167629,
+          "seconds_after_observed_completion": 10.026973163003277,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167636,
+          "seconds_after_observed_completion": 11.026716453998233,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167643,
+          "seconds_after_observed_completion": 12.02622090299701,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-blank-2": {
+      "date_utc": "2026-10-13T18:54:46.746660+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.589
+      ],
+      "samples": [
+        {
+          "pss_kib": 170765,
+          "seconds_after_observed_completion": 10.027416143995652,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 170651,
+          "seconds_after_observed_completion": 11.024107003999234,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 170651,
+          "seconds_after_observed_completion": 12.02440009899874,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-blank-3": {
+      "date_utc": "2026-10-13T18:56:05.192263+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.624
+      ],
+      "samples": [
+        {
+          "pss_kib": 167591,
+          "seconds_after_observed_completion": 10.024613355999463,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167596,
+          "seconds_after_observed_completion": 11.026842793995456,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 167602,
+          "seconds_after_observed_completion": 12.024138442000549,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-blank-4": {
+      "date_utc": "2026-10-13T18:57:23.648656+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        0.556
+      ],
+      "samples": [
+        {
+          "pss_kib": 172915,
+          "seconds_after_observed_completion": 10.02673096399667,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 172921,
+          "seconds_after_observed_completion": 11.026448927994352,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 172921,
+          "seconds_after_observed_completion": 12.02737687699846,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-fixture-1": {
+      "date_utc": "2026-10-13T18:54:02.691674+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "fail",
+      "error": "navigation changed after requested completion; idle interval invalid",
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        41.674
+      ],
+      "samples": []
+    },
+    "control-fixture-2": {
+      "date_utc": "2026-10-13T18:55:11.862834+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        39.611
+      ],
+      "samples": [
+        {
+          "pss_kib": 195397,
+          "seconds_after_observed_completion": 10.025988285000494,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197693,
+          "seconds_after_observed_completion": 11.02805119700497,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197657,
+          "seconds_after_observed_completion": 12.026926913000352,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-fixture-3": {
+      "date_utc": "2026-10-13T18:56:30.171800+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        39.19
+      ],
+      "samples": [
+        {
+          "pss_kib": 195091,
+          "seconds_after_observed_completion": 10.027838875997986,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 195095,
+          "seconds_after_observed_completion": 11.027184022001165,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 195099,
+          "seconds_after_observed_completion": 12.026824738997675,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-fixture-4": {
+      "date_utc": "2026-10-13T18:57:48.750751+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        39.073
+      ],
+      "samples": [
+        {
+          "pss_kib": 196897,
+          "seconds_after_observed_completion": 10.027438745994004,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 196900,
+          "seconds_after_observed_completion": 11.027750575995015,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 196900,
+          "seconds_after_observed_completion": 12.027873197999725,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-fixture-5": {
+      "date_utc": "2026-10-13T18:59:15.661350+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        40.813
+      ],
+      "samples": [
+        {
+          "pss_kib": 195006,
+          "seconds_after_observed_completion": 10.028777145998902,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 195010,
+          "seconds_after_observed_completion": 11.027886824995221,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 195010,
+          "seconds_after_observed_completion": 12.027465674997075,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-wikipedia-1": {
+      "date_utc": "2026-10-13T18:54:20.299966+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1375.878
+      ],
+      "samples": [
+        {
+          "pss_kib": 332757,
+          "seconds_after_observed_completion": 10.032058290998975,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332757,
+          "seconds_after_observed_completion": 11.028492304001702,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332721,
+          "seconds_after_observed_completion": 12.030436111002928,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-wikipedia-2": {
+      "date_utc": "2026-10-13T18:55:38.533555+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1573.28
+      ],
+      "samples": [
+        {
+          "pss_kib": 331472,
+          "seconds_after_observed_completion": 10.031654225000239,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 331492,
+          "seconds_after_observed_completion": 11.031881945003988,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 330954,
+          "seconds_after_observed_completion": 12.032416628004285,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-wikipedia-3": {
+      "date_utc": "2026-10-13T18:56:57.012492+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1550.193
+      ],
+      "samples": [
+        {
+          "pss_kib": 334037,
+          "seconds_after_observed_completion": 10.033885128003021,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 334037,
+          "seconds_after_observed_completion": 11.032482164002431,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 334001,
+          "seconds_after_observed_completion": 12.032780439003545,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "control-wikipedia-4": {
+      "date_utc": "2026-10-13T18:58:15.423848+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1478.225
+      ],
+      "samples": [
+        {
+          "pss_kib": 334128,
+          "seconds_after_observed_completion": 10.031333565995737,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 334128,
+          "seconds_after_observed_completion": 11.03066915400268,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 334092,
+          "seconds_after_observed_completion": 12.031900148002023,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "fixture-1": {
+      "date_utc": "2026-10-13T18:53:56.326707+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "fail",
+      "error": "navigation changed after requested completion; idle interval invalid",
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        36.067
+      ],
+      "samples": []
+    },
+    "fixture-2": {
+      "date_utc": "2026-10-13T18:54:59.240526+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        39.664
+      ],
+      "samples": [
+        {
+          "pss_kib": 198884,
+          "seconds_after_observed_completion": 10.031390604999615,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 201539,
+          "seconds_after_observed_completion": 11.030000976999872,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 201467,
+          "seconds_after_observed_completion": 12.02869262299646,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "fixture-3": {
+      "date_utc": "2026-10-13T18:56:17.685228+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        30.104
+      ],
+      "samples": [
+        {
+          "pss_kib": 194904,
+          "seconds_after_observed_completion": 10.027931923003052,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 194919,
+          "seconds_after_observed_completion": 11.027532313004485,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 194919,
+          "seconds_after_observed_completion": 12.027144576000865,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "fixture-4": {
+      "date_utc": "2026-10-13T18:57:36.139412+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        38.335
+      ],
+      "samples": [
+        {
+          "pss_kib": 197082,
+          "seconds_after_observed_completion": 10.02788404099556,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197074,
+          "seconds_after_observed_completion": 11.027771896995546,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197074,
+          "seconds_after_observed_completion": 12.02786525299598,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "fixture-5": {
+      "date_utc": "2026-10-13T18:59:03.160707+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        36.183
+      ],
+      "samples": [
+        {
+          "pss_kib": 196944,
+          "seconds_after_observed_completion": 10.03151173399965,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 196948,
+          "seconds_after_observed_completion": 11.029182243000832,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 196948,
+          "seconds_after_observed_completion": 12.02877123199869,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "fixture-warm-reload": {
+      "date_utc": "2026-10-13T18:58:29.462633+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        30.22,
+        8.634
+      ],
+      "samples": [
+        {
+          "pss_kib": 197887,
+          "seconds_after_observed_completion": 10.028314256996964,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197887,
+          "seconds_after_observed_completion": 11.027417915000115,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 197887,
+          "seconds_after_observed_completion": 12.027358712002751,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "wikipedia-1": {
+      "date_utc": "2026-10-13T18:54:06.405507+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1277.169
+      ],
+      "samples": [
+        {
+          "pss_kib": 337245,
+          "seconds_after_observed_completion": 10.028672767999524,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 337245,
+          "seconds_after_observed_completion": 11.028968717997486,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 337209,
+          "seconds_after_observed_completion": 12.0309803429991,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "wikipedia-2": {
+      "date_utc": "2026-10-13T18:55:24.375171+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1602.437
+      ],
+      "samples": [
+        {
+          "pss_kib": 332701,
+          "seconds_after_observed_completion": 10.02573195900186,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332701,
+          "seconds_after_observed_completion": 11.02300043500145,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332665,
+          "seconds_after_observed_completion": 12.025618159997975,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "wikipedia-3": {
+      "date_utc": "2026-10-13T18:56:42.776836+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1575.421
+      ],
+      "samples": [
+        {
+          "pss_kib": 348263,
+          "seconds_after_observed_completion": 10.035590933999629,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 354795,
+          "seconds_after_observed_completion": 11.032847087000846,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 352671,
+          "seconds_after_observed_completion": 12.034636070005945,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
+    },
+    "wikipedia-4": {
+      "date_utc": "2026-10-13T18:58:01.243365+00:00",
+      "revision": "9abb6fea5b61ec4c71632a4468daef5fe255cc29",
+      "source_dirty": false,
+      "source_sha256": "0c7dc10f07406262f9151b1f3783010bbe91e356e3a91ca91935fb2f12025c26",
+      "binary_sha256": "b77d32718594ea39b75b525f519ac444a8d8e1ee1e52a4f699c2b67e462c5c1b",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "navigation_elapsed_ms": [
+        1572.097
+      ],
+      "samples": [
+        {
+          "pss_kib": 332943,
+          "seconds_after_observed_completion": 10.031292799001676,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332943,
+          "seconds_after_observed_completion": 11.030974143002823,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        },
+        {
+          "pss_kib": 332921,
+          "seconds_after_observed_completion": 12.03129909800191,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          }
+        }
+      ]
     }
-   ]
-  },
-  "blank-2": {
-   "date_utc": "2026-10-13T15:27:54.049369+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.294
-   ],
-   "samples": [
-    {
-     "pss_kib": 172322,
-     "seconds_after_observed_completion": 10.01167129100213,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172335,
-     "seconds_after_observed_completion": 11.01161906100242,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172335,
-     "seconds_after_observed_completion": 12.011972680000326,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "blank-3": {
-   "date_utc": "2026-10-13T15:29:08.951318+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.227
-   ],
-   "samples": [
-    {
-     "pss_kib": 174546,
-     "seconds_after_observed_completion": 10.00974683900131,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 174560,
-     "seconds_after_observed_completion": 11.012500142001954,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 174560,
-     "seconds_after_observed_completion": 12.011209981999855,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "blank-4": {
-   "date_utc": "2026-10-13T15:30:23.970000+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.266
-   ],
-   "samples": [
-    {
-     "pss_kib": 172509,
-     "seconds_after_observed_completion": 10.01353620900045,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172523,
-     "seconds_after_observed_completion": 11.012174895000499,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172523,
-     "seconds_after_observed_completion": 12.011980454000877,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-blank-1": {
-   "date_utc": "2026-10-13T15:26:51.244080+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.299
-   ],
-   "samples": [
-    {
-     "pss_kib": 174505,
-     "seconds_after_observed_completion": 10.012251490999915,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 174519,
-     "seconds_after_observed_completion": 11.011915181999939,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 174519,
-     "seconds_after_observed_completion": 12.011601144000451,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-blank-2": {
-   "date_utc": "2026-10-13T15:28:06.262731+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.296
-   ],
-   "samples": [
-    {
-     "pss_kib": 172333,
-     "seconds_after_observed_completion": 10.012174035000498,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172346,
-     "seconds_after_observed_completion": 11.011466299998574,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172346,
-     "seconds_after_observed_completion": 12.012175113999547,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-blank-3": {
-   "date_utc": "2026-10-13T15:29:21.161528+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.471
-   ],
-   "samples": [
-    {
-     "pss_kib": 172380,
-     "seconds_after_observed_completion": 10.009673952001322,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 173277,
-     "seconds_after_observed_completion": 11.010715356002038,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 173277,
-     "seconds_after_observed_completion": 12.012204960999952,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-blank-4": {
-   "date_utc": "2026-10-13T15:30:36.180892+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    0.334
-   ],
-   "samples": [
-    {
-     "pss_kib": 172481,
-     "seconds_after_observed_completion": 10.012724849999358,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172494,
-     "seconds_after_observed_completion": 11.012080275002518,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 172494,
-     "seconds_after_observed_completion": 12.011798198000179,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-fixture-1": {
-   "date_utc": "2026-10-13T15:27:15.830013+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    16.132
-   ],
-   "samples": [
-    {
-     "pss_kib": 197452,
-     "seconds_after_observed_completion": 10.012208940999699,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197457,
-     "seconds_after_observed_completion": 11.011316234998958,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197457,
-     "seconds_after_observed_completion": 12.012087456998415,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-fixture-2": {
-   "date_utc": "2026-10-13T15:28:30.848860+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    16.91
-   ],
-   "samples": [
-    {
-     "pss_kib": 197466,
-     "seconds_after_observed_completion": 10.012805351998395,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197471,
-     "seconds_after_observed_completion": 11.011882890998095,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197471,
-     "seconds_after_observed_completion": 12.011739728000975,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-fixture-3": {
-   "date_utc": "2026-10-13T15:29:45.751487+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    15.627
-   ],
-   "samples": [
-    {
-     "pss_kib": 197694,
-     "seconds_after_observed_completion": 10.012837733000197,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197698,
-     "seconds_after_observed_completion": 11.011157083998114,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197698,
-     "seconds_after_observed_completion": 12.011610662000749,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-fixture-4": {
-   "date_utc": "2026-10-13T15:31:00.765680+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    15.948
-   ],
-   "samples": [
-    {
-     "pss_kib": 197267,
-     "seconds_after_observed_completion": 10.012321123002039,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197271,
-     "seconds_after_observed_completion": 11.011992629002634,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197271,
-     "seconds_after_observed_completion": 12.011566028002562,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-wikipedia-1": {
-   "date_utc": "2026-10-13T15:27:41.155378+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    548.021
-   ],
-   "samples": [
-    {
-     "pss_kib": 366940,
-     "seconds_after_observed_completion": 10.014911507998477,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 363848,
-     "seconds_after_observed_completion": 11.013959750998765,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 363672,
-     "seconds_after_observed_completion": 12.013356103998376,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-wikipedia-2": {
-   "date_utc": "2026-10-13T15:28:56.057564+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    544.384
-   ],
-   "samples": [
-    {
-     "pss_kib": 335377,
-     "seconds_after_observed_completion": 10.01487704399915,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 333709,
-     "seconds_after_observed_completion": 11.013292615996761,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 333697,
-     "seconds_after_observed_completion": 12.013974687997688,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-wikipedia-3": {
-   "date_utc": "2026-10-13T15:30:11.021884+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    601.264
-   ],
-   "samples": [
-    {
-     "pss_kib": 339145,
-     "seconds_after_observed_completion": 10.015840110998397,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 337473,
-     "seconds_after_observed_completion": 11.013104949997796,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 337505,
-     "seconds_after_observed_completion": 12.013961623997602,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "control-wikipedia-4": {
-   "date_utc": "2026-10-13T15:31:25.976665+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    507.602
-   ],
-   "samples": [
-    {
-     "pss_kib": 338023,
-     "seconds_after_observed_completion": 10.015145482000662,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 336363,
-     "seconds_after_observed_completion": 11.013352288999158,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 336351,
-     "seconds_after_observed_completion": 12.013197173000663,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "fixture-1": {
-   "date_utc": "2026-10-13T15:27:03.454617+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    15.901
-   ],
-   "samples": [
-    {
-     "pss_kib": 199660,
-     "seconds_after_observed_completion": 10.013328094999451,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 199664,
-     "seconds_after_observed_completion": 11.01179238899931,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 199664,
-     "seconds_after_observed_completion": 12.011905071998626,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "fixture-2": {
-   "date_utc": "2026-10-13T15:28:18.473984+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    17.564
-   ],
-   "samples": [
-    {
-     "pss_kib": 197175,
-     "seconds_after_observed_completion": 10.013305963002495,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197180,
-     "seconds_after_observed_completion": 11.01160477400117,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197180,
-     "seconds_after_observed_completion": 12.012451619000785,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "fixture-3": {
-   "date_utc": "2026-10-13T15:29:33.373747+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    16.721
-   ],
-   "samples": [
-    {
-     "pss_kib": 197439,
-     "seconds_after_observed_completion": 10.013485413001035,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197444,
-     "seconds_after_observed_completion": 11.011418529000366,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197444,
-     "seconds_after_observed_completion": 12.012781363999238,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "fixture-4": {
-   "date_utc": "2026-10-13T15:30:48.391518+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    15.406
-   ],
-   "samples": [
-    {
-     "pss_kib": 197353,
-     "seconds_after_observed_completion": 10.012981396001123,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197358,
-     "seconds_after_observed_completion": 11.01140862000102,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 197358,
-     "seconds_after_observed_completion": 12.012474412000302,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "fixture-warm-reload": {
-   "date_utc": "2026-10-13T15:31:38.818123+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    16.296,
-    5.571
-   ],
-   "samples": [
-    {
-     "pss_kib": 199220,
-     "seconds_after_observed_completion": 10.012411264000548,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 199220,
-     "seconds_after_observed_completion": 11.011528016999364,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 199220,
-     "seconds_after_observed_completion": 12.012745144998917,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "wikipedia-1": {
-   "date_utc": "2026-10-13T15:27:28.204183+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    596.664
-   ],
-   "samples": [
-    {
-     "pss_kib": 339058,
-     "seconds_after_observed_completion": 10.015686217997427,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 337546,
-     "seconds_after_observed_completion": 11.013322952996532,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 337534,
-     "seconds_after_observed_completion": 12.013027480999881,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "wikipedia-2": {
-   "date_utc": "2026-10-13T15:28:43.167892+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    566.034
-   ],
-   "samples": [
-    {
-     "pss_kib": 336792,
-     "seconds_after_observed_completion": 10.015060401001392,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 335136,
-     "seconds_after_observed_completion": 11.01362344300287,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 335124,
-     "seconds_after_observed_completion": 12.014179437002895,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "wikipedia-3": {
-   "date_utc": "2026-10-13T15:29:58.126158+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    548.772
-   ],
-   "samples": [
-    {
-     "pss_kib": 341989,
-     "seconds_after_observed_completion": 10.01417726499858,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 340329,
-     "seconds_after_observed_completion": 11.013160014001187,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 340317,
-     "seconds_after_observed_completion": 12.014181459999236,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
-  },
-  "wikipedia-4": {
-   "date_utc": "2026-10-13T15:31:13.081313+00:00",
-   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
-   "source_dirty": false,
-   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
-   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
-   "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-   "result": "pass",
-   "exit_code": 0,
-   "tracked_identity_count": 8,
-   "survivor_count": 0,
-   "navigation_elapsed_ms": [
-    557.474
-   ],
-   "samples": [
-    {
-     "pss_kib": 340809,
-     "seconds_after_observed_completion": 10.015269004998117,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 339149,
-     "seconds_after_observed_completion": 11.011948573999689,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    },
-    {
-     "pss_kib": 339197,
-     "seconds_after_observed_completion": 12.013936524999735,
-     "viewport": {
-      "width": 950,
-      "height": 1188,
-      "scale": 1.0
-     }
-    }
-   ]
   }
- }
 }
