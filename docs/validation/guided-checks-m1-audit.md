@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: pending.** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). Optional pointer and geometry checks below remain.** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -51,10 +51,10 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 15 | New-window link to another local file | opens in the same window ("Local link navigation PASS"); its second link comes back to this page (the first goes to the viewport fixture) | |
-| 16 | New-window link to a remote page | opens in the same window | |
-| 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | |
-| 18 | Window title | `Policy fixture (local) — foob` | |
+| 15 | New-window link to another local file | opens in the same window ("Local link navigation PASS"); its second link comes back to this page (the first goes to the viewport fixture) | **PASS** (maintainer, 2026-10-13); it opened "Local link navigation PASS" in the same window. The original page's only link led to the viewport fixture, which confused the walk-through; a link back to this page was added (`da48866`) |
+| 16 | New-window link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
+| 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
+| 18 | Window title | `Policy fixture (local) — foob` | **PASS** (verified by Claude, 2026-10-13: window title `Policy fixture (local) — foob`, app-id `dev.foob.Browser` read from `niri msg -j windows`; the maintainer was unsure; also asserted by the nested suite) |
 
 ## Optional repeat of the click-position check
 

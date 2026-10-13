@@ -14,7 +14,7 @@ Gate A is **not approved**; no M2 work is authorized.
 |---|---|
 | Evidence revision | `1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19`: source SHA256 `7b3129c2…`, audit binary `916f7b03…` ([measurements-m1-audit.md](measurements-m1-audit.md)); any later C change invalidates these |
 | What is verified | Unit tests 3/3; nested suite 11/11; ASan+UBSan and `-fanalyzer` clean (engine-owned leaks suppressed); interleaved memory comparison shows no regression (blank 168.9 vs 169.0 MiB, fixture 193.3 vs 192.8, Wikipedia 330.6 vs 335.5 with one control spike) |
-| What is not | The guided keyboard checks ([guided-checks-m1-audit.md](guided-checks-m1-audit.md)); geometry probe on the final binary (host was locked); real mouse clicks on `_blank` links |
+| What is not | Geometry probe on the final binary (host was locked, I-07); optional `pointer.html` click-position repeat. The 18 guided rows are done (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)), including real mouse clicks on `_blank` links |
 | Raw runs | `docs/validation/runs/m1-audit-final/` (ignored by git; the original M1 runs sit beside it, untouched) |
 
 **Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
@@ -23,7 +23,7 @@ I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
 roadmap section 7 (triage rule).
 
 **Open right now**
-1. Maintainer: review (Codex review in progress), run the guided checks, merge, decide Gate A.
+1. Maintainer: finish the review, merge, decide Gate A. The 18 guided checks are done (all pass or recorded); optional: `pointer.html`, geometry probe when the session is unlocked.
 2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified. The evidence hashes above are stale for `src/browser.c` (F-30 changed it); re-record the evidence once, next.
 3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes).
 
