@@ -6,11 +6,15 @@
   body { font: 20px/1.5 sans-serif; margin: 24px; background: #eef6ff; color: #132b35; }
   li { margin: 10px 0; }
   code { background: #dbe9f7; padding: 2px 6px; }
+  body { padding-bottom: 40vh; }
+  #log { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; margin: 0;
+         padding: 8px 24px; background: #132b35; color: #d8f0ff; font: 16px/1.4 monospace; white-space: pre-wrap; }
 </style>
 <h1>Policy fixture: local page</h1>
 <p>A <code>file:</code> page is trusted. Click each item and compare with the expected
-result. The window title must read <code>Policy fixture (local) — foob</code>.</p>
-<ol>
+result. <b>Item numbers match the checklist.</b> The dark panel at the bottom is this
+page's own log and confirms that each click registered. The window title must read <code>Policy fixture (local) — foob</code>.</p>
+<ol start="15">
   <li><a href="linked.html" target="_blank">New-window link to another local file</a><br>
     Expected: opens in <b>this</b> window ("Local link navigation PASS"); the link
     there returns to the viewport fixture.</li>
@@ -20,8 +24,14 @@ result. The window title must read <code>Policy fixture (local) — foob</code>.
     Expected: nothing happens; the log below says <code>returned null</code>
     (<code>window.open</code> is unsupported).</li>
 </ol>
-<code id="log">log</code>
+<div id="log">log (what the page saw)</div>
 <script>
+  let number = 15;
+  for (const li of document.querySelectorAll('ol > li')) li.dataset.item = number++;
+  document.addEventListener('click', (event) => {
+    const item = event.target.closest('li');
+    if (item) document.getElementById('log').textContent += '\nclick registered on item ' + item.dataset.item;
+  });
   document.getElementById('open').onclick = () => {
     document.getElementById('log').textContent += '\nwindow.open returned ' + window.open('https://example.org/');
   };

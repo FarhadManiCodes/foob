@@ -5,12 +5,18 @@
 <style>
   body { font: 20px/1.5 sans-serif; margin: 24px; background: #fff8ee; color: #2b1d13; }
   li { margin: 10px 0; }
-  code, #log { background: #f3e6d4; padding: 2px 6px; }
-  #log { display: block; white-space: pre-wrap; margin-top: 16px; padding: 10px; }
+  body { padding-bottom: 40vh; }
+  code { background: #f3e6d4; padding: 2px 6px; }
+  /* The log stays at the bottom of the window so no scrolling is needed to read it. */
+  #log { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; margin: 0;
+         padding: 8px 24px; background: #2b1d13; color: #ffe9c8; font: 16px/1.4 monospace; white-space: pre-wrap; }
 </style>
 <h1>Policy fixture: remote page</h1>
 <p>Served from loopback, which foob treats as <b>remote</b> (untrusted). Click each
-item and compare with the expected result. The window title (see
+item and compare with the expected result. <b>Item numbers match the checklist.</b>
+The dark panel at the bottom is this page's own log (what the page saw); it also
+confirms that each click registered. Tell Claude the item number and what you saw.
+The window title (see
 <code>niri msg windows</code>) must read <code>Policy fixture (remote) — foob</code>:
 the hidden direction override and the extra spaces in this page's title are removed.</p>
 <ol>
@@ -50,9 +56,16 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li>Right-click anywhere on the page.<br>
     Record: is a context menu shown? (M3-01)</li>
 </ol>
-<code id="log">log</code>
+<div id="log">log (what the page saw)</div>
 <script>
   const log = (text) => { document.getElementById('log').textContent += '\n' + text; };
+  let number = 1;
+  for (const li of document.querySelectorAll('ol > li')) li.dataset.item = number++;
+  document.addEventListener('click', (event) => {
+    const item = event.target.closest('li');
+    if (item) log('click registered on item ' + item.dataset.item);
+  });
+  document.addEventListener('contextmenu', () => log('right-click registered (page saw the event); is a menu on screen?'));
   document.getElementById('open').onclick = () => {
     log('window.open from click returned ' + window.open('second.html'));
   };
@@ -63,6 +76,6 @@ the hidden direction override and the extra spaces in this page's title are remo
     navigator.mediaDevices.getUserMedia({ audio: true, video: true })
       .then(() => log('camera/microphone: granted'), (e) => log('camera/microphone: ' + e.name));
   };
-  document.getElementById('file').onchange = () => log('file input changed');
+  document.getElementById('file').onchange = () => log('item 10: file input changed (a file was chosen)');
   log('window.open at load returned ' + window.open('second.html'));
 </script>

@@ -55,9 +55,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def reply_echo(self, method, body):
         # The title carries the result so it is readable in the window title.
+        passed = method == 'POST' and len(body) == 15
+        verdict = ('<h1 style="color:#0a7d2c">PASS: the form body arrived (POST, 15 bytes)</h1>' if passed else
+                   '<h1 style="color:#b00020">FAIL: expected POST with 15 bytes</h1>')
         page = (f'<!doctype html><meta charset="utf-8"><title>Echo {method} {len(body)} bytes</title>'
-                f'<h1>Echo page</h1><p>Request method: <b>{method}</b>, body: <b>{len(body)} bytes</b> '
-                f'(expected for the fixture form: POST, 15 bytes).</p>'
+                f'<body style="font:24px/1.5 sans-serif;margin:24px">{verdict}'
+                f'<p>Request method: <b>{method}</b>, body: <b>{len(body)} bytes</b>. '
+                f'A GET with 0 bytes means the new-window code dropped the form body.</p>'
                 f'<p><a href="/">Back to the policy fixture</a></p>').encode('utf-8')
         self.reply(200, 'text/html; charset=utf-8', page)
 

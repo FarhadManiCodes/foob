@@ -15,9 +15,15 @@ python3 tests/benchmark/interactive.py --binary build/foob \
     --uri http://127.0.0.1:8765/ --output /tmp/foob-guided-remote.json
 ```
 
-Choose a new `--output` path for every run. The page lists each item with its
-expected result. In a third terminal, `niri msg windows` shows the window title and
-app-id while the page is open.
+Choose a new `--output` path for every run. (Running `./build/foob http://127.0.0.1:8765/`
+directly also works; it just records nothing.) The page numbers its items like the table
+below and lists each item's expected result. **The dark panel at the bottom of the page is
+the page's own log**: it confirms that each click registered and shows what `window.open`
+and the camera request returned. The terminal prints nothing for these checks except the
+server's `GET` lines. In a third terminal, `niri msg windows` shows the window title and
+app-id. You do not need to fill the table: tell Claude the item number and what you saw.
+There is no reload key; to restart a page, close the window and start it again. Item 9
+ends on an "Echo page" that says **PASS** or **FAIL** in large text.
 
 | # | Item on the page | Expected | Result |
 |---|---|---|---|
@@ -25,13 +31,13 @@ app-id while the page is open.
 | 2 | Ordinary link to a remote page | opens in the same window | |
 | 3 | New-window link to a local file | nothing happens | |
 | 4 | Ordinary link to a local file | nothing happens | |
-| 5 | `window.open()` from a click | nothing happens; log says `returned null` (unsupported) | |
+| 5 | `window.open()` from a click | nothing happens; the page log says `returned null` (unsupported) | |
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | |
 | 8 | Link with `download` attribute | nothing happens; no file saved | |
-| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window saying POST and 15 bytes (a GET with 0 bytes means the body was lost) | |
+| 9 | Submit a POST form (`target=_blank`) | opens "Echo page" in the same window with a green **PASS** (POST, 15 bytes); a red FAIL (GET, 0 bytes) means the body was lost | |
 | 10 | File input (record only, M3-02) | what happens? | |
-| 11 | Camera and microphone request (record only, M3-05) | prompt? log shows a permission error | |
+| 11 | Camera and microphone request (record only, M3-05) | prompt? the page log shows `camera/microphone: <error name>` | |
 | 12 | PDF link (record only, M3-04) | what is shown? | |
 | 13 | Right-click on the page (record only, M3-01) | context menu shown? | |
 | 14 | Window title in `niri msg windows` | `Policy fixture (remote) — foob`; app-id `dev.foob.Browser` | |
