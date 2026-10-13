@@ -21,11 +21,11 @@ app-id while the page is open.
 
 | # | Item on the page | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | opens in the same window ("Second page") | |
+| 1 | New-window link to a remote page | opens in the same window ("Second page"). If nothing happens, say so: foob's handler may not be reached by real clicks (scripted requests never reach it) | |
 | 2 | Ordinary link to a remote page | opens in the same window | |
 | 3 | New-window link to a local file | nothing happens | |
 | 4 | Ordinary link to a local file | nothing happens | |
-| 5 | `window.open()` from a click | opens "Second page" in the same window | |
+| 5 | `window.open()` from a click | opens "Second page" in the same window (same caveat as row 1) | |
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | |
 | 8 | Link with `download` attribute | nothing happens; no file saved | |

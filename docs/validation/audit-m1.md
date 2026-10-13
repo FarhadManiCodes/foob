@@ -16,7 +16,7 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 | 2 | Startup allowlist accepted `https://example.org:99999/` and URIs with raw spaces/control characters; GLib's parser tolerates both. | New C unit test `tests/test_target.c`, failed on first run. | Reject ports above 65535 and any byte <= 0x20 or 0x7f before parsing. |
 | 3 | `WebKitWebView::close` (page `window.close()`) was ignored. | Upstream handles it; single view means quit. | Connect `close` and stop the loop. Not exercised by a test: WebKit only honours `window.close()` for script-opened windows. |
 | 4 | **Silent downloads.** An attachment response was saved into `~/Downloads` with no prompt. | Probe against the baseline: `payload.bin` appeared. `tests/nested_lifecycle.py download-cancelled` streams a 300 MiB attachment from a loopback server and passes only if the server sees the transfer abort after under 16 MiB of the 300 MiB (it sent 0.1 MiB in the one-off run and 1.2 MiB once under load), the stream stays stopped, and no file holding the payload exists in the download, cache, data or temp directories (all redirected below a temp dir). On the baseline the server is still streaming after 10 s and the test fails (negative control); the earlier one-off run saw 81 MiB sent and `.wkdownload` files there versus 0.1 MiB and no files now. | Cancel every download on `WebKitNetworkSession::download-started` until M3-03 designs an explicit per-download decision (requirement and acceptance criteria added to the roadmap). |
-| 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked (tested). The positive click path needs real input and is a guided check below. Separate window deferred to roadmap M2-11. |
+| 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked. **What is verified:** scripted requests (`window.open`, a programmatic click on a `_blank` link, with or without WebKit's popup blocker) never navigate (`tests/nested_lifecycle.py`, re-checked after a 3 s wait). **What is not:** they never reach foob's policy handler at all (a debug build logged no `NEW_WINDOW_ACTION` decision even with popups allowed; WebKit's `create` signal is what fires), so foob's own gesture check is defense in depth that no automated test exercises. Whether a real click on a `_blank` link reaches the handler needs real input and is a guided check below; if it does not, such links simply do nothing (safe, but the same-window behavior would then need a `create` handler). Separate window deferred to roadmap M2-11. |
 | 6 | **Web process crash left a blank or frozen window** with no signal. | `tests/nested_lifecycle.py web-process-crash` SIGKILLs the exact `WPEWebProcess`: the baseline stays running (negative control), the fix exits with code 4 and no survivors. | Handle `web-process-terminated`: stop the loop and return `FOOB_EXIT_ENGINE_LOST` (4) through `foob_browser_run()`, so the normal teardown runs. Reload-once recovery stays in roadmap M3-07. |
 | 7 | **Unstable window app-id.** niri reported `org.webkit.app-<sha256 of the executable's absolute path>`, so compositor window rules could not match foob and broke whenever the binary moved. | Nested niri, `niri msg -j windows`: the hash equals the SHA256 of the absolute binary path. Setting the GLib program name to a valid application ID before the view exists changes it; a name without a dot is ignored and the hash returns. Every `tests/nested_lifecycle.py` scenario now asserts the app-id; the baseline binary fails it. | `g_set_prgname("dev.foob.Browser")` in `foob_browser_new()` (name chosen by the maintainer). M2-04 passes explicit profile directories, so the program name does not decide any storage path. |
 
@@ -26,14 +26,16 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 allowlist, unit-tested without a display), `diagnostics.[ch]` (all redacted
 logging, null-safe when disabled, one geometry scheduler instead of two copies),
 `browser.[ch]` (lifecycle), `exit_status.h`. Diagnostics output is
-byte-identical to the baseline on SIGTERM and SIGINT. `.text` grew by ~100 bytes.
+byte-identical to the baseline on SIGTERM and SIGINT. This pure refactor grew `.text` by ~100 bytes; the later behaviour changes account for the rest of the growth in the binary-size section.
 `window_title.[ch]` (pure GLib) maps the page title to the compositor-visible
 window title, `<page title> — foob`, or plain `foob` without a usable title.
 `foob_uri_is_local()` in `target.c` is the single trust decision: `about:blank`
 and `file:` URIs without a remote host are local and trusted; every other origin
 is untrusted. Untrusted titles are repaired to valid UTF-8, lose control
-characters and Unicode bidi overrides (which could visually reorder the
-trailing `foob`), have whitespace collapsed and are cut at 120 characters;
+characters (C0, DEL and C1), lose invisible format characters (Unicode bidi
+overrides, which could visually reorder the trailing `foob`, plus zero-width and
+tag characters; the joiners U+200C and U+200D stay), have whitespace collapsed
+and are cut at 120 characters;
 trusted ones keep their text apart from protocol needs (valid UTF-8, no control
 characters, 240 characters). Titles are never logged. Verified end to end in
 the nested compositor: a hostile loopback page title
@@ -157,8 +159,8 @@ loaded in this audit.)
 | Display loss | now handled (was missing) | `_exit(1)` | Fixed. |
 | Page close | now handled (was missing) | quit when last view closes | Fixed. |
 | Ownership | view owns display/session | releases own refs after view creation | Now matches. |
-| Title | fixed `"foob"` | follows `notify::title` | **Decision needed** (below). |
-| Web process crash | logged only | not handled in main either | **Decision needed.** |
+| Title | fixed `"foob"` | follows `notify::title` | Done: page title plus ` — foob`, remote titles sanitized (decision 1). |
+| Web process crash | logged only | not handled in main either | Done: exit 4 (decision 5); reload-once recovery is roadmap M3-07. |
 | Settings / features | WebKit defaults | explicit feature flags for developer use | Defaults are the recommendation for a browser; revisit with the M2 policy. |
 | Memory pressure | not set | not set | Tested; no benefit. |
 
