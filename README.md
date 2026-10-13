@@ -55,7 +55,9 @@ The [desktop checklist](docs/validation/desktop-checklist.md) passes; the
 the [deferred font observation](docs/validation/font-follow-up.md).
 The standard-library Python scripts under `tests/benchmark/` need desktop access
 and readable process PSS. Run `python3 tests/benchmark/suite.py` for serial fresh
-launches and a separate local warm-reload control. No Python packages are needed.
+launches and a separate local warm-reload control; each suite run writes a new
+`docs/validation/runs/suite-<UTC time>/` folder and never overwrites earlier runs
+(`run.py` also refuses an existing output path). No Python packages are needed.
 Each opens a test window; do this when desktop interaction is available.
 The suite checks all browser descendants, including sandbox helpers and the D-Bus
 proxy, and checks their disappearance after shutdown.

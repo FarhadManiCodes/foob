@@ -65,3 +65,4 @@ with output.with_suffix('.log').open('w') as stream:
                                       and not record['survivors_after_10s'] else 'fail')
         output.write_text(json.dumps(record, indent=2) + '\n')
 print(f"Interactive lifecycle: {record['lifecycle_result']}", flush=True)
+raise SystemExit(0 if record['lifecycle_result'] == 'pass' else 1)

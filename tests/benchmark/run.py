@@ -41,8 +41,10 @@ record = {
     'stop': args.stop, 'samples': [],
 }
 output = Path(args.output)
-output.parent.mkdir(parents=True, exist_ok=True)
 log = output.with_suffix('.log')
+if output.exists() or log.exists():
+    raise SystemExit(f'{output} or its log already exists; choose a new output path to preserve existing evidence')
+output.parent.mkdir(parents=True, exist_ok=True)
 tracked = {}
 process = None
 geometry_reference = None

@@ -7,8 +7,11 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import sys
 
-directory = Path('docs/validation/runs')
+# Optional argument: a run directory (for example a suite-<time> folder); its summary is
+# written next to the runs. Without it the curated docs/validation/results.json is rewritten.
+directory = Path(sys.argv[1]) if len(sys.argv) > 1 else Path('docs/validation/runs')
 result = {'schema_version': 1, 'generated_utc': datetime.now(timezone.utc).isoformat(),
           'raw_artifacts': 'docs/validation/runs/ is ignored; preserved locally',
           'measurements': {}, 'lifecycle_and_controls': {}, 'geometry_probes': {}}
@@ -56,5 +59,6 @@ for path in sorted(directory.glob('*.json')):
     else:
         result['lifecycle_and_controls'][path.stem] = common
 
-Path('docs/validation/results.json').write_text(json.dumps(result, indent=2) + '\n')
-print('Saved compact evidence: docs/validation/results.json')
+target = directory / 'results.json' if len(sys.argv) > 1 else Path('docs/validation/results.json')
+target.write_text(json.dumps(result, indent=2) + '\n')
+print(f'Saved compact evidence: {target}')
