@@ -17,5 +17,5 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `build/`, `build-m0/`, `build-final/` are ignored local build directories. `design-references/qvu/`, `.agents/`, `.codex/` and `.aws/` are also ignored.
 - `docs/research/qvu/` is historical Qt-era research, not a requirement.
-- Another agent may share the checkout; check `git status` first and use a `git worktree` for work that needs a different branch.
+- Another agent (Codex) may share the checkout; check `git status` and `git branch --show-current` first. Work in the main checkout on the branch the maintainer names; do not create worktrees, clones or extra project folders without asking, because the maintainer reviews and runs other agents in this one folder.
 - The global rule against `Co-Authored-By` or AI-attribution trailers in commits and PR bodies applies here.
