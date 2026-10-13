@@ -222,10 +222,10 @@ Evidence to bring to the review:
 
 **Goal:** make essential websites and document workflows work without accidentally widening privileges.
 
-- [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures.
+- [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures. *M1 guided check:* a right-click shows no context menu today.
 
   **Carried from the M1 audit:** `window.open()` is unsupported today (returns `null`; WebKit's `create` signal is unhandled) and `target=_blank` links navigate the current window, so popup flows that need `window.opener` (OAuth sign-in popups) do not work; decide the popup policy with that in mind. Record the current default for right-click context menus, which has not been observed.
-- [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads.
+- [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads. *M1 guided check:* a file input does nothing today (no picker opens).
 
   **Carried from the M1 audit:** record what `<input type=file>` does today before choosing the mechanism (unverified).
 - [ ] **M3-03 / P0:** WebKit-managed downloads with validated destinations, file-name collisions, cancellation/failure reporting and authenticated PDF links.
