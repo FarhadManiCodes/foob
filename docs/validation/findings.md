@@ -75,14 +75,17 @@ delete one. Change its status and link the commit.
 | F-28 | Diagnostics pointer left dangling after free | Review-2 | fixed (set to null) | `src/browser.c` |
 | F-29 | `target.h` said "not an M2 policy" while exporting `foob_navigation_allowed()` | Review-2 | fixed (wording) | `src/target.h` |
 | F-30 | POST `target=_blank` forms lose their body. Preserve method and payload (use the action's request) or reject such submissions explicitly; never convert silently | Codex (P2) | fixed: `webkit_web_view_load_request` with the action's request. Scratch experiment with a forced user gesture: before `Echo GET 0 bytes`, after `Echo POST 15 bytes`. No automated test (needs a gesture; D-12); guided check row 9; evidence needs re-recording once F-31 is done | `src/browser.c` decide_policy, audit-m1.md defect 5 |
-| **F-31** | **`scripted-new-window-requests-do-not-navigate` passes vacuously:** the script runs in the head before `document.body` exists, so it throws before `a.click()` and `window.open()`. Add an explicit body (or wait for DOM ready) and assert the probes ran; keep a negative control | **Codex (P2)** | **open** | `tests/nested_lifecycle.py` scripted.html |
+| F-31 | `scripted-new-window-requests-do-not-navigate` passed vacuously: the script ran in the head before `document.body` existed, so it threw before `a.click()` and `window.open()` | Codex (P2) | fixed: the script runs at the end of `<body>` and reports `click-ok,open-null` to the test server (`/probe`); the scenario asserts that report, then the title and one load. Negative control with scratch builds: popup blocker off + gesture check removed makes the scenario fail; blocker off + check kept passes | `tests/nested_lifecycle.py` |
 
-**Consequence of F-31:** the statement "scripted requests never reach foob's policy
-handler and never navigate" in audit-m1.md (defect 5) and measurements-m1-audit.md
-rested partly on that scenario and on a debug experiment that used the same page. It
-is **unproven** until F-31 is fixed and the experiment repeated. `policy-fixture-remote`
-runs its script after the body exists and does exercise `window.open`; Review-2's
-forced-gesture experiment is independent.
+**Result of F-31:** the earlier claim "scripted requests never reach foob's policy
+handler" was unproven because the scenario and the first debug experiment used the same
+broken page. Repeated with a page that provably runs (probe report): with default
+settings a scripted `window.open` and a programmatic `a.click()` on a `_blank` link
+never reach `decide-policy` or `create` (WebKit's popup blocker), so the claim holds.
+With `javascript-can-open-windows-automatically` on (scratch build) both reach the
+handler with gesture=0 and foob's gesture check blocks them; with the check also removed
+the page navigates and the scenario fails. foob's own gesture check therefore has
+evidence only from scratch builds, not from a committed test (D-12).
 
 ### Carried into later milestones (roadmap lines hold the detail)
 

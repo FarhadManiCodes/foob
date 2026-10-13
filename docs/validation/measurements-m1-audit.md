@@ -119,9 +119,14 @@ original binary. Compare builds only within one session, as above.
   binary fails the compositor-loss, download, app-id and web-process scenarios; those
   negative controls were run during the audit and are recorded in prose, not as
   committed logs.
-- **Limit of the new-window scenarios:** scripted requests never reach foob's own
-  policy handler (WebKit stops them first), so these scenarios prove that scripted
-  and no-gesture requests do not navigate, not that foob's gesture check works.
+- **Limit of the new-window scenarios:** with default settings scripted requests never
+  reach foob's own policy handler (WebKit's popup blocker stops them first), so the
+  scenario proves that scripted and no-gesture requests do not navigate, not that foob's
+  gesture check works. The page reports its probe result (`click-ok,open-null`) to the
+  test server, so the scenario cannot pass without the probes having run (Codex F-31).
+  Scratch builds with the popup blocker off showed the requests reaching the handler
+  with gesture=0 and the gesture check blocking them; also removing the check made the
+  scenario fail (negative control, run once, not a committed log).
   The remote-to-`file:` rule is covered only by the `foob_navigation_allowed` unit test.
   Removing that check changes nothing in them (checked with a scratch build); see
   [audit-m1.md](audit-m1.md) defect 5.

@@ -131,10 +131,15 @@ def close_window(compositor, socket, window, browser):
 # /stream is a 300 MiB attachment sent slowly; `stream` records how far the server got.
 stream_size = 300 * 1024 * 1024
 stream = {'sent': 0, 'outcome': None}
+probes = []  # query strings the scripted page reports through /probe
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        if self.path.startswith('/probe?'):
+            probes.append(self.path.split('?', 1)[1])
+            self.send_response(204)
+            return super().end_headers()
         if self.path != '/stream':
             return super().do_GET()
         self.send_response(200)
@@ -206,12 +211,18 @@ scenario('download-cancelled', 0, lambda c, s, w, b: b.send_signal(signal.SIGTER
          uri=f'http://127.0.0.1:{server.server_port}/stream', load_status='failed',
          extra_env=download_env, after_load=transfer_stopped_without_files)
 
-# A script-created link has no user gesture, so its new-window request stays blocked.
+# A script-created link and window.open() have no user gesture, so their new-window
+# requests stay blocked. The script runs at the end of <body> (document.body exists)
+# and reports what its calls did through /probe, so the scenario proves the probes ran
+# instead of passing because the script threw.
 (scratch / 'second.html').write_text('<!doctype html><title>second</title>second')
 (scratch / 'scripted.html').write_text(
-    '<!doctype html><title>first</title><script>'
+    '<!doctype html><title>first</title><body>first<script>'
     'var a=document.createElement("a");a.href="second.html";a.target="_blank";'
-    'document.body.appendChild(a);a.click();window.open("second.html");</script>first')
+    'document.body.appendChild(a);var r;'
+    'try{a.click();var w=window.open("second.html");r="click-ok,open-"+(w===null?"null":"window");}'
+    'catch(e){r="error-"+e.name;}'
+    'new Image().src="/probe?"+r;</script></body>')
 
 
 def stays_on_page(title):
@@ -226,9 +237,15 @@ def stays_on_page(title):
     return check
 
 
+def scripted_probes_ran_and_stayed(browser, socket, errors):
+    wait_for(lambda: probes, 10, 'the scripted page never reported its probes')
+    assert probes == ['click-ok,open-null'], f'probe result {probes}'
+    stays_on_page('first \u2014 foob')(browser, socket, errors)
+
+
 scenario('scripted-new-window-requests-do-not-navigate', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
-         expected_title='first \u2014 foob', after_load=stays_on_page('first \u2014 foob'))
+         expected_title='first \u2014 foob', after_load=scripted_probes_ran_and_stayed)
 # The guided-check fixtures must keep loading and keep their expected window titles.
 policy, policy_url = policy_server.serve()
 scenario('policy-fixture-remote', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
