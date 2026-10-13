@@ -23,7 +23,7 @@ I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
 roadmap section 7 (triage rule).
 
 **Open right now**
-1. Maintainer: finish the review, merge, decide Gate A. The 18 guided checks are done (all pass or recorded); optional: `pointer.html`, geometry probe when the session is unlocked.
+1. Maintainer: finish the review, merge, decide Gate A. The 18 guided checks are done (all pass or recorded); optional: `pointer.html` (geometry probe done on `d9ea90d`).
 2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified. The evidence hashes above are stale for `src/browser.c` (F-30 changed it); re-record the evidence once, next.
 3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes).
 

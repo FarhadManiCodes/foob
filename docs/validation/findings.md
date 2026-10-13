@@ -112,4 +112,4 @@ evidence only from scratch builds, not from a committed test (D-12).
 | I-04 | `create` handler so `window.open` can navigate the same window | M2-11 / M3-01; decide with popup policy |
 | I-05 | Untrusted-site mode with JIT off | M5-10 |
 | I-06 | Hardening-vs-feature split of the +3.5 KB binary growth | measure by building without hardening flags |
-| I-07 | Run `desktop_probe.py` on the final binary | blocked while the host session is locked |
+| I-07 | Run `desktop_probe.py` on the final binary | done on `d9ea90d` (pass, 2026-10-13); repeat after any C change |

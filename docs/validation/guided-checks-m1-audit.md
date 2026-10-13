@@ -70,14 +70,12 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 ## Geometry probe (no input needed)
 
-`python3 tests/benchmark/desktop_probe.py --binary build/foob --label audit-probe
---uri <viewport fixture URI> --resize` passed on revision `2dfe12d`: viewport
-950x1188 at scale 1.0, narrowed to 700x1188, fullscreen 1920x1200 (fullscreen=1),
-restored to 700x1188 (the narrowed column width), window closed with exit 0 and no
-surviving processes. Screenshots were inspected and deleted. A repeat on the final
-revision `9c81515` could not run: `swaylock` was active on the host, the compositor
-ignored the resize, fullscreen and close actions, and the probe failed with a close
-timeout (it cleaned up its own processes). Source changes after `2dfe12d` touch the
-title sanitizer, exit-status handling, a null guard and the build flags, not geometry
-or input; re-run the probe once the session is unlocked if you want it on the final
-binary.
+`python3 tests/benchmark/desktop_probe.py --binary build/foob --label <new label>
+--uri <viewport fixture URI> --resize` passed on revision `2dfe12d` and again on
+**`d9ea90d`** (2026-10-13, session unlocked): viewport 950x1188 at scale 1.0, narrowed
+to 700x1188 (one column), fullscreen 1920x1200 (fullscreen=1, two columns), restored to
+700x1188; window closed with exit 0 and no surviving processes (the one remaining entry
+is a zombie web process that was already reaped). The narrow and fullscreen
+screenshots were inspected (layout correct, title bar shows the CSS size) and deleted.
+The earlier failure on `9c81515` was swaylock being active on the host. The probe
+ran twice on `d9ea90d`; the second run's result is the one recorded.
