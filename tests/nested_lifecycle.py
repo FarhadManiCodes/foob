@@ -32,6 +32,7 @@ import policy_server  # noqa: E402
 binary = str(Path(sys.argv[1]).resolve())
 keep = '--keep' in sys.argv[2:]
 selected = set(sys.argv[2:]) - {'--keep'}  # empty means every scenario
+known = []  # every scenario name seen, to reject a misspelled or obsolete request
 scratch = Path(tempfile.mkdtemp(prefix='foob-nested-'))
 all_passed = False
 
@@ -81,6 +82,7 @@ def windows(socket):
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
              load_status='ok', extra_env=None, after_load=None, expected_app_id='dev.foob.Browser'):
+    known.append(name)
     if selected and name not in selected:
         return
     compositor, display, socket = start_compositor()
@@ -271,4 +273,7 @@ def kill_web_process(compositor, socket, window, browser):
 
 # A dead web process leaves nothing to show: the browser exits with status 4.
 scenario('web-process-crash', 4, kill_web_process)
+if selected - set(known):
+    # A name that matched nothing ran nothing; never report that as a pass.
+    sys.exit(f"unknown scenario(s): {', '.join(sorted(selected - set(known)))}; known: {', '.join(known)}")
 all_passed = True
