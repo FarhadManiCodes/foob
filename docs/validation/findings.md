@@ -35,6 +35,8 @@ delete one. Change its status and link the commit.
 | D-16 | Never disable TLS or sandbox checks. Diagnostics never print URLs, titles, error text, cookies or input contents. No input-automation tools. Never load Google Scholar (use Wikipedia, Semantic Scholar, local fixtures). |
 | D-17 | Deferred by the maintainer: the font-language-menu glyph issue and the project license (M0-05). |
 | D-18 | Binary size is tracked as a quality signal: record stripped size and `size` per object each milestone; explain growth over about 10%. |
+| D-19 | PDFs open inline in the stock engine's PDF.js viewer; keep it as is for now (2026-10-13). The viewer's save button must still obey the M3-03 download rule. |
+| D-20 | Removing accessibility (`USE_ATK` off) from the custom engine is a requested evaluation, tracked as roadmap M5-11; the a11y-bus warnings stay until then (2026-10-13). |
 
 ## Findings register
 
@@ -77,7 +79,7 @@ delete one. Change its status and link the commit.
 | F-30 | POST `target=_blank` forms lose their body. Preserve method and payload (use the action's request) or reject such submissions explicitly; never convert silently | Codex (P2) | fixed: `webkit_web_view_load_request` with the action's request. Scratch experiment with a forced user gesture: before `Echo GET 0 bytes`, after `Echo POST 15 bytes`. No automated test (needs a gesture; D-12); guided check row 9; evidence needs re-recording once F-31 is done | `src/browser.c` decide_policy, audit-m1.md defect 5 |
 | F-31 | `scripted-new-window-requests-do-not-navigate` passed vacuously: the script ran in the head before `document.body` existed, so it threw before `a.click()` and `window.open()` | Codex (P2) | fixed: the script runs at the end of `<body>` and reports `click-ok,open-null` to the test server (`/probe`); the scenario asserts that report, then the title and one load. Negative control with scratch builds: popup blocker off + gesture check removed makes the scenario fail; blocker off + check kept passes | `tests/nested_lifecycle.py` |
 | F-32 | The guided checks were hard to follow: the log was off-screen at the bottom of the page, clicks that do nothing could not be told from clicks that did not register, row 9 gave no clear verdict | Maintainer | fixed: fixed log panel, click registration lines, item numbers match the checklist, Echo page shows PASS or FAIL; fixtures only, no C change | `tests/fixtures/policy-*.html`, `tests/policy_server.py`, guided-checks-m1-audit.md |
-| F-33 | A PDF URL opens inline in the stock engine's PDF.js viewer (save, print, annotate buttons), against the "external PDF viewer, no embedded renderer" decision | Maintainer (guided check row 12) | carried: M3-04 (roadmap note); custom build `ENABLE_PDFJS=OFF` | roadmap M3-04, audit-m1.md |
+| F-33 | A PDF URL opens inline in the stock engine's PDF.js viewer (save, print, annotate buttons), against the "external PDF viewer, no embedded renderer" decision | Maintainer (guided check row 12) | decided D-19: keep as is; save-button requirement carried to M3-03/M3-04 | roadmap M3-04, audit-m1.md |
 
 **Result of F-31:** the earlier claim "scripted requests never reach foob's policy
 handler" was unproven because the scenario and the first debug experiment used the same
