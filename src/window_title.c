@@ -6,19 +6,32 @@
 static constexpr glong untrusted_max_chars = 120;
 static constexpr glong trusted_max_chars = 240;
 
-/* Invisible format and filler characters that can hide or reorder text. The joiners U+200C
- * and U+200D stay: emoji sequences and Persian or Indic text need them. */
+/* Format characters (Unicode category Cf) that render as visible glyphs, mostly Arabic
+ * and Syriac prefixed number signs, and the joiners U+200C and U+200D, which emoji
+ * sequences and Persian or Indic text need. Every other Cf character is invisible. */
+static bool is_visible_or_needed_format(gunichar c)
+{
+    return c == 0x200c || c == 0x200d || (c >= 0x0600 && c <= 0x0605) || c == 0x06dd ||
+        c == 0x070f || c == 0x0890 || c == 0x0891 || c == 0x08e2 || c == 0x110bd || c == 0x110cd;
+}
+
+/* Invisible characters that can hide or reorder text, or pad it with blank-looking runs:
+ * every category Cf format character (bidi controls, zero width characters, soft
+ * hyphen, interlinear annotation, musical format characters, tag characters, ...) except
+ * the ones above, plus the invisible characters outside Cf: combining grapheme joiner,
+ * Hangul and halfwidth fillers, Khmer inherent vowels, Braille blank, object
+ * replacement character and variation selector supplement. */
 static bool is_invisible_format(gunichar c)
 {
-    return c == 0x034f || c == 0x061c || c == 0x115f || c == 0x1160 || c == 0x180e ||
-        c == 0x200b || c == 0x200e || c == 0x200f || (c >= 0x202a && c <= 0x202e) ||
-        (c >= 0x2060 && c <= 0x206f) || c == 0x3164 || c == 0xfeff || c == 0xffa0 ||
-        (c >= 0xe0000 && c <= 0xe01ef);
+    if (g_unichar_type(c) == G_UNICODE_FORMAT)
+        return !is_visible_or_needed_format(c);
+    return c == 0x034f || c == 0x115f || c == 0x1160 || c == 0x17b4 || c == 0x17b5 ||
+        c == 0x2800 || c == 0x3164 || c == 0xffa0 || c == 0xfffc || (c >= 0xe0000 && c <= 0xe01ef);
 }
 
 /* Builds a valid-UTF-8 copy with control characters (C0, DEL and C1) as spaces;
- * untrusted input also loses invisible format characters (bidi controls, zero-width
- * characters, tag characters) and has whitespace runs collapsed. */
+ * untrusted input also loses invisible characters (see is_invisible_format) and has
+ * whitespace runs collapsed. */
 static char *normalize(const char *page_title, bool trusted)
 {
     g_autofree char *valid = g_utf8_make_valid(page_title, -1);

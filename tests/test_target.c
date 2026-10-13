@@ -27,6 +27,7 @@ static const char *const rejected[] = {
     "file:relative.html", "file://remote-host/tmp/a.html", "file://127.0.0.1/tmp/a.html",
     "file:///tmp/%00", "https://example.org/%xx", "https://example.org:99999/",
     "https://exa mple.org/", "https://example.org/\n", "\nhttps://example.org/",
+    "http://good.com\\.evil.com/", "https://example.org\\path", "file:/\\evil.com/x", "file:///tmp\\a.html",
 };
 
 static void test_accepted(void)

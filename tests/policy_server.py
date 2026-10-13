@@ -46,8 +46,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.reply(404, 'text/plain', b'not found')
 
     def do_POST(self):
-        length = int(self.headers.get('Content-Length', 0))
-        body = self.rfile.read(min(length, 65536))
+        try:
+            length = int(self.headers.get('Content-Length', '0'))
+        except ValueError:
+            length = -1
+        if not 0 <= length <= 65536:  # missing is 0; refuse malformed, negative or oversized bodies
+            self.reply(400, 'text/plain', b'bad content length')
+            return
+        body = self.rfile.read(length)
         if self.path.split('?')[0] == '/echo':
             self.reply_echo('POST', body)
         else:

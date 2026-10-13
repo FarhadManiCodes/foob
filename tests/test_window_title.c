@@ -26,6 +26,13 @@ static void check(const char *page_title, bool trusted, const char *expected)
 #define HANGUL_FILLER "\xe3\x85\xa4"  /* U+3164 */
 #define HALFWIDTH_FILLER "\xef\xbe\xa0"  /* U+FFA0 */
 #define VS17 "\xf3\xa0\x84\x80"  /* U+E0100 variation selector 17 */
+#define SHY "\xc2\xad"    /* U+00AD soft hyphen */
+#define BRAILLE_BLANK "\xe2\xa0\x80"  /* U+2800 */
+#define KHMER_VOWEL "\xe1\x9e\xb4"  /* U+17B4 khmer vowel inherent aq */
+#define INTERLINEAR "\xef\xbf\xb9"  /* U+FFF9 interlinear annotation anchor */
+#define OBJECT_REPLACEMENT "\xef\xbf\xbc"  /* U+FFFC */
+#define MUSICAL_FORMAT "\xf0\x9d\x85\xb3"  /* U+1D173 musical symbol begin beam */
+#define ARABIC_NUMBER_SIGN "\xd8\x80"  /* U+0600, a visible format character */
 
 /* Same expectation for untrusted (remote) and trusted (local) content. */
 static void check_both(const char *page_title, const char *expected)
@@ -81,6 +88,13 @@ static void test_invisible_characters(void)
     check("a" CSI "b", false, "a b \u2014 foob");
     check("pay" ZWSP "pal" BOM "x" TAG, false, "paypalx \u2014 foob");
     check("a" DEPRECATED_FORMAT CGJ HANGUL_FILLER HALFWIDTH_FILLER VS17 "b", false, "ab \u2014 foob");
+    /* Review-3 additions: blank-looking and annotation characters. */
+    check("pay" SHY "pal" BRAILLE_BLANK BRAILLE_BLANK "x" KHMER_VOWEL INTERLINEAR "y" OBJECT_REPLACEMENT MUSICAL_FORMAT "z",
+          false, "paypalxyz \u2014 foob");
+    check(BRAILLE_BLANK BRAILLE_BLANK, false, "foob");
+    check("a" SHY "b" BRAILLE_BLANK "c", true, "a" SHY "b" BRAILLE_BLANK "c \u2014 foob");
+    /* Visible format characters (Arabic number sign) stay. */
+    check("a" ARABIC_NUMBER_SIGN "1", false, "a" ARABIC_NUMBER_SIGN "1 \u2014 foob");
     /* The joiners stay: Persian and emoji text need them. */
     check("\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645", false,
           "\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645 \u2014 foob");
