@@ -61,7 +61,7 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 `tests/fixtures/pointer.html` compares where you click with the expected centers of
 four crosshairs and shows the deltas. It passed on the old binary (within 10 CSS px
 after resize and scroll). Nothing in the audit touches input or geometry, so this is
-a quick confirmation rather than a requirement:
+a quick confirmation rather than a requirement. **Result (maintainer, 2026-10-13, real clicks): all deltas within 10 CSS px, as on the old binary.**
 
 ```sh
 python3 tests/benchmark/interactive.py --binary build/foob \
