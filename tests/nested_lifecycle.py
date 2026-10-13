@@ -108,14 +108,31 @@ def close_window(compositor, socket, window, browser):
 (scratch / 'hostile.html').write_text(
     '<!doctype html><meta charset=utf-8><title>  Pay\u202eevil   \u2066 page\x07  </title>x',
     encoding='utf-8')
-(scratch / 'payload.bin').write_bytes(b'x' * 5000)
+
+# /stream is a 300 MiB attachment sent slowly; `stream` records how far the server got.
+stream_size = 300 * 1024 * 1024
+stream = {'sent': 0, 'outcome': None}
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
-    def end_headers(self):
-        if self.path.endswith('.bin'):
-            self.send_header('Content-Disposition', 'attachment; filename="payload.bin"')
+    def do_GET(self):
+        if self.path != '/stream':
+            return super().do_GET()
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/octet-stream')
+        self.send_header('Content-Disposition', 'attachment; filename="stream.bin"')
+        self.send_header('Content-Length', str(stream_size))
         super().end_headers()
+        chunk = b'x' * 65536
+        try:
+            while stream['sent'] < stream_size:
+                self.wfile.write(chunk)
+                self.wfile.flush()
+                stream['sent'] += len(chunk)
+                time.sleep(0.01)
+            stream['outcome'] = 'completed'
+        except OSError:
+            stream['outcome'] = 'aborted'
 
     def log_message(self, *arguments):
         pass
@@ -133,23 +150,39 @@ scenario('title-remote-sanitized', 0, lambda c, s, w, b: b.send_signal(signal.SI
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
-# directory from $XDG_CONFIG_HOME/user-dirs.dirs, so a failure lands in a temp
-# directory and never in the real ~/Downloads.
+# directory from $XDG_CONFIG_HOME/user-dirs.dirs; the cache, data and temporary
+# directories are redirected too, so a failure writes only below `scratch` and
+# never to the real home, and the checks below can search every place a download
+# or its partial file could land.
 downloads = scratch / 'downloads'
+sandbox = {name: scratch / name for name in ('xdg', 'cache', 'data', 'tmp')}
 downloads.mkdir()
-(scratch / 'xdg').mkdir()
-(scratch / 'xdg' / 'user-dirs.dirs').write_text(f'XDG_DOWNLOAD_DIR="{downloads}"\n')
+for directory in sandbox.values():
+    directory.mkdir()
+(sandbox['xdg'] / 'user-dirs.dirs').write_text(f'XDG_DOWNLOAD_DIR="{downloads}"\n')
+download_env = {'XDG_CONFIG_HOME': str(sandbox['xdg']), 'XDG_CACHE_HOME': str(sandbox['cache']),
+                'XDG_DATA_HOME': str(sandbox['data']), 'TMPDIR': str(sandbox['tmp'])}
+stream_limit = 1024 * 1024  # a cancelled transfer ends within a few chunks; 1 MiB is generous
 
 
-def no_download_file(browser):
-    time.sleep(4)
+def transfer_stopped_without_files(browser):
+    wait_for(lambda: stream['outcome'], 10, 'server never saw the transfer end')
+    assert stream['outcome'] == 'aborted', 'the whole attachment was transferred'
+    assert stream['sent'] < stream_limit, f"server sent {stream['sent']} bytes before the abort"
+    sent = stream['sent']
+    time.sleep(2)
+    assert stream['sent'] == sent, 'transfer continued after the abort'
     assert browser.poll() is None, 'browser exited during download'
     assert not list(downloads.iterdir()), f'download was saved: {list(downloads.iterdir())}'
+    # Engine caches (Mesa, GStreamer) legitimately live below `sandbox`; look for the payload.
+    saved = [path for directory in sandbox.values() for path in directory.rglob('*')
+             if path.is_file() and path.read_bytes()[:4096] == b'x' * 4096]
+    assert not saved, f'attachment data was written to disk: {saved}'
 
 
 scenario('download-cancelled', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
-         uri=f'http://127.0.0.1:{server.server_port}/payload.bin', load_status='failed',
-         extra_env={'XDG_CONFIG_HOME': str(scratch / 'xdg')}, after_load=no_download_file)
+         uri=f'http://127.0.0.1:{server.server_port}/stream', load_status='failed',
+         extra_env=download_env, after_load=transfer_stopped_without_files)
 
 # A script-created link has no user gesture, so its new-window request stays blocked.
 (scratch / 'second.html').write_text('<!doctype html><title>second</title>second')
