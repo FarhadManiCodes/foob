@@ -189,18 +189,20 @@ Decided (maintainer, 2026-10-13):
 6. **Window app-id** is `dev.foob.Browser` (maintainer's choice), stable across
    binary locations.
 
+Also decided (2026-10-13): blocked-action feedback is an M2 task (M2-12); all
+local files stay trusted, explicitly **not closed**, to be revisited in M4 (roadmap
+open-decisions table); the triage rule for future findings is in roadmap section 7.
+Findings carried into later milestones are written into the roadmap: M2-03 notes,
+M2-12, notes under M3-01 to M3-05, M5-10 (including the JIT-off opt-in, not
+adopted) and M6-07.
+
 Still open:
 
-7. **JIT-off opt-in** for an untrusted-site mode: keep the default on; revisit
-   with M2 profiles.
-8. **Branch and Gate A.** The M1 evidence (hashes, guided checks) describes the
-   unmodified `m0-m1` binary. Either Gate A reviews `m0-m1` as is and this
-   branch lands afterwards as labeled corrections, or it is merged first and the
-   guided checks are repeated.
-9. **Host compositor closed-lid state.** With the lid closed the host niri
-   ignored `close-window` and focused nothing, which made the original
-   `--stop compositor` benchmark mode time out for both binaries. Environment
-   state, not an application defect; the nested test replaces it.
+7. **Branch and Gate A.** The maintainer reviews and merges `m1-audit` into
+   `m0-m1` personally; the M1 evidence was re-recorded for the audit binary
+   ([measurements-m1-audit.md](measurements-m1-audit.md)). Gate A stays undecided.
+8. **Host compositor closed-lid state** is environment only (the nested test
+   replaces the host-dependent benchmark mode); nothing to change.
 
 ## Guided checks still needed (real input, maintainer at the keyboard)
 

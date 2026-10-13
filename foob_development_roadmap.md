@@ -75,6 +75,7 @@ These are intentional investigations, not permission to improvise beyond scope o
 | Decision | Timing / owner | Required outcome |
 |---|---|---|
 | Project license | M0-05, maintainer | Record the choice; do not invent one. This P1 decision does not block the prototype |
+| Local-file trust | M4, maintainer | **Not closed.** Today every local `file:` page and `about:blank` is trusted (`foob_uri_is_local()`, the single decision point) and the design assumes that. Revisit in M4 for files that arrived from the web (M3 downloads) and for converted documents; no task until then |
 | Shortcut bindings and find-query interaction | M2-01/M2-09, implementing agent | Document tested bindings and input/focus behavior; retain no persistent chrome |
 | Navigation defaults and persistent-profile concurrency | M2-03/M2-04, implementing agent | Record allowed/denied schemes, window behavior and safe handling of concurrent launches; do not assume shared-profile locking works |
 | Scholar clearance tolerance and challenge frequency | Post-M2 decision and M3-08, maintainer | Accept or reject the observed workflow; record the tested time span and limits |
@@ -186,6 +187,8 @@ Evidence to bring to the review:
 - [ ] **M2-02 / P0:** Support command-line URL opening; back, forward, reload, stop, and **copy current URL** (without a permanent address bar).
 - [ ] **M2-03 / P0:** Define ordinary HTTP(S), `file:`, downloads, unknown schemes, and target=`_blank` behavior; reject unsafe external-command interpolation.
 
+  **Carried from the M1 audit into M2-03:** (1) ordinary in-window navigation relies on WebKit's own checks while the new-window path uses `foob_navigation_allowed()`; unify them into one policy and move the policy handlers out of `browser.c` into their own module. (2) The window-title sanitizer is a blocklist of bidi controls, not a security boundary; zero-width and look-alike characters are not removed and a page can end its title with `— foob`. (3) Title trust is read from the current URI when the title changes; decide trust once per committed load instead.
+
   **Decided in the M1 audit (2026-10-13), implemented on `m1-audit`:** links that ask for a new window (`target=_blank`, `window.open`) navigate the **current** window, only for a user gesture and only if `foob_navigation_allowed()` accepts the destination (same allowlist as startup targets; remote content never navigates to local content). Requests without a user gesture stay blocked. M2-03 still has to define unknown schemes (`mailto:`, custom schemes are currently ignored for new-window links) and the remaining policy. Opening a **separate** window (for example Shift-click) is deferred to M2-11.
 - [ ] **M2-04 / P0:** Add dedicated XDG profile/data/cache directories using `webkit_network_session_new(data_dir, cache_dir)` and the web view's `network-session` property; verify persistence after restart. The browser's `WebKitWebContext` and session have distinct responsibilities.
 - [ ] **M2-05 / P1:** Verify text selection, clipboard copy/paste, Unicode/compose input and focus in website forms.
@@ -198,6 +201,7 @@ Evidence to bring to the review:
 
 - [ ] **M2-10 / P1:** Decide HTTP authentication (401/407 Basic/Digest) without persistent chrome. **Known M1 behavior, deliberately left unchanged:** foob does not answer WebKit's `authenticate` request, so such a page stays loading and unauthenticated; this fails visibly and is a useful signal until a prompt exists. Credentials must never be logged or persisted unintentionally. Test with a local server returning 401.
 - [ ] **M2-11 / P2:** Decide whether and how a second window is opened (for example Shift-click on a link). Define which resources windows share (browser process, network session, cache, cookies, WebKit processes) and the memory/security consequences before implementing; the current design is one view per process.
+- [ ] **M2-12 / P1:** Feedback when foob blocks an action (cancelled download, blocked popup or script window, rejected link, scheme refused) without persistent chrome. Today nothing is shown; the window title is the candidate channel, to be decided with M2-07. Decided as an M2 task in the M1 audit (2026-10-13).
 - [ ] **M2-07 / P2:** Evaluate a transient URL launcher/prompt; **do not** choose an overlay, toolbar, tabs or IPC before an actual use case requires them.
 
   This defers URL-entry UI, not M2-09's required find-query interaction. Implement only the transient interaction needed for accepted reading controls; do not expand it into a general browser interface.
@@ -218,12 +222,22 @@ Evidence to bring to the review:
 **Goal:** make essential websites and document workflows work without accidentally widening privileges.
 
 - [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures.
+
+  **Carried from the M1 audit:** new-window links now navigate the current window, which breaks popup flows that need `window.opener` (OAuth sign-in popups); decide the popup policy with that in mind. Record the current default for right-click context menus, which has not been observed.
 - [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads.
+
+  **Carried from the M1 audit:** record what `<input type=file>` does today before choosing the mechanism (unverified).
 - [ ] **M3-03 / P0:** WebKit-managed downloads with validated destinations, file-name collisions, cancellation/failure reporting and authenticated PDF links.
 
   **No silent downloads (requirement from the M1 audit, 2026-10-13).** No download may start, and no file may be created, without an explicit user decision. M1 probing showed that WebKit's default saved an attachment response into `~/Downloads` with no prompt. Until this task is complete foob cancels every download (`WebKitNetworkSession::download-started` -> `webkit_download_cancel`) because there is no UI to ask yet. M3-03 replaces that interim default with an explicit per-download decision on a validated destination. Acceptance fixtures (local server, download directory redirected to a temporary directory through `XDG_CONFIG_HOME/user-dirs.dirs`): `Content-Disposition: attachment`, a link with the `download` attribute, a `blob:` download, a download started by a script without a user gesture, and a PDF link. For each, **before** the user accepts, no file, partial file or temporary file exists; after acceptance the file lands only in the validated destination, never overwrites silently, and leaves nothing behind when cancelled. Replace the `download-cancelled` scenario in `tests/nested_lifecycle.py` with accept/cancel/never-silent scenarios and keep a negative control that fails on a build with WebKit's default behavior.
+
+  **Trust note:** a file saved by a download is afterwards a local file, so `foob_uri_is_local()` would trust it. Validate destinations with that in mind; M4 revisits the local-file trust rule.
 - [ ] **M3-04 / P0:** Open downloaded PDFs through a carefully controlled external reader/desktop mechanism; avoid launching raw page-supplied commands.
+
+  **Carried from the M1 audit:** what foob displays for a PDF URL is unverified; record it first (the downloads are cancelled until M3-03).
 - [ ] **M3-05 / P0:** Verify TLS error handling, permission defaults and **effective runtime** sandbox isolation. The older `webkit_web_context_{get,set}_sandbox_enabled` accessors are **not available in WPE 2.0**; use current build/runtime evidence rather than coding against those symbols. **Do not disable sandbox/TLS checks to make a site work**.
+
+  **Carried from the M1 audit:** probing showed permission requests are denied and invalid certificates refused by WebKit's defaults, not by foob code; camera and microphone prompts have not been observed at the keyboard. Record the observed defaults before relying on them.
 - [ ] **M3-06 / P1:** Test Wikipedia, Scholar and Semantic Scholar search/forms/links and representative ChatGPT/Claude/Gemini editing/login/upload flows, documenting incompatibilities.
 - [ ] **M3-08 / P0:** Extend the accepted M2 Scholar baseline with M3's integrations: repeat search/result/scroll checks across restarts and separate sessions, record recurring challenges or loss of clearance, and verify paper/PDF links, authenticated downloads where applicable, and external PDF handoff. Bring renewed blocking to review; the M2 result establishes initial viability, not proof of long-term reliability.
 
@@ -297,6 +311,7 @@ Evidence to bring to the review:
   Repeat M4-03's fresh-process resource-policy controls and M4-05's cold offline, warm-reload and missing-asset cases on stock and custom WPE with equivalent isolated test data/cache state. Record each result separately; a warm/cached success cannot replace a cold pass. Keep Scholar persistence tests on their explicitly retained test profiles rather than applying empty-profile controls to restart-continuity checks.
 
 - [ ] **M5-09 / P1:** Test feature options incrementally when savings appear measurable; don't drop WebGL, spellchecking, accessibility or other capabilities without a targeted compatibility test.
+- [ ] **M5-10 / P1:** Carried from the M1 audit: revisit the JIT-off opt-in (measured on stock WPE: saves 11-32 MiB, 2.3x slower on a CPU-heavy page; not adopted), measure the exact GL renderer and per-feature acceleration, and keep the under-100-MiB result with its attribution (engine mappings and heap, not foob's ~9 KB of code). `-O3`, LTO and PGO affect only foob's own tiny code.
 
 ### Gate B — explicit optimization decision
 
@@ -317,6 +332,7 @@ No fixed percentage improvement is presumed in advance. Record repeated measurem
 - [ ] **M6-04 / P1:** Package `foob` independently from the engine, with documented runtime dependencies and license notices.
 - [ ] **M6-05 / P1:** Document keyboard shortcuts, PDF handoff, local-file trust model and performance methodology.
 - [ ] **M6-06 / P2:** Consider advanced window management, single-instance IPC, richer research integration and further memory tuning *only after* core operation is stable. Basic separate windows required by M3 popup policy and M4 preview-link routing are already in scope; this task does not defer them.
+- [ ] **M6-07 / P1:** Carried from the M1 audit: test fractional scaling and multi-monitor behavior when hardware allows (unavailable so far); keep the nested lifecycle suite (`tests/nested_lifecycle.py`) and the stripped-size and hardening checks as release gates.
 
 **Exit:** all M6 P0 checks pass: documented clean builds/smoke tests on the current supported Arch environment, security-update/fallback procedure, and crash/security/shutdown regression evidence. List the tested environment, known limitations and P1 deferrals; additional platforms are not implied. The maintainer decides readiness for regular personal use.
 
@@ -393,6 +409,11 @@ For PSS, account for **all WPE child processes**, not just the top-level `foob` 
 ## 7. Scope control and change rules
 
 - **Promote tasks only to solve observed problems** or unlock an explicit accepted goal; record why.
+- **Triage of findings (decided 2026-10-13).** A problem is not automatically a bug for the current milestone.
+  - *Not implemented yet*, where a later task already owns the capability or will replace the current behavior: record it in the milestone that owns the area; do not patch it.
+  - *A defect in behavior that already exists* is fixed in the current milestone, with a test that fails on the old build, when it would (a) propagate, because later work builds on it, or (b) stay wrong whatever later milestones deliver: a hang, crash, spin, data written without consent, or a security problem.
+  - When the proper feature belongs to a later milestone but today's default is unsafe, apply the smallest safe interim default now and record the replacement requirement in the owning milestone (examples: cancelled downloads until M3-03, exit on web-process death until M3-07).
+  - Every carried-forward finding gets a roadmap line that names its source.
 - **Do not fork WPE** unless actual upstream changes become necessary; compilation flags are not a reason to fork.
 - **Do not lock in custom WPE** until Gate B shows it has sufficient benefit.
 - **Security is non-negotiable:** process isolation/sandbox, TLS validation, and local-file boundaries remain enabled/tested.
