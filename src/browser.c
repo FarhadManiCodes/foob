@@ -19,6 +19,7 @@ struct FoobBrowser {
     WebKitWebView *web_view;
     FoobDiagnostics *diagnostics;  /* nullptr unless diagnostics are enabled. */
     int exit_status;               /* Result of foob_browser_run(). */
+    bool stopping;                 /* A shutdown was requested; keep its exit status. */
 };
 
 /* Mirrors the page title into the compositor-visible window title. */
@@ -27,8 +28,9 @@ static void update_window_title(FoobBrowser *browser)
     /* Only content from this machine is trusted; any other origin is not. */
     bool local = foob_uri_is_local(webkit_web_view_get_uri(browser->web_view));
     g_autofree char *title = foob_window_title(webkit_web_view_get_title(browser->web_view), local);
-    WPEView *view = webkit_web_view_get_wpe_view(browser->web_view);
-    wpe_toplevel_set_title(wpe_view_get_toplevel(view), title);
+    WPEToplevel *toplevel = wpe_view_get_toplevel(webkit_web_view_get_wpe_view(browser->web_view));
+    if (toplevel)  /* Nullable: the view may not have a toplevel yet. */
+        wpe_toplevel_set_title(toplevel, title);
 }
 
 static void title_changed([[maybe_unused]] GObject *object,
@@ -39,6 +41,7 @@ static void title_changed([[maybe_unused]] GObject *object,
 
 static void stop_loop(FoobBrowser *browser)
 {
+    browser->stopping = true;
     g_main_loop_quit(browser->loop);
 }
 
@@ -97,7 +100,8 @@ static void web_process_terminated([[maybe_unused]] WebKitWebView *web_view,
                                    gpointer user_data)
 {
     FoobBrowser *browser = user_data;
-    browser->exit_status = FOOB_EXIT_ENGINE_LOST;
+    if (!browser->stopping)  /* A requested shutdown keeps its own status. */
+        browser->exit_status = FOOB_EXIT_ENGINE_LOST;
     stop_loop(browser);
 }
 

@@ -19,9 +19,12 @@ add_project_arguments(cc.get_supported_arguments(
     '-Wmissing-prototypes', '-Wundef', '-Wcast-align', '-Wwrite-strings',
     '-fstack-protector-strong', '-fstack-clash-protection', '-fcf-protection=full',
     '-fno-plt'), language: 'c')
-if get_option('optimization') != '0'
-    # makepkg may already pass -D_FORTIFY_SOURCE through CFLAGS; undefine first.
-    add_project_arguments('-U_FORTIFY_SOURCE', '-D_FORTIFY_SOURCE=3', language: 'c')
+# Fortify needs optimization, and a caller (makepkg passes it through CFLAGS) may
+# already choose a level; respect that instead of redefining it. The compiler
+# probe cannot see environment flags, so read them directly.
+caller_flags = run_command('sh', '-c', 'echo "$CFLAGS $CPPFLAGS"', check: true).stdout()
+if get_option('optimization') in ['1', '2', '3', 's'] and not caller_flags.contains('_FORTIFY_SOURCE')
+    add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
 add_project_link_arguments(cc.get_supported_link_arguments(
     '-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack', '-Wl,--as-needed'), language: 'c')

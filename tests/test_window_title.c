@@ -16,6 +16,11 @@ static void check(const char *page_title, bool trusted, const char *expected)
 #define LRI "\xe2\x81\xa6"  /* U+2066 left-to-right isolate */
 #define ZWJ "\xe2\x80\x8d"  /* U+200D zero width joiner */
 #define RLM "\xe2\x80\x8f"  /* U+200F right-to-left mark */
+#define CSI "\xc2\x9b"      /* U+009B C1 control sequence introducer */
+#define ZWSP "\xe2\x80\x8b" /* U+200B zero width space */
+#define BOM "\xef\xbb\xbf"  /* U+FEFF zero width no-break space */
+#define TAG "\xf3\xa0\x80\x81" /* U+E0001 language tag */
+#define ZWNJ "\xe2\x80\x8c" /* U+200C zero width non-joiner */
 
 /* Same expectation for untrusted (remote) and trusted (local) content. */
 static void check_both(const char *page_title, const char *expected)
@@ -65,6 +70,19 @@ static void test_trust_levels(void)
     check("\U0001F468" ZWJ "\U0001F4BB", false, "\U0001F468" ZWJ "\U0001F4BB \u2014 foob");
 }
 
+static void test_invisible_characters(void)
+{
+    /* Remote: C1 controls become spaces; zero-width and tag characters vanish. */
+    check("a" CSI "b", false, "a b \u2014 foob");
+    check("pay" ZWSP "pal" BOM "x" TAG, false, "paypalx \u2014 foob");
+    /* The joiners stay: Persian and emoji text need them. */
+    check("\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645", false,
+          "\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645 \u2014 foob");
+    /* Local: C1 is still a control character; invisible format characters are kept. */
+    check("a" CSI "b", true, "a b \u2014 foob");
+    check("a" ZWSP "b", true, "a" ZWSP "b \u2014 foob");
+}
+
 static void test_long_title(void)
 {
     g_autofree char *ascii = g_strnfill(1024 * 1024, 'a');
@@ -95,6 +113,7 @@ int main(int argc, char *argv[])
     g_test_add_func("/window-title/fallback", test_fallback);
     g_test_add_func("/window-title/protocol-requirements", test_protocol_requirements);
     g_test_add_func("/window-title/trust-levels", test_trust_levels);
+    g_test_add_func("/window-title/invisible-characters", test_invisible_characters);
     g_test_add_func("/window-title/long-title", test_long_title);
     return g_test_run();
 }
