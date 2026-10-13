@@ -17,8 +17,12 @@ result. The window title must read <code>Policy fixture (local) — foob</code>.
   <li><a href="https://en.wikipedia.org/wiki/Mathematics" target="_blank">New-window link to a remote page</a><br>
     Expected: opens in this window (local pages may go to remote pages).</li>
   <li><button id="open">window.open() to https://example.org/ from a click</button><br>
-    Expected: opens in this window.</li>
+    Expected: nothing happens; the log below says <code>returned null</code>
+    (<code>window.open</code> is unsupported).</li>
 </ol>
+<code id="log">log</code>
 <script>
-  document.getElementById('open').onclick = () => window.open('https://example.org/');
+  document.getElementById('open').onclick = () => {
+    document.getElementById('log').textContent += '\nwindow.open returned ' + window.open('https://example.org/');
+  };
 </script>

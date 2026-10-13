@@ -226,7 +226,7 @@ def stays_on_page(title):
     return check
 
 
-scenario('new-window-without-gesture-blocked', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('scripted-new-window-requests-do-not-navigate', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
          expected_title='first \u2014 foob', after_load=stays_on_page('first \u2014 foob'))
 # The guided-check fixtures must keep loading and keep their expected window titles.

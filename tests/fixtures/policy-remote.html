@@ -23,7 +23,8 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li><a href="@LOCAL_FILE@">Ordinary link to a local file</a><br>
     Expected: nothing happens (WebKit refuses it).</li>
   <li><button id="open">window.open() from a click</button><br>
-    Expected: opens "Second page" in this window.</li>
+    Expected: nothing happens; the log below says <code>returned null</code>
+    (<code>window.open</code> is unsupported until M2-11 / M3-01).</li>
   <li><button id="later">window.open() 5 s after a click (no user gesture)</button><br>
     Expected: nothing happens; the log below says <code>returned null</code>.</li>
   <li><a href="attachment.bin">Link to an attachment download</a><br>
