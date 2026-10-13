@@ -78,9 +78,13 @@ static void download_started([[maybe_unused]] WebKitNetworkSession *session,
  * asked stays the initiator, so WebKit applies its usual rules: the frame's
  * sandbox flags, Sec-Fetch-Site and SameSite cookies, and its refusal to let
  * remote content navigate to local content. _top grants nothing a page could
- * not already ask for. Scripted clicks are not trusted events and are left
- * alone, so the popup blocker still stops them; other target names that would
- * open a window are not rewritten.
+ * not already ask for. The effective target follows WebKit: a link with an
+ * empty or missing target uses the document's <base target>, a form only with a
+ * missing one (an empty form target or formtarget means this frame). The saved
+ * attribute is restored only while it still holds _top, so a target the page's
+ * own handlers set meanwhile is kept. Scripted clicks are not trusted events and
+ * are left alone, so the popup blocker still stops them; other target names that
+ * would open a window are not rewritten.
  */
 static constexpr char same_window_script[] =
     "(() => {"
@@ -90,15 +94,17 @@ static constexpr char same_window_script[] =
     "  const toTop = (element, attribute) => {"
     "    const old = element.getAttribute(attribute);"
     "    element.setAttribute(attribute, '_top');"
-    "    setTimeout(() => old === null ? element.removeAttribute(attribute)"
-    "                                  : element.setAttribute(attribute, old));"
+    "    setTimeout(() => {"
+    "      if (element.getAttribute(attribute) === '_top')"
+    "        old === null ? element.removeAttribute(attribute) : element.setAttribute(attribute, old);"
+    "    });"
     "  };"
     "  addEventListener('click', (event) => {"
     "    if (!event.isTrusted)"
     "      return;"
     "    const link = event.composedPath().find((node) =>"
     "        (node.localName === 'a' || node.localName === 'area') && node.hasAttribute('href'));"
-    "    if (link && isBlank(effective(link.getAttribute('target'), link)))"
+    "    if (link && isBlank(effective(link.getAttribute('target') || null, link)))"
     "      toTop(link, 'target');"
     "  }, true);"
     "  addEventListener('submit', (event) => {"

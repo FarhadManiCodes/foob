@@ -30,7 +30,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split('?')[0]
         pages = {'/': 'policy-remote.html', '/second.html': 'policy-second.html',
-                 '/sandboxed.html': 'policy-sandboxed.html'}
+                 '/sandboxed.html': 'policy-sandboxed.html', '/base-target.html': 'policy-base-target.html'}
         if path in pages:
             body = (fixtures / pages[path]).read_text(encoding='utf-8')
             body = body.replace('@LOCAL_FILE@', local_file).encode('utf-8')

@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). The F-51/F-52 fix changed how `target=_blank` works, so rows 1, 3, 9, 15 and 16 and the new row 19 need a real click again: see [Re-check after F-51/F-52](#re-check-after-f-51f-52) (pending).** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). The F-51/F-52 fix changed how `target=_blank` works, so rows 1, 3, 9, 15 and 16 and the new rows 19 and 20 need a real click again: see [Re-check after F-51/F-52](#re-check-after-f-51f-52) (pending).** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -74,6 +74,7 @@ these rows need real clicks on the new binary. Use the commands above with a new
 | 15 | Local page: new-window link to another local file | opens "Local link navigation PASS" in the same window | pending |
 | 16 | Local page: new-window link to a remote page | opens in the same window | pending |
 | 19 | Remote page: link inside the sandboxed frame | the frame says `click registered`; nothing else happens (the window stays on the fixture) | pending |
+| 20 | Remote page: empty-target link in the frame under `<base target="_blank">` (F-59) | the whole window opens "Second page" | pending |
 
 ## Optional repeat of the click-position check
 
