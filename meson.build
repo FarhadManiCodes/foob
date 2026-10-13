@@ -19,11 +19,10 @@ add_project_arguments(cc.get_supported_arguments(
     '-Wmissing-prototypes', '-Wundef', '-Wcast-align', '-Wwrite-strings',
     '-fstack-protector-strong', '-fstack-clash-protection', '-fcf-protection=full',
     '-fno-plt'), language: 'c')
-# Fortify needs optimization, and a caller (makepkg passes it through CFLAGS) may
-# already choose a level; respect that instead of redefining it. The compiler
-# probe cannot see environment flags, so read them directly.
-caller_flags = run_command('sh', '-c', 'echo "$CFLAGS $CPPFLAGS"', check: true).stdout()
-if get_option('optimization') in ['1', '2', '3', 's'] and not caller_flags.contains('_FORTIFY_SOURCE')
+# Fortify needs optimization, and a caller may already choose a level (makepkg via
+# CFLAGS, which Meson stores in c_args at first configure, or -Dc_args=...);
+# respect that instead of redefining it.
+if get_option('optimization') in ['1', '2', '3', 's'] and not ' '.join(get_option('c_args')).contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
 add_project_link_arguments(cc.get_supported_link_arguments(

@@ -8,6 +8,7 @@ def source_manifest(root='src'):
     """SHA256 of every application source file, keyed by path, plus one combined digest."""
     files = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
              for path in sorted(Path(root).rglob('*')) if path.suffix in ('.c', '.h')}
+    assert files, f'no .c/.h files under {root!r}; run from the repository root'
     listing = ''.join(f'{digest}  {name}\n' for name, digest in files.items())
     return hashlib.sha256(listing.encode()).hexdigest(), files
 

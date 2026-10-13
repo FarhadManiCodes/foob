@@ -70,10 +70,12 @@ static void download_started([[maybe_unused]] WebKitNetworkSession *session,
 }
 
 /*
- * Links that ask for a new window (target=_blank, user-triggered window.open)
- * navigate this window instead: one view per window. Requests without a user
- * gesture stay blocked, as do destinations that fail foob_navigation_allowed().
- * Opening a separate window is a later decision (roadmap M2).
+ * Links and forms that ask for a new window (target=_blank) navigate this
+ * window instead: one view per window. Requests without a user gesture stay
+ * blocked, as do destinations that fail foob_navigation_allowed(). window.open()
+ * is unsupported: WebKit reports it through the "create" signal, which is not
+ * handled, so it returns null (roadmap M2-11 and M3-01 decide popups). Opening a
+ * separate window is likewise a later decision.
  */
 static gboolean decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *decision,
                               WebKitPolicyDecisionType type, [[maybe_unused]] gpointer user_data)
@@ -186,6 +188,7 @@ void foob_browser_free(FoobBrowser *browser)
     if (!browser)
         return;
     foob_diagnostics_free(browser->diagnostics);
+    browser->diagnostics = nullptr;
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_wpe_view(browser->web_view), browser);
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_display(browser->web_view), browser);
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_network_session(browser->web_view), browser);

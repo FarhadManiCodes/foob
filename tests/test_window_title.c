@@ -21,6 +21,11 @@ static void check(const char *page_title, bool trusted, const char *expected)
 #define BOM "\xef\xbb\xbf"  /* U+FEFF zero width no-break space */
 #define TAG "\xf3\xa0\x80\x81" /* U+E0001 language tag */
 #define ZWNJ "\xe2\x80\x8c" /* U+200C zero width non-joiner */
+#define DEPRECATED_FORMAT "\xe2\x81\xaa"  /* U+206A inhibit symmetric swapping */
+#define CGJ "\xcd\x8f"      /* U+034F combining grapheme joiner */
+#define HANGUL_FILLER "\xe3\x85\xa4"  /* U+3164 */
+#define HALFWIDTH_FILLER "\xef\xbe\xa0"  /* U+FFA0 */
+#define VS17 "\xf3\xa0\x84\x80"  /* U+E0100 variation selector 17 */
 
 /* Same expectation for untrusted (remote) and trusted (local) content. */
 static void check_both(const char *page_title, const char *expected)
@@ -75,6 +80,7 @@ static void test_invisible_characters(void)
     /* Remote: C1 controls become spaces; zero-width and tag characters vanish. */
     check("a" CSI "b", false, "a b \u2014 foob");
     check("pay" ZWSP "pal" BOM "x" TAG, false, "paypalx \u2014 foob");
+    check("a" DEPRECATED_FORMAT CGJ HANGUL_FILLER HALFWIDTH_FILLER VS17 "b", false, "ab \u2014 foob");
     /* The joiners stay: Persian and emoji text need them. */
     check("\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645", false,
           "\u0645\u06cc" ZWNJ "\u062e\u0648\u0627\u0647\u0645 \u2014 foob");

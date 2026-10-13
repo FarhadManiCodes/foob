@@ -6,14 +6,14 @@
 static constexpr glong untrusted_max_chars = 120;
 static constexpr glong trusted_max_chars = 240;
 
-/* Invisible format characters that can hide or reorder text. The joiners U+200C
+/* Invisible format and filler characters that can hide or reorder text. The joiners U+200C
  * and U+200D stay: emoji sequences and Persian or Indic text need them. */
 static bool is_invisible_format(gunichar c)
 {
-    return c == 0x061c || c == 0x180e || c == 0x200b ||
-        c == 0x200e || c == 0x200f || (c >= 0x202a && c <= 0x202e) ||
-        (c >= 0x2060 && c <= 0x2064) || (c >= 0x2066 && c <= 0x2069) ||
-        c == 0xfeff || (c >= 0xe0000 && c <= 0xe007f);
+    return c == 0x034f || c == 0x061c || c == 0x115f || c == 0x1160 || c == 0x180e ||
+        c == 0x200b || c == 0x200e || c == 0x200f || (c >= 0x202a && c <= 0x202e) ||
+        (c >= 0x2060 && c <= 0x206f) || c == 0x3164 || c == 0xfeff || c == 0xffa0 ||
+        (c >= 0xe0000 && c <= 0xe01ef);
 }
 
 /* Builds a valid-UTF-8 copy with control characters (C0, DEL and C1) as spaces;
