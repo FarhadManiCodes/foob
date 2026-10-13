@@ -82,6 +82,37 @@ custom-engine work, where they can matter; they cannot reduce the stock engine.
 Reading assembly was not worthwhile for this code (runs once at startup); it
 becomes relevant for code we own on hot paths in M2+ (converters, IPC parsing).
 
+## Binary size
+
+Size is tracked as a code-quality signal: any growth must be explainable by
+features, and our binary is compared with the upstream program that does the same
+job (WebKit's MiniBrowser, Arch package, stripped).
+
+| | `m0-m1` | `m1-audit` | MiniBrowser 2.54.1 |
+|---|---:|---:|---:|
+| File, stripped | 18,992 B | 22,520 B | 26,896 B |
+| `size` text / data / bss | 8,632 / 1,000 / 16 | 12,961 / 1,184 / 16 | 20,933 / 2,792 / 304 |
+| File with debug info (`-g`) | 43,352 B | 70,576 B | n/a (distro-stripped) |
+| Direct libraries | glib, gobject, WPEWebKit, libc | same | adds gio and gstreamer |
+
+Compare stripped files only: the 70 KB figure is mostly `-g` and says nothing
+about the shipped size. Like for like, foob is **smaller** than MiniBrowser
+(22.5 vs 26.9 KB; text 13.0 vs 20.9 KB) and links fewer libraries, because it has
+no command-line settings, automation, GStreamer or cookie options.
+
+Growth since `m0-m1` is +3.5 KB stripped (+18%), +4.3 KB of text. Per object
+(text bytes): `browser.c` 2,205, `diagnostics.c` 2,165, `target.c` 1,151,
+`window_title.c` 860, `main.c` 499. Everything added is a behaviour change from
+this audit (titles and their sanitizing, navigation policy, download cancel,
+compositor-loss and web-process-crash exits, app-id) plus the hardening flags
+(stack protector, CET markers, fortify), whose share was not separated. None of it
+is dead code. Runtime effect: none measurable (168.37 vs 168.80 MiB blank in the
+same session); the engine library is 148 MB on disk.
+
+Rule: record stripped size and `size` per object at each milestone audit and
+explain growth of more than about 10%. `-Os` would save ~5% of our text (about
+0.5 KB) and is not worth the speed trade.
+
 ## Memory: what is ours and what is not
 
 Blank-page PSS ~169-174 MiB: web process ~107-114, UI process ~33, network ~27,
