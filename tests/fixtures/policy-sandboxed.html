@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<body style="font: 18px/1.5 sans-serif; margin: 4px; background: #f3e6d4; color: #2b1d13">
+<a href="second.html" target="_blank">New-window link inside a sandboxed frame</a>
+<span id="seen"></span>
+<script>
+  document.querySelector('a').addEventListener('click', () => {
+    document.getElementById('seen').textContent = 'click registered';
+  });
+</script>

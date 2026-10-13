@@ -71,25 +71,73 @@ static void download_started([[maybe_unused]] WebKitNetworkSession *session,
 
 /*
  * Links and forms that ask for a new window (target=_blank) navigate this
- * window instead: one view per window. The original request is loaded, not just
- * its URI, so a POST form keeps its method and body. Requests without a user gesture stay
- * blocked, as do destinations that fail foob_navigation_allowed(). window.open()
+ * window instead: one view per window. The page makes that navigation itself:
+ * this script, injected into every frame in its own script world, turns a
+ * user's click on a _blank link, or a _blank form submission, into the same
+ * request with target _top and then restores the attribute. The document that
+ * asked stays the initiator, so WebKit applies its usual rules: the frame's
+ * sandbox flags, Sec-Fetch-Site and SameSite cookies, and its refusal to let
+ * remote content navigate to local content. _top grants nothing a page could
+ * not already ask for. Scripted clicks are not trusted events and are left
+ * alone, so the popup blocker still stops them; other target names that would
+ * open a window are not rewritten.
+ */
+static constexpr char same_window_script[] =
+    "(() => {"
+    "  const isBlank = (value) => value !== null && value.toLowerCase() === '_blank';"
+    "  const effective = (value, node) => value !== null ? value :"
+    "      node.ownerDocument.querySelector('base[target]')?.getAttribute('target') ?? null;"
+    "  const toTop = (element, attribute) => {"
+    "    const old = element.getAttribute(attribute);"
+    "    element.setAttribute(attribute, '_top');"
+    "    setTimeout(() => old === null ? element.removeAttribute(attribute)"
+    "                                  : element.setAttribute(attribute, old));"
+    "  };"
+    "  addEventListener('click', (event) => {"
+    "    if (!event.isTrusted)"
+    "      return;"
+    "    const link = event.composedPath().find((node) =>"
+    "        (node.localName === 'a' || node.localName === 'area') && node.hasAttribute('href'));"
+    "    if (link && isBlank(effective(link.getAttribute('target'), link)))"
+    "      toTop(link, 'target');"
+    "  }, true);"
+    "  addEventListener('submit', (event) => {"
+    "    const form = event.target, submitter = event.submitter;"
+    "    if (!event.isTrusted)"
+    "      return;"
+    "    if (submitter?.hasAttribute('formtarget')) {"
+    "      if (isBlank(submitter.getAttribute('formtarget')))"
+    "        toTop(submitter, 'formtarget');"
+    "    } else if (isBlank(effective(form.getAttribute('target'), form))) {"
+    "      toTop(form, 'target');"
+    "    }"
+    "  }, true);"
+    "})();";
+
+static void add_same_window_script(WebKitWebView *web_view)
+{
+    g_autoptr(WebKitUserScript) script = webkit_user_script_new_for_world(
+        same_window_script, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES,
+        WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START, "foob", nullptr, nullptr);
+    webkit_user_content_manager_add_script(webkit_web_view_get_user_content_manager(web_view), script);
+}
+
+/*
+ * Every request that still asks for a new window is ignored; foob never loads
+ * it on the page's behalf. Such a load is application-initiated: it would drop
+ * the asking frame's sandbox (WebKit turns a sandboxed frame's refused _top
+ * navigation into a new-window request), send Sec-Fetch-Site: none for a
+ * cross-site request and bypass WebKit's remote-to-local check. window.open()
  * is unsupported: WebKit reports it through the "create" signal, which is not
  * handled, so it returns null (roadmap M2-11 and M3-01 decide popups). Opening a
  * separate window is likewise a later decision.
  */
-static gboolean decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *decision,
+static gboolean decide_policy([[maybe_unused]] WebKitWebView *web_view, WebKitPolicyDecision *decision,
                               WebKitPolicyDecisionType type, [[maybe_unused]] gpointer user_data)
 {
     if (type != WEBKIT_POLICY_DECISION_TYPE_NEW_WINDOW_ACTION)
         return FALSE;  /* Default handling. */
-    WebKitNavigationAction *action =
-        webkit_navigation_policy_decision_get_navigation_action(WEBKIT_NAVIGATION_POLICY_DECISION(decision));
-    const char *destination = webkit_uri_request_get_uri(webkit_navigation_action_get_request(action));
     webkit_policy_decision_ignore(decision);
-    if (webkit_navigation_action_is_user_gesture(action) &&
-        foob_navigation_allowed(webkit_web_view_get_uri(web_view), destination))
-        webkit_web_view_load_request(web_view, webkit_navigation_action_get_request(action));
     return TRUE;
 }
 
@@ -155,6 +203,7 @@ FoobBrowser *foob_browser_new(bool diagnostics)
 
     WPEView *view = webkit_web_view_get_wpe_view(browser->web_view);
     update_window_title(browser);
+    add_same_window_script(browser->web_view);
     g_signal_connect(browser->web_view, "notify::title", G_CALLBACK(title_changed), browser);
     g_signal_connect(view, "closed", G_CALLBACK(view_closed), browser);
     g_signal_connect(browser->web_view, "close", G_CALLBACK(web_view_close), browser);

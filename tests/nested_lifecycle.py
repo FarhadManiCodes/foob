@@ -144,9 +144,23 @@ def close_window(compositor, socket, window, browser):
 stream_size = 300 * 1024 * 1024
 stream = {'sent': 0, 'outcome': None}
 probes = []  # query strings the scripted page reports through /probe
+echoes = []  # what each POST to /echo carried, see the blank-form scenario
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+    def do_POST(self):
+        path, _, query = self.path.partition('?')
+        body = self.rfile.read(int(self.headers.get('Content-Length', '0')))
+        if path != '/echo':
+            return self.send_error(404)
+        echoes.append({'from': query, 'bytes': len(body), 'site': self.headers.get('Sec-Fetch-Site')})
+        page = b'<!doctype html><title>echo</title>echo'
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/html')
+        self.send_header('Content-Length', str(len(page)))
+        super().end_headers()
+        self.wfile.write(page)
+
     def do_GET(self):
         if self.path.startswith('/probe?'):
             probes.append(self.path.split('?', 1)[1])
@@ -258,6 +272,38 @@ def scripted_probes_ran_and_stayed(browser, socket, errors):
 scenario('scripted-new-window-requests-do-not-navigate', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
          expected_title='first \u2014 foob', after_load=scripted_probes_ran_and_stayed)
+# A target=_blank form becomes the page's own navigation of this window (F-51, F-52):
+# requestSubmit() fires a trusted submit event, so the injected script retargets the
+# form to _top without a user gesture. The request then keeps its initiator, so WebKit
+# reports it as cross-site (localhost and 127.0.0.1 are different sites). A sandboxed
+# frame with allow-popups but without allow-top-navigation submits first and must not
+# reach the top. Before the fix both forms asked for a new window, which the popup
+# blocker stopped, so nothing was echoed; foob's own handler loaded a real click's
+# request itself, as Sec-Fetch-Site: none and outside the frame's sandbox.
+(scratch / 'sandboxed-form.html').write_text(
+    '<!doctype html><form id=f method=post action="/echo?sandbox" target=_blank>'
+    '<input name=a value=1></form><script>document.getElementById("f").requestSubmit()</script>')
+(scratch / 'blank-form.html').write_text(
+    '<!doctype html><title>forms</title><body>'
+    '<iframe sandbox="allow-scripts allow-forms allow-popups" src="sandboxed-form.html"></iframe>'
+    f'<form id=f method=post action="http://localhost:{server.server_port}/echo?top" target=_blank>'
+    '<input name=a value=0123456789></form><script>addEventListener("load", () =>'
+    ' setTimeout(() => document.getElementById("f").requestSubmit(), 1000));</script></body>')
+
+
+def blank_form_navigated_as_page(browser, socket, errors):
+    wait_for(lambda: echoes, 10, 'no form reached /echo: the _blank form did not navigate this window')
+    time.sleep(2)
+    assert echoes == [{'from': 'top', 'bytes': 12, 'site': 'cross-site'}], f'echo requests {echoes}'
+    wait_for(lambda: any(w['pid'] == browser.pid and w['title'] == 'echo \u2014 foob'
+                         for w in windows(socket)), 10, 'the window did not show the echo page')
+    loads = errors.read_text().count('foob: load-started')
+    assert loads == 2, f'{loads} loads started, expected the page and the echo'
+
+
+scenario('blank-form-navigates-as-page', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+         uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
+         expected_title='forms \u2014 foob', after_load=blank_form_navigated_as_page)
 # The guided-check fixtures must keep loading and keep their expected window titles.
 policy, policy_url = policy_server.serve()
 scenario('policy-fixture-remote', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),

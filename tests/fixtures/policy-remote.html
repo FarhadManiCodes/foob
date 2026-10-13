@@ -41,9 +41,9 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li><form method="post" action="echo" target="_blank">
       <input name="field" value="hello"><input type="hidden" name="b" value="1"> <button>Submit a POST form</button>
     </form>
-    Expected: opens "Echo page" in this window saying <b>POST</b> and
-    <b>15 bytes</b> (<code>field=hello&amp;b=1</code>). A GET with 0 bytes means the
-    form body was lost.</li>
+    Expected: opens "Echo page" in this window saying <b>POST</b>,
+    <b>15 bytes</b> (<code>field=hello&amp;b=1</code>) and <b>same-origin</b>. A GET with
+    0 bytes means the form body was lost; <code>none</code> means foob, not the page, sent it.</li>
 </ol>
 <h2>Record only (features arrive in M3; note what happens today)</h2>
 <ol start="10">
@@ -56,11 +56,18 @@ the hidden direction override and the extra spaces in this page's title are remo
   <li>Right-click anywhere on the page.<br>
     Record: is a context menu shown? (M3-01)</li>
 </ol>
+<h2>Added after the second security review</h2>
+<ol start="19">
+  <li>Click the link inside this sandboxed frame (it may open popups but not navigate this window):<br>
+    <iframe sandbox="allow-scripts allow-popups" src="sandboxed.html" style="width:100%;height:3em;border:1px solid #2b1d13"></iframe><br>
+    Expected: the frame says <code>click registered</code>, and <b>nothing else happens</b>
+    (this window stays on the fixture).</li>
+</ol>
 <div id="log">log (what the page saw)</div>
 <script>
   const log = (text) => { document.getElementById('log').textContent += '\n' + text; };
-  let number = 1;
-  for (const li of document.querySelectorAll('ol > li')) li.dataset.item = number++;
+  for (const ol of document.querySelectorAll('ol'))
+    [...ol.children].forEach((li, index) => { li.dataset.item = ol.start + index; });
   document.addEventListener('click', (event) => {
     const item = event.target.closest('li');
     if (item) log('click registered on item ' + item.dataset.item);

@@ -7,6 +7,7 @@ for foob, so this exercises the untrusted-origin rules. Request paths are printe
 so a blocked download can be seen to reach the server. The local-file links point
 at tests/fixtures/linked.html.
 """
+import html
 import http.server
 from pathlib import Path
 import sys
@@ -28,7 +29,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split('?')[0]
-        pages = {'/': 'policy-remote.html', '/second.html': 'policy-second.html'}
+        pages = {'/': 'policy-remote.html', '/second.html': 'policy-second.html',
+                 '/sandboxed.html': 'policy-sandboxed.html'}
         if path in pages:
             body = (fixtures / pages[path]).read_text(encoding='utf-8')
             body = body.replace('@LOCAL_FILE@', local_file).encode('utf-8')
@@ -60,14 +62,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.reply(404, 'text/plain', b'not found')
 
     def reply_echo(self, method, body):
-        # The title carries the result so it is readable in the window title.
-        passed = method == 'POST' and len(body) == 15
-        verdict = ('<h1 style="color:#0a7d2c">PASS: the form body arrived (POST, 15 bytes)</h1>' if passed else
-                   '<h1 style="color:#b00020">FAIL: expected POST with 15 bytes</h1>')
-        page = (f'<!doctype html><meta charset="utf-8"><title>Echo {method} {len(body)} bytes</title>'
+        # The title carries the result so it is readable in the window title. The form is on
+        # this origin, so Sec-Fetch-Site must be same-origin; "none" means foob loaded the
+        # request itself instead of letting the page navigate (F-52).
+        site = self.headers.get('Sec-Fetch-Site', 'missing')
+        passed = method == 'POST' and len(body) == 15 and site == 'same-origin'
+        verdict = ('<h1 style="color:#0a7d2c">PASS: the form body arrived (POST, 15 bytes, same-origin)</h1>' if passed else
+                   '<h1 style="color:#b00020">FAIL: expected POST with 15 bytes from the same origin</h1>')
+        page = (f'<!doctype html><meta charset="utf-8"><title>Echo {method} {len(body)} bytes {html.escape(site)}</title>'
                 f'<body style="font:24px/1.5 sans-serif;margin:24px">{verdict}'
-                f'<p>Request method: <b>{method}</b>, body: <b>{len(body)} bytes</b>. '
-                f'A GET with 0 bytes means the new-window code dropped the form body.</p>'
+                f'<p>Request method: <b>{method}</b>, body: <b>{len(body)} bytes</b>, '
+                f'Sec-Fetch-Site: <b>{html.escape(site)}</b>. '
+                f'A GET with 0 bytes means the new-window code dropped the form body; '
+                f'"none" means foob sent the request in place of the page.</p>'
                 f'<p><a href="/">Back to the policy fixture</a></p>').encode('utf-8')
         self.reply(200, 'text/html; charset=utf-8', page)
 

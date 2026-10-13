@@ -2,8 +2,8 @@
 #define FOOB_TARGET_H
 
 /*
- * Startup-URI allowlist; foob_navigation_allowed() below reuses it for
- * new-window requests, and the full navigation policy remains roadmap M2-03.
+ * Startup-URI allowlist; foob_navigation_allowed() below reuses it, and the
+ * full navigation policy remains roadmap M2-03.
  * Accepts exactly one of: "about:blank", an http(s) URI with a host and
  * no credentials, or a local absolute file: URI (no host or "localhost").
  * Depends only on GLib so it can be unit-tested without a display.
@@ -20,10 +20,11 @@ bool foob_uri_is_local(const char *uri);
 
 /*
  * Whether the application may itself navigate the view from from_uri to
- * to_uri (used for links that ask for a new window). The destination must pass
- * the same allowlist as a startup target, and remote content must never
- * navigate to local content: an application-initiated load bypasses WebKit's
- * own remote-to-local check, so this function has to enforce it.
+ * to_uri. The destination must pass the same allowlist as a startup target, and
+ * remote content must never navigate to local content: an application-initiated
+ * load bypasses WebKit's own remote-to-local check, so any such load has to call
+ * this first. Nothing calls it today: since F-51 foob makes no load on a page's
+ * behalf (pages navigate this window themselves); kept for the M2-03 policy.
  */
 bool foob_navigation_allowed(const char *from_uri, const char *to_uri);
 

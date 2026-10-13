@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). Optional pointer and geometry checks below remain.** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). The F-51/F-52 fix changed how `target=_blank` works, so rows 1, 3, 9, 15 and 16 and the new row 19 need a real click again: see [Re-check after F-51/F-52](#re-check-after-f-51f-52) (pending).** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -55,6 +55,25 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 | 16 | New-window link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 18 | Window title | `Policy fixture (local) — foob` | **PASS** (verified by Claude, 2026-10-13: window title `Policy fixture (local) — foob`, app-id `dev.foob.Browser` read from `niri msg -j windows`; the maintainer was unsure; also asserted by the nested suite) |
+
+## Re-check after F-51/F-52
+
+The second security review (F-51, F-52) replaced the new-window handler: foob no longer
+loads a `target=_blank` request itself; an injected script turns a user's click on a
+`_blank` link, or a `_blank` form submission, into the page's own `_top` navigation.
+Scripted requests cannot exercise that path (the script acts only on trusted events), so
+these rows need real clicks on the new binary. Use the commands above with a new
+`--output` path. Row 9's echo page now also shows `Sec-Fetch-Site`, and counts `none`
+(foob sent the request instead of the page) as FAIL.
+
+| # | Item | Expected | Result |
+|---|---|---|---|
+| 1 | New-window link to a remote page | opens "Second page" in the same window | pending |
+| 3 | New-window link to a local file | nothing happens | pending |
+| 9 | Submit a POST form (`target=_blank`) | green **PASS**: POST, 15 bytes, `same-origin` (the old binary shows `none`, so FAIL) | pending |
+| 15 | Local page: new-window link to another local file | opens "Local link navigation PASS" in the same window | pending |
+| 16 | Local page: new-window link to a remote page | opens in the same window | pending |
+| 19 | Remote page: link inside the sandboxed frame | the frame says `click registered`; nothing else happens (the window stays on the fixture) | pending |
 
 ## Optional repeat of the click-position check
 
