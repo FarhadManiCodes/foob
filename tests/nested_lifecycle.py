@@ -99,7 +99,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
                  10, f'{name}: window title never became {expected_title!r}')
         assert window['app_id'] == expected_app_id, f"{name}: app-id {window['app_id']!r}"
         if after_load:
-            after_load(browser)
+            after_load(browser, socket, errors)
         time.sleep(1)
         tracked = browser_tree(browser.pid, processes())
         stop(compositor, socket, window, browser)
@@ -186,7 +186,7 @@ download_env = {'XDG_CONFIG_HOME': str(sandbox['xdg']), 'XDG_CACHE_HOME': str(sa
 stream_limit = 16 * 1024 * 1024
 
 
-def transfer_stopped_without_files(browser):
+def transfer_stopped_without_files(browser, socket, errors):
     wait_for(lambda: stream['outcome'], 10, 'server never saw the transfer end')
     assert stream['outcome'] == 'aborted', 'the whole attachment was transferred'
     assert stream['sent'] < stream_limit, f"server sent {stream['sent']} bytes before the abort"
@@ -197,7 +197,8 @@ def transfer_stopped_without_files(browser):
     assert not list(downloads.iterdir()), f'download was saved: {list(downloads.iterdir())}'
     # Engine caches (Mesa, GStreamer) legitimately live below `sandbox`; look for the payload.
     saved = [path for directory in sandbox.values() for path in directory.rglob('*')
-             if path.is_file() and path.read_bytes()[:4096] == b'x' * 4096]
+             if path.is_file() and path.stat().st_size > 0
+             and path.read_bytes()[:4096] == b'x' * min(path.stat().st_size, 4096)]
     assert not saved, f'attachment data was written to disk: {saved}'
 
 
@@ -213,18 +214,26 @@ scenario('download-cancelled', 0, lambda c, s, w, b: b.send_signal(signal.SIGTER
     'document.body.appendChild(a);a.click();window.open("second.html");</script>first')
 
 
-def still_first(browser):
-    time.sleep(3)
+def stays_on_page(title):
+    """After a wait, the window must still show the first page and nothing new loaded."""
+    def check(browser, socket, errors):
+        time.sleep(3)
+        assert browser.poll() is None, 'browser exited'
+        assert any(w['pid'] == browser.pid and w['title'] == title for w in windows(socket)), \
+            'window title changed: a blocked new-window request navigated'
+        loads = errors.read_text().count('foob: load-started')
+        assert loads == 1, f'{loads} loads started; a blocked request navigated'
+    return check
 
 
 scenario('new-window-without-gesture-blocked', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
-         expected_title='first \u2014 foob', after_load=still_first)
+         expected_title='first \u2014 foob', after_load=stays_on_page('first \u2014 foob'))
 # The guided-check fixtures must keep loading and keep their expected window titles.
 policy, policy_url = policy_server.serve()
 scenario('policy-fixture-remote', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=policy_url, expected_title='Policy fixture (remote) \u2014 foob',
-         after_load=still_first)
+         after_load=stays_on_page('Policy fixture (remote) \u2014 foob'))
 policy.shutdown()
 scenario('policy-fixture-local', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=(Path(__file__).resolve().parent / 'fixtures' / 'policy-local.html').as_uri(),
