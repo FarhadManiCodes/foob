@@ -1,5 +1,10 @@
 # Independent C23 / public API / lifetime review
 
+**Current status:** all blocking review findings resolved; subsequent guided
+desktop checks pass, M1 P0 complete, Gate A ready for maintainer review and not
+approved. The review sections below record their state before user validation;
+their historical limitations do not mean today's desktop checks are pending.
+
 Requested fresh-context read-only reviewer: `/root/c23_review`.
 Initial review completed 2026-10-13 local time; parent M0 commit `ed52f71`.
 Reviewed implementation was uncommitted and identified by exact hashes:
@@ -55,7 +60,7 @@ and web-process confinement. Accessibility warnings noted.
 
 Limits: no independent runtime launch, visual/input verification, acceleration
 proof or completed memory-suite audit in initial review. Runtime/user evidence
-remains separate; M1 is incomplete while interaction is pending.
+remains separate; at the initial review, M1 was incomplete pending interaction.
 
 ## Focused follow-up
 
@@ -71,7 +76,8 @@ Source/binary hashes unchanged.
 
 Follow-up was read-only code/saved-evidence inspection. It did not independently
 launch GUI tests or inject a hung-browser cleanup test. Visual/input acceptance
-remains separate; M1 incomplete and Gate A not approved.
+remains separate; at this follow-up, M1 was incomplete pending interaction and
+Gate A was not approved.
 
 ## Final geometry follow-up
 
@@ -89,7 +95,8 @@ Replacement fixture-3 passes at 950×1188/scale 1, eight processes, samples abou
 checked all ten accepted logs for expected navigation counts, no failure markers
 and no differing post-completion geometry. This strengthens the earlier review,
 which inspected sampled geometry only. No remaining blocking review finding;
-source/binary unchanged, no GUI test or Gate A approval. M1 interaction pending.
+source/binary unchanged, no GUI test or Gate A approval. At that point M1
+interaction was pending; the later guided results below supersede that status.
 
 Later maintainer-guided interaction (2026-10-13) now passes the required desktop
 checks; see [the separate runtime evidence](interactive-2026-10-13.md). Browser

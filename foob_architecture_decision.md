@@ -1,6 +1,6 @@
 # Architecture Decision: Minimal Wayland Browser
 
-**Status:** Architecture direction accepted; API/source verified where indicated; runtime and benchmark results pending  
+**Status:** Architecture direction accepted; M0/M1 P0 verified; Gate A ready for maintainer review, not approved
 **Date:** 2026-10-12  
 **Working name:** `foob` (not final)  
 **Decision owner:** Project maintainer
@@ -15,21 +15,26 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 
 **Execution authority:** the root [development roadmap](foob_development_roadmap.md) defines task order, required acceptance evidence and maintainer review stops; this document defines technical boundaries and rationale. Its broader API/feature investigations apply when their milestone is reached, not as prerequisites to the M0/M1 skeleton. Gate A, the post-M2 Scholar decision and Gate B require maintainer decisions before progression. Technical success does not let an agent approve its own gate. Historical qvu documents do not add implementation scope.
 
-## Version and evidence ledger (audited 2026-10-12)
+## Version and evidence ledger (upstream audit 2026-10-12; local validation 2026-10-13)
 
-| Term | Meaning | Verified on 2026-10-12 |
+| Term | Meaning | Evidence |
 |---|---|---|
 | WPE WebKit **2.54.0** | Upstream engine release that made WPEPlatform stable/default | 2026-09-16 |
 | WPE WebKit **2.54.1** | Upstream stable bug-fix engine version used for the baseline | 2026-10-06 |
-| Arch **`wpewebkit 2.54.1-2`** | Package version; Arch's `-2` is a **packaging revision** | Listed in `extra/x86_64`; local installation unverified |
-| **`wpe-webkit-2.0`** | WPE WebKit **API/pkg-config** name | Verified in upstream build files |
-| **`wpe-platform-2.0`** | WPEPlatform **API/pkg-config** name | Stable API exposed by WPE WebKit 2.54+ |
-| **`wpe-platform-wayland-2.0`** | Optional backend-specific pkg-config module | Present only when built with the Wayland backend |
+| Arch **`wpewebkit 2.54.1-2`** | Package version; Arch's `-2` is a **packaging revision** | Installed version verified in M0 and rechecked during guided M1 validation |
+| **`wpe-webkit-2.0`** | WPE WebKit **API/pkg-config** name | Installed module reports 2.54.1; C23 compile/link passes |
+| **`wpe-platform-2.0`** | WPEPlatform **API/pkg-config** name | Installed module reports 2.54.1; C23 compile/link passes |
+| **`wpe-platform-wayland-2.0`** | Optional backend-specific pkg-config module | Installed module reports 2.54.1; explicit Wayland display tested |
 
-**Evidence levels:** upstream release/package/header/CMake facts have been checked; actual installed packages, compiler support, graphics acceleration, sandbox execution, math rendering, custom WPE compilation and total PSS remain **unmeasured**. Package versions are time-sensitive: record `pacman -Q wpewebkit` at M0. This ledger distinguishes upstream product version, distribution package revision and ABI/API suffix.
+**Evidence levels:** installed packages/C23 compilation, native Wayland operation,
+guided input/window behavior, simple hand-written MathML/JS and total process-tree
+PSS are now verified under `docs/validation/`. Stock web-process confinement was
+observed; full security auditing remains later work. Acceleration/renderer identity,
+custom WPE compilation and broader local-math pipelines remain unverified or
+untested. This ledger distinguishes upstream release, package revision and API suffix.
 
-**Implementation checkpoint (2026-10-13):** the ledger above is the original
-pre-implementation audit. [M0 evidence](docs/validation/m0.md) now verifies the
+**Implementation checkpoint (2026-10-13):** the ledger combines the original
+upstream audit with installed/runtime evidence. [M0 evidence](docs/validation/m0.md) verifies the
 installed packages/C23 linkage; [M1 evidence](docs/validation/m1.md) records native
 Wayland loading/cleanup, simple math/JS, web-process confinement and
 [stock process-tree PSS](docs/validation/measurements.md). Acceleration remains
@@ -46,10 +51,10 @@ does not change the engine choice or establish long-term Scholar compatibility.
 
 - **Hardware:** x86_64 laptop with an integrated AMD GPU.
 - **Kernel driver:** `amdgpu` (confirmed by `lspci -nnk`); the active Mesa userspace renderer is **not yet verified**.
-- **Operating environment:** Arch Linux, native Wayland session under **niri**, `WAYLAND_DISPLAY=wayland-1` (confirmed); EGL initialization and active GPU renderer still to test.
-- **Application standard:** **C23** (`c_std=c23` in Meson), subject to installed compiler/Meson support. Prefer standard C23 language features where practical; GLib convenience macros such as `g_autoptr` themselves depend on compiler-specific cleanup attributes, so do not imply a strictly extension-free ISO C build. C23 is an application compilation choice, independent of WPE's C ABI.
+- **Operating environment:** Arch Linux, native Wayland session under **niri**, `WAYLAND_DISPLAY=wayland-1`; actual WPE rendering/input/window behavior verified. Mesa EGL/render-device evidence collected; exact GPU renderer and end-to-end acceleration remain unverified.
+- **Application standard:** **C23** (`c_std=c23` in Meson), installed compiler/Meson support verified by clean builds and independent review. Prefer standard C23 language features where practical; GLib convenience macros such as `g_autoptr` themselves depend on compiler-specific cleanup attributes, so do not imply a strictly extension-free ISO C build. C23 is an application compilation choice, independent of WPE's C ABI.
 - **Event loop and object integration:** **GLib/GObject** because WPE's supported C API exposes GObject types, signals and GLib asynchronous/event-loop integration. GLib is **not** GTK and does not add a visible GUI toolkit. Prefer ordinary C for application-owned data and business logic, using GLib/GObject at the WPE integration boundary.
-- **Hardware expectation:** The integrated AMD GPU with `amdgpu` is strongly compatible in principle with native Wayland WPE rendering. **Actual WPE operation and acceleration remain untested.** `glxinfo` and `eglinfo` are absent; verify with an EGL test or first browser launch before claiming end-to-end compatibility.
+- **Hardware validation:** Actual stock-WPE operation on this machine passes M1's native rendering, resize/input and lifecycle checks. Mesa EGL and render-device access support a hardware graphics path, but end-to-end acceleration remains unverified. The initial probe lacked `glxinfo`/`eglinfo`; no diagnostic packages were installed.
 
 ## Goals
 
@@ -126,7 +131,7 @@ Use one persistent browser profile for ordinary browsing storage and logins. M4 
 
 ## Machine verification (read-only)
 
-**Hardware identification completed on 2026-10-12:** x86_64 laptop with an integrated AMD GPU, kernel `amdgpu`, niri Wayland session (`wayland-1`). The `pcilib` warning about reading the unrelated `00:08.3/label` sysfs entry is non-fatal: the GPU and active driver were identified successfully. `glxinfo` and `eglinfo` were unavailable; this is **not** evidence of software rendering. The remaining validation is to run an actual WPE WebKit Wayland view and confirm acceleration (or optionally install Mesa diagnostic tools first). The original read-only probe is retained for reproducibility.
+**Hardware identification completed on 2026-10-12:** x86_64 laptop with an integrated AMD GPU, kernel `amdgpu`, niri Wayland session (`wayland-1`). The `pcilib` warning about reading the unrelated `00:08.3/label` sysfs entry is non-fatal: the GPU and active driver were identified successfully. `glxinfo` and `eglinfo` were unavailable; this is **not** evidence of software rendering. The actual WPE Wayland view has now passed M1 validation; precise acceleration/renderer confirmation remains outstanding. The original read-only probe below is retained for reproducibility.
 
 ```bash
 printf '\n== Model ==\n'
@@ -311,7 +316,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 ## P0 API investigation — WPE WebKit 2.54.1 / WPEPlatform 2.0 (2026-10-12)
 
-**Evidence level:** Public upstream **2.54.1** API headers, CMake definitions and release notes inspected; **not yet compiled or run** on the target machine. The supported WPE WebKit API is `wpe-webkit-2.0`; WPEPlatform uses `wpe-platform-2.0`. Here **2.0 is the API namespace**, not an indication that WPEPlatform was first released in 2.0. For a Wayland-specific compile check, use `wpe-platform-wayland-2.0`. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
+**Evidence level:** This inventory originated with public upstream **2.54.1** headers, CMake definitions and release notes. The M0/M1 public-API subset is now compiled, linked, independently reviewed and run on the target machine; later dialog/profile/policy APIs still require their own milestone tests. The supported WPE WebKit API is `wpe-webkit-2.0`; WPEPlatform uses `wpe-platform-2.0`. Here **2.0 is the API namespace**, not an indication that WPEPlatform was first released in 2.0. For a Wayland-specific compile check, use `wpe-platform-wayland-2.0`. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
 
 ### P0-A. Keyboard, focus and browser shortcuts
 
@@ -533,11 +538,11 @@ Resolve lifecycle for M1, navigation and persistent-profile concurrency for M2/M
 
 ## Open questions / deferred decisions
 
-- **Completed:** identify laptop model, generation, CPU, GPU PCI ID, kernel driver, compositor, and Wayland session. **Outstanding:** determine actual Mesa rendering backend, test Wayland EGL initialization, and launch a WPE view.
+- **Completed:** identify laptop model, generation, CPU, GPU PCI ID, kernel driver, compositor and Wayland session; launch/validate native WPE rendering/input/window behavior. **Outstanding:** exact renderer identity/end-to-end acceleration; different-output/fractional-scale tests when hardware is available.
 
-- Confirm the precise WPE version and available flags on the target Arch snapshot.
+- **Completed:** installed WPE `2.54.1-2` and all three pkg-config modules verified. Custom-engine feature flags remain M5 investigation.
 - Verify a no-GStreamer build and its dependency closure; test Wayland graphics and downloads.
-- Confirm direct WPEPlatform input/navigation behavior and correct toplevel resize/scale handling under niri in the minimal shell.
+- **Completed for M1:** basic input, link navigation, tiling/focus/scroll/fullscreen at scale 1. Browser shortcuts, scheme/new-window policy, profile persistence and advanced input remain assigned to later milestones.
 - Choose a final project name (`foob` is provisional).
 - Decide on URL prompt strategy (keyboard-only built-in prompt versus external launcher such as fuzzel).
 - Decide whether a single-window, multi-tab model is needed at all.

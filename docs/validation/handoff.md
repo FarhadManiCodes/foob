@@ -15,7 +15,8 @@ Stop before M2.
 - Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
 - Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
 - Guided interaction starts from `39f0e12cf1f3ab62492f2b0a75946209aa054b5d`.
-  The evidence commit adds a separate pointer-target fixture and a standard-library
+  Completed guided evidence: `6f6a3e95921cc93b70c0b47b4f07a749b49c6911`.
+  That commit adds a separate pointer-target fixture and a standard-library
   interactive process monitor. Browser source/binary and benchmark fixture stay
   unchanged; raw records include exact hashes. Resolve latest evidence revision
   with `git log -1 --format='%H' -- docs/validation/interactive-2026-10-13.md`.
@@ -24,7 +25,7 @@ Read AGENTS.md, root architecture/roadmap, approved plan, and this handoff.
 Inspect Git status and existing evidence before resuming; do not repeat completed
 checks merely because this is a new context.
 
-## Completed independent work
+## Completed implementation and validation
 
 - C23 Meson skeleton, public symbols linked; installed versions recorded.
 - `foob [URI]`: default blank, explicit native Wayland, one view, ephemeral
@@ -51,8 +52,10 @@ checks merely because this is a new context.
   deferred by the maintainer. Persistence/long-term reliability remain untested.
 - Fresh read-only reviewer found no source/ownership/API/C23 blocking defect;
   tooling findings fixed, negative control tested, focused follow-up clears them.
-- Test-window captures inspected and deleted; no input tools/packages installed
-  and no desktop/lid/power/idle settings changed.
+- Agent-generated transient test-window captures inspected and deleted. The
+  maintainer-supplied narrow language-menu image is retained with the deferred
+  font issue; the supplied linked-page image remains conversation evidence.
+  No input tools/packages installed or desktop/lid/power/idle settings changed.
 
 ## Deferred work, review boundary and limitations
 
@@ -82,6 +85,14 @@ Review the completed runtime, measurement, independent-review and interactive
 evidence for the maintainer's **Gate A** decision. Keep the font follow-up and
 explicit graphics/display/memory limits visible in that decision.
 Do not add M2 controls, profiles, IPC, converters or custom engine beforehand.
+
+The decision is whether to accept the measured stock-WPE prototype as a sound
+baseline and authorize M2, or require a specific M1 correction first. Evidence
+covers C23 build/API review, native rendering/input/window behavior, clean
+shutdown, three-workload process-tree PSS and exploratory Scholar behavior.
+The >100-MiB measurements, deferred font issue, unverified acceleration and
+untested display-scale cases remain disclosed limitations, not pending repeats
+of the desktop checks already passed. A question about Gate A is not approval.
 
 Evidence index: [M0](m0.md), [M1](m1.md), [measurements](measurements.md),
 [independent review](c23-review.md), [raw runs](runs/),

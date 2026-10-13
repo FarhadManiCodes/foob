@@ -2,8 +2,8 @@
 
 Required M1 desktop checks **pass**, confirmed by the maintainer. Scholar
 interaction reports no blocker; a small font issue is explicitly deferred.
-Gate A is ready for review, not approved.
-Gate A is not approved. Source and measured binary are unchanged from review.
+Gate A is ready for review, not approved. Source and measured binary are
+unchanged from review.
 
 Starting revision: `39f0e12cf1f3ab62492f2b0a75946209aa054b5d`.
 Fixture: `tests/fixtures/viewport.html`, SHA256
@@ -16,7 +16,7 @@ Environment rechecked: kernel `7.2.9-arch1-1`, WPE `2.54.1-2`, niri `26.04-1`,
 Mesa `1:26.2.4-1`; one built-in output, 1920×1200 physical/logical, scale 1.0.
 Raw session: `runs/user-viewport-20261013.json` and paired `.log`.
 
-Diagnostic observations so far: native `WPEDisplayWayland`, ephemeral session,
+Recorded diagnostic observations: native `WPEDisplayWayland`, ephemeral session,
 successful initial load in 52.807 ms; viewport widths 631/950/1269/1908 with
 height 1188, fullscreen 1920×1200/fullscreen=1 and return to 950×1188/fullscreen=0.
 Scale stayed 1.0. These establish compositor/view responses, not user input

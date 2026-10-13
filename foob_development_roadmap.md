@@ -391,11 +391,18 @@ For PSS, account for **all WPE child processes**, not just the top-level `foob` 
 
 ## 8. Audit and unresolved implementation validation
 
-Audited together with the architecture decision on 2026-10-12. The WPE **engine**, Arch **package revision**, and **2.0 API names** are distinct; the custom engine is conditional on **Gate B**. P0 means blocking the issue's own stage, not the M1 prototype. A/B benchmarking may use separate binaries for separate WPE prefixes. **No foob compile, local Arch package check, Wayland run, stripped-engine build, API dialog test, or PSS measurement is recorded in this repository yet.** The previously referenced `foob_document_audit_2026-10-12.md` is absent from this checkout; do not rely on it as available evidence. Record new runtime validation under `docs/validation/`.
+Originally audited with the architecture decision on 2026-10-12; current
+M0/M1 evidence updated 2026-10-13. Installed packages/C23 build/link, native
+Wayland rendering/input/window behavior, process cleanup and PSS are recorded
+under `docs/validation/`, with the required guided checks now passing. Gate A
+is ready for maintainer review and not approved. Custom-engine builds, dialogs
+and later milestone features remain unimplemented/untested.
 
-The original audit paragraph above describes the documentation-only baseline.
-It is superseded for M0/M1 by the 2026-10-13 evidence linked at Gate A; custom
-engine, dialogs and later milestones remain unimplemented and untested.
+WPE **engine**, Arch **package revision** and **2.0 API names** are distinct;
+custom WPE is conditional on **Gate B**. P0 blocks its assigned stage, not every
+stage at once. Separate binaries/prefixes may be used for future A/B comparisons.
+The referenced `foob_document_audit_2026-10-12.md` is absent from this checkout;
+use the actual validation records instead.
 
 ## 9. Authoritative references (checked 2026-10-12)
 
