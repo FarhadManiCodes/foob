@@ -6,7 +6,7 @@ target is still not met.** This file supplements [measurements.md](measurements.
 it does not replace it. That file describes the original `m0-m1` binary, whose
 source and binary hashes no longer match this branch.
 
-Collected 2026-10-13 (UTC 14:38-14:43, run start times) after the review fixes. WPE
+Collected 2026-10-13 (UTC 15:26-15:31, run start times) after both review rounds. WPE
 Arch `2.54.1-2`; GCC `16.2.1+r23+gd564253eb6c8-1`; Meson 1.12.1 `debugoptimized`,
 `-std=c23 -O2 -g` plus the hardening flags in [audit-m1.md](audit-m1.md); kernel
 `7.2.9-arch1-1`; niri `26.04-1`; Mesa `1:26.2.4-1`. Machine-readable records:
@@ -17,16 +17,18 @@ stay ignored and local.
 
 | | |
 |---|---|
-| Revision | `9c8151513e4e3b79428f625e1b8a5202a5346c9a` (`m1-audit`), tree clean (`source_dirty: false` in every retained record) |
-| Source SHA256 (`src/*.c`, `src/*.h`) | `d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6` |
-| Audit binary SHA256 | `53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34` |
+| Revision | `1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19` (`m1-audit`), tree clean (`source_dirty: false` in every retained record) |
+| Source SHA256 (`src/*.c`, `src/*.h`) | `7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5` |
+| Audit binary SHA256 | `916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f` |
 | Control binary SHA256 | `3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb` |
 | Fixtures | unchanged from `m0-m1`: `viewport.html` `c6487daeb9c8…`, `linked.html` `0cc8e2b52c19…`, `mathml.html` `bafc38fe176d…` |
 
-The first measurement of this branch (revision `2dfe12d`, binary `38d0d86c…`) was
-superseded: the review changed the sanitizer, exit-status handling and the
-`_FORTIFY_SOURCE` logic, so those hashes no longer describe the code. Later commits
-change only tests, fixtures and documents.
+Two earlier measurements of this branch (revisions `2dfe12d`, binary `38d0d86c…`, and
+`9c81515`, binary `53eda7b8…`) were superseded: each review round changed C source
+(sanitizer, exit-status handling, the `_FORTIFY_SOURCE` check, comments), so their
+hashes no longer describe the code. They showed the same picture as this run (audit
+and control within about 1 MiB). Later commits change only tests, fixtures and
+documents.
 
 The control is a build of the unmodified `m0-m1` source made earlier in this audit,
 not the binary hashed in `measurements.md` (`9a9225d8…`); it differs because it was
@@ -57,51 +59,48 @@ Values are the three samples per launch in MiB.
 
 | Run | Sample 1 | Sample 2 | Sample 3 | Navigation ms |
 |---|---:|---:|---:|---:|
-| `blank-1` | 168.443 | 168.457 | 168.457 | 0.308 |
-| `blank-2` | 170.931 | 170.944 | 170.944 | 0.224 |
-| `blank-3` | 168.442 | 168.456 | 168.456 | 0.263 |
-| `blank-4` | 168.322 | 168.335 | 168.335 | 0.315 |
-| `fixture-1` | 192.703 | 192.708 | 192.708 | 15.589 |
-| `fixture-2` | 192.838 | 192.843 | 192.843 | 16.911 |
-| `fixture-3` | 192.943 | 192.947 | 192.947 | 17.349 |
-| `fixture-4` | 192.798 | 192.802 | 192.802 | 17.222 |
-| `wikipedia-1` | 328.153 | 326.407 | 326.396 | 501.804 |
-| `wikipedia-2` | 330.245 | 328.624 | 328.612 | 552.136 |
-| `wikipedia-3` | 328.488 | 326.867 | 326.855 | 488.419 |
-| `wikipedia-4` | 328.109 | 326.488 | 326.477 | 611.932 |
-| `fixture-warm-reload` | 194.957 | 194.958 | 195.063 | 4.490 reload; 16.012 initial |
+| `blank-1` | 168.427 | 168.439 | 168.439 | 0.280 |
+| `blank-2` | 168.283 | 168.296 | 168.296 | 0.294 |
+| `blank-3` | 170.455 | 170.469 | 170.469 | 0.227 |
+| `blank-4` | 168.466 | 168.479 | 168.479 | 0.266 |
+| `fixture-1` | 194.980 | 194.984 | 194.984 | 15.901 |
+| `fixture-2` | 192.554 | 192.559 | 192.559 | 17.564 |
+| `fixture-3` | 192.812 | 192.816 | 192.816 | 16.721 |
+| `fixture-4` | 192.728 | 192.732 | 192.732 | 15.406 |
+| `wikipedia-1` | 331.111 | 329.635 | 329.623 | 596.664 |
+| `wikipedia-2` | 328.898 | 327.281 | 327.270 | 566.034 |
+| `wikipedia-3` | 333.974 | 332.353 | 332.341 | 548.772 |
+| `wikipedia-4` | 332.821 | 331.200 | 331.247 | 557.474 |
+| `fixture-warm-reload` | 194.551 | 194.551 | 194.551 | 5.571 reload; 16.296 initial |
 
 ## Results: audit versus control, interleaved
 
 | Workload | Audit mean (MiB) | Audit range | Control mean (MiB) | Control range |
 |---|---:|---|---:|---|
-| Blank | 169.044 (12 samples) | 168.322-170.944 | 169.418 (12) | 168.160-170.794 |
-| Local fixture | 192.823 (12) | 192.703-192.947 | 193.859 (12) | 192.873-194.955 |
-| Wikipedia | 327.644 (12) | 326.396-330.245 | 328.165 (12) | 324.397-331.258 |
+| Blank | 168.917 (12 samples) | 168.283-170.469 | 169.024 (12) | 168.294-170.429 |
+| Local fixture | 193.271 (12) | 192.554-194.984 | 192.844 (12) | 192.644-193.064 |
+| Wikipedia | 330.646 (12) | 327.270-333.974 | 335.458 (12) | 325.876-358.340 |
 
-Means differ by 0.4, 1.0 and 0.5 MiB, inside the spread of each build, and the audit
-binary is not the higher one in any workload. Navigation times agree (blank 0.22-0.32
-ms against 0.28-0.41 ms; fixture 15.6-17.3 ms against 15.3-17.0 ms; Wikipedia
-488-612 ms against 500-583 ms). Twelve samples are repeated observations of four
-launches, not twelve independent launches.
+Means differ by 0.1, 0.4 and 4.8 MiB (audit lower for blank and Wikipedia, higher by
+0.4 for the fixture), inside the spread of each build: one control Wikipedia launch
+read 356 MiB, which alone accounts for the Wikipedia gap (the other three control
+launches average 328.5 MiB against 330.6 for the audit binary). Navigation times agree
+(blank 0.23-0.29 ms against 0.30-0.47 ms; fixture 15.4-17.6 ms against 15.6-16.9 ms;
+Wikipedia 549-597 ms against 508-601 ms). Twelve samples are repeated observations of
+four launches, not twelve independent launches.
 
-Both builds show the same occasional launch about 2 MiB higher (the second blank
-launch reads 170.9 for the audit binary and 170.8 for the control; the control's third
-read 170.3), so that step is session state, not a property of either binary.
-
-The first attempt at this re-measurement (three launches, audit then control, with
-documentation files still being edited, so records flagged `source_dirty`) contained
-single-launch outliers for the audit binary only: blank 170.2, fixture 196.6 and
-Wikipedia 351.1 MiB. They did not reproduce in the interleaved run on the clean tree,
-which is why the interleaved run is the evidence kept here. The earlier raw files are
-retained locally outside the repository. Treat single-launch spikes as a known
-property of this measurement, not as a result.
+Single-launch spikes occur in both builds and in every attempt: blank launches about
+2 MiB high (audit launch 3, control launch 1 here) and one Wikipedia launch 20-30 MiB
+high (the audit binary in the first attempt, the control in this one). They are
+session state, not a property of either binary, and they are why launches are
+interleaved and repeated. The superseded attempts' raw files are retained locally
+outside the repository.
 
 ## Why these numbers are lower than `measurements.md`
 
 `measurements.md` reports blank 174.3, fixture 202.4 and Wikipedia 333.7 MiB. In this
-session the **control** (the old code) reads 169.4, 193.9 and 328.2 MiB, so the
-~5-9 MiB drop is session drift (system state, caches, library mapping sharing), not
+session the **control** (the old code) reads 169.0, 192.8 and 335.5 MiB (328.5 for
+Wikipedia without the one spike), so the ~5-9 MiB drop is session drift (system state, caches, library mapping sharing), not
 an improvement from this branch. Do not cite it as one. The earlier
 [blank-memory diagnosis](blank-memory.md) saw the same 168-171 MiB range for the
 original binary. Compare builds only within one session, as above.

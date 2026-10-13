@@ -1,27 +1,27 @@
 {
  "schema_version": 1,
- "generated_utc": "2026-10-13T14:43:36.561814+00:00",
+ "generated_utc": "2026-10-13T15:32:07.377804+00:00",
  "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally",
  "note": "Records without a control- prefix are the m1-audit binary; control-* records are a build of the unmodified m0-m1 source, measured interleaved in the same session. Control records carry the audit tree source_sha256 because the collector hashes the working tree; only binary_sha256 identifies the control build.",
  "measurements": {
   "blank-1": {
-   "date_utc": "2026-10-13T14:38:02.769571+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:26:39.032422+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.308
+    0.28
    ],
    "samples": [
     {
-     "pss_kib": 172486,
-     "seconds_after_observed_completion": 10.012349758002529,
+     "pss_kib": 172469,
+     "seconds_after_observed_completion": 10.013091195000015,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -29,8 +29,8 @@
      }
     },
     {
-     "pss_kib": 172500,
-     "seconds_after_observed_completion": 11.011372381999536,
+     "pss_kib": 172482,
+     "seconds_after_observed_completion": 11.011129201000585,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -38,8 +38,8 @@
      }
     },
     {
-     "pss_kib": 172500,
-     "seconds_after_observed_completion": 12.011375687001419,
+     "pss_kib": 172482,
+     "seconds_after_observed_completion": 12.011834607998026,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -49,23 +49,23 @@
    ]
   },
   "blank-2": {
-   "date_utc": "2026-10-13T14:39:17.606553+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:27:54.049369+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.224
+    0.294
    ],
    "samples": [
     {
-     "pss_kib": 175033,
-     "seconds_after_observed_completion": 10.01203407900175,
+     "pss_kib": 172322,
+     "seconds_after_observed_completion": 10.01167129100213,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -73,8 +73,8 @@
      }
     },
     {
-     "pss_kib": 175047,
-     "seconds_after_observed_completion": 11.011921795001399,
+     "pss_kib": 172335,
+     "seconds_after_observed_completion": 11.01161906100242,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -82,8 +82,8 @@
      }
     },
     {
-     "pss_kib": 175047,
-     "seconds_after_observed_completion": 12.010863605999475,
+     "pss_kib": 172335,
+     "seconds_after_observed_completion": 12.011972680000326,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -93,23 +93,23 @@
    ]
   },
   "blank-3": {
-   "date_utc": "2026-10-13T14:40:32.511498+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:29:08.951318+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.263
+    0.227
    ],
    "samples": [
     {
-     "pss_kib": 172485,
-     "seconds_after_observed_completion": 10.012445199001377,
+     "pss_kib": 174546,
+     "seconds_after_observed_completion": 10.00974683900131,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -117,8 +117,8 @@
      }
     },
     {
-     "pss_kib": 172499,
-     "seconds_after_observed_completion": 11.011357384002622,
+     "pss_kib": 174560,
+     "seconds_after_observed_completion": 11.012500142001954,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -126,8 +126,8 @@
      }
     },
     {
-     "pss_kib": 172499,
-     "seconds_after_observed_completion": 12.011691556999722,
+     "pss_kib": 174560,
+     "seconds_after_observed_completion": 12.011209981999855,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -137,23 +137,23 @@
    ]
   },
   "blank-4": {
-   "date_utc": "2026-10-13T14:41:47.577367+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:30:23.970000+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.315
+    0.266
    ],
    "samples": [
     {
-     "pss_kib": 172362,
-     "seconds_after_observed_completion": 10.012525220998214,
+     "pss_kib": 172509,
+     "seconds_after_observed_completion": 10.01353620900045,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -161,8 +161,8 @@
      }
     },
     {
-     "pss_kib": 172375,
-     "seconds_after_observed_completion": 11.01185181099936,
+     "pss_kib": 172523,
+     "seconds_after_observed_completion": 11.012174895000499,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -170,8 +170,8 @@
      }
     },
     {
-     "pss_kib": 172375,
-     "seconds_after_observed_completion": 12.011346681996656,
+     "pss_kib": 172523,
+     "seconds_after_observed_completion": 12.011980454000877,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -181,10 +181,10 @@
    ]
   },
   "control-blank-1": {
-   "date_utc": "2026-10-13T14:38:14.981092+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:26:51.244080+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -192,12 +192,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.279
+    0.299
    ],
    "samples": [
     {
-     "pss_kib": 172196,
-     "seconds_after_observed_completion": 10.012417357000231,
+     "pss_kib": 174505,
+     "seconds_after_observed_completion": 10.012251490999915,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -205,8 +205,8 @@
      }
     },
     {
-     "pss_kib": 172210,
-     "seconds_after_observed_completion": 11.012088269999367,
+     "pss_kib": 174519,
+     "seconds_after_observed_completion": 11.011915181999939,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -214,8 +214,8 @@
      }
     },
     {
-     "pss_kib": 172215,
-     "seconds_after_observed_completion": 12.012233735000336,
+     "pss_kib": 174519,
+     "seconds_after_observed_completion": 12.011601144000451,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -225,10 +225,10 @@
    ]
   },
   "control-blank-2": {
-   "date_utc": "2026-10-13T14:39:29.815994+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:28:06.262731+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -236,12 +236,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.394
+    0.296
    ],
    "samples": [
     {
-     "pss_kib": 174879,
-     "seconds_after_observed_completion": 10.012118940001528,
+     "pss_kib": 172333,
+     "seconds_after_observed_completion": 10.012174035000498,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -249,8 +249,8 @@
      }
     },
     {
-     "pss_kib": 174893,
-     "seconds_after_observed_completion": 11.012068623000232,
+     "pss_kib": 172346,
+     "seconds_after_observed_completion": 11.011466299998574,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -258,8 +258,8 @@
      }
     },
     {
-     "pss_kib": 174893,
-     "seconds_after_observed_completion": 12.011915611001314,
+     "pss_kib": 172346,
+     "seconds_after_observed_completion": 12.012175113999547,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -269,10 +269,10 @@
    ]
   },
   "control-blank-3": {
-   "date_utc": "2026-10-13T14:40:44.828622+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:29:21.161528+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -280,12 +280,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.414
+    0.471
    ],
    "samples": [
     {
-     "pss_kib": 174415,
-     "seconds_after_observed_completion": 10.010096252000949,
+     "pss_kib": 172380,
+     "seconds_after_observed_completion": 10.009673952001322,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -293,8 +293,8 @@
      }
     },
     {
-     "pss_kib": 174429,
-     "seconds_after_observed_completion": 11.011417377001635,
+     "pss_kib": 173277,
+     "seconds_after_observed_completion": 11.010715356002038,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -302,8 +302,8 @@
      }
     },
     {
-     "pss_kib": 174429,
-     "seconds_after_observed_completion": 12.011914429000171,
+     "pss_kib": 173277,
+     "seconds_after_observed_completion": 12.012204960999952,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -313,10 +313,10 @@
    ]
   },
   "control-blank-4": {
-   "date_utc": "2026-10-13T14:41:59.790838+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:30:36.180892+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -324,12 +324,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    0.302
+    0.334
    ],
    "samples": [
     {
-     "pss_kib": 172408,
-     "seconds_after_observed_completion": 10.011324983999657,
+     "pss_kib": 172481,
+     "seconds_after_observed_completion": 10.012724849999358,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -337,8 +337,8 @@
      }
     },
     {
-     "pss_kib": 172422,
-     "seconds_after_observed_completion": 11.011776628998632,
+     "pss_kib": 172494,
+     "seconds_after_observed_completion": 11.012080275002518,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -346,8 +346,8 @@
      }
     },
     {
-     "pss_kib": 172422,
-     "seconds_after_observed_completion": 12.011694771998009,
+     "pss_kib": 172494,
+     "seconds_after_observed_completion": 12.011798198000179,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -357,10 +357,10 @@
    ]
   },
   "control-fixture-1": {
-   "date_utc": "2026-10-13T14:38:39.565670+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:27:15.830013+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -368,12 +368,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    15.93
+    16.132
    ],
    "samples": [
     {
-     "pss_kib": 197502,
-     "seconds_after_observed_completion": 10.013704859000427,
+     "pss_kib": 197452,
+     "seconds_after_observed_completion": 10.012208940999699,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -381,8 +381,8 @@
      }
     },
     {
-     "pss_kib": 197506,
-     "seconds_after_observed_completion": 11.011957101000007,
+     "pss_kib": 197457,
+     "seconds_after_observed_completion": 11.011316234998958,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -390,8 +390,8 @@
      }
     },
     {
-     "pss_kib": 197626,
-     "seconds_after_observed_completion": 12.011433346000558,
+     "pss_kib": 197457,
+     "seconds_after_observed_completion": 12.012087456998415,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -401,10 +401,10 @@
    ]
   },
   "control-fixture-2": {
-   "date_utc": "2026-10-13T14:39:54.402986+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:28:30.848860+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -412,12 +412,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    16.268
+    16.91
    ],
    "samples": [
     {
-     "pss_kib": 199370,
-     "seconds_after_observed_completion": 10.012944496000273,
+     "pss_kib": 197466,
+     "seconds_after_observed_completion": 10.012805351998395,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -425,8 +425,8 @@
      }
     },
     {
-     "pss_kib": 199374,
-     "seconds_after_observed_completion": 11.012256518999493,
+     "pss_kib": 197471,
+     "seconds_after_observed_completion": 11.011882890998095,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -434,8 +434,8 @@
      }
     },
     {
-     "pss_kib": 199374,
-     "seconds_after_observed_completion": 12.011706593999406,
+     "pss_kib": 197471,
+     "seconds_after_observed_completion": 12.011739728000975,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -445,10 +445,10 @@
    ]
   },
   "control-fixture-3": {
-   "date_utc": "2026-10-13T14:41:09.417046+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:29:45.751487+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -456,12 +456,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    16.969
+    15.627
    ],
    "samples": [
     {
-     "pss_kib": 197588,
-     "seconds_after_observed_completion": 10.01355732799857,
+     "pss_kib": 197694,
+     "seconds_after_observed_completion": 10.012837733000197,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -469,8 +469,8 @@
      }
     },
     {
-     "pss_kib": 197592,
-     "seconds_after_observed_completion": 11.011720922997483,
+     "pss_kib": 197698,
+     "seconds_after_observed_completion": 11.011157083998114,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -478,8 +478,8 @@
      }
     },
     {
-     "pss_kib": 197592,
-     "seconds_after_observed_completion": 12.012163650997536,
+     "pss_kib": 197698,
+     "seconds_after_observed_completion": 12.011610662000749,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -489,10 +489,10 @@
    ]
   },
   "control-fixture-4": {
-   "date_utc": "2026-10-13T14:42:24.371981+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:31:00.765680+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -500,12 +500,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    15.33
+    15.948
    ],
    "samples": [
     {
-     "pss_kib": 199486,
-     "seconds_after_observed_completion": 10.01278899099998,
+     "pss_kib": 197267,
+     "seconds_after_observed_completion": 10.012321123002039,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -513,8 +513,8 @@
      }
     },
     {
-     "pss_kib": 199490,
-     "seconds_after_observed_completion": 11.011893972001417,
+     "pss_kib": 197271,
+     "seconds_after_observed_completion": 11.011992629002634,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -522,8 +522,8 @@
      }
     },
     {
-     "pss_kib": 199634,
-     "seconds_after_observed_completion": 12.012424116001057,
+     "pss_kib": 197271,
+     "seconds_after_observed_completion": 12.011566028002562,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -533,10 +533,10 @@
    ]
   },
   "control-wikipedia-1": {
-   "date_utc": "2026-10-13T14:39:04.770701+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:27:41.155378+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -544,12 +544,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    500.494
+    548.021
    ],
    "samples": [
     {
-     "pss_kib": 333983,
-     "seconds_after_observed_completion": 10.01444981199893,
+     "pss_kib": 366940,
+     "seconds_after_observed_completion": 10.014911507998477,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -557,8 +557,8 @@
      }
     },
     {
-     "pss_kib": 332195,
-     "seconds_after_observed_completion": 11.013233713998488,
+     "pss_kib": 363848,
+     "seconds_after_observed_completion": 11.013959750998765,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -566,8 +566,8 @@
      }
     },
     {
-     "pss_kib": 332183,
-     "seconds_after_observed_completion": 12.013242017997982,
+     "pss_kib": 363672,
+     "seconds_after_observed_completion": 12.013356103998376,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -577,10 +577,10 @@
    ]
   },
   "control-wikipedia-2": {
-   "date_utc": "2026-10-13T14:40:19.674057+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:28:56.057564+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -588,12 +588,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    511.66
+    544.384
    ],
    "samples": [
     {
-     "pss_kib": 337711,
-     "seconds_after_observed_completion": 10.015265740999894,
+     "pss_kib": 335377,
+     "seconds_after_observed_completion": 10.01487704399915,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -601,8 +601,8 @@
      }
     },
     {
-     "pss_kib": 336035,
-     "seconds_after_observed_completion": 11.0136413370019,
+     "pss_kib": 333709,
+     "seconds_after_observed_completion": 11.013292615996761,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -610,8 +610,8 @@
      }
     },
     {
-     "pss_kib": 336023,
-     "seconds_after_observed_completion": 12.012901171001431,
+     "pss_kib": 333697,
+     "seconds_after_observed_completion": 12.013974687997688,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -621,10 +621,10 @@
    ]
   },
   "control-wikipedia-3": {
-   "date_utc": "2026-10-13T14:41:34.623549+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:30:11.021884+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -632,12 +632,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    583.324
+    601.264
    ],
    "samples": [
     {
-     "pss_kib": 339208,
-     "seconds_after_observed_completion": 10.014353309001308,
+     "pss_kib": 339145,
+     "seconds_after_observed_completion": 10.015840110998397,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -645,8 +645,8 @@
      }
     },
     {
-     "pss_kib": 337544,
-     "seconds_after_observed_completion": 11.014058949000173,
+     "pss_kib": 337473,
+     "seconds_after_observed_completion": 11.013104949997796,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -654,8 +654,8 @@
      }
     },
     {
-     "pss_kib": 337532,
-     "seconds_after_observed_completion": 12.014090347001911,
+     "pss_kib": 337505,
+     "seconds_after_observed_completion": 12.013961623997602,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -665,10 +665,10 @@
    ]
   },
   "control-wikipedia-4": {
-   "date_utc": "2026-10-13T14:42:49.696507+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:31:25.976665+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
    "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
@@ -676,12 +676,12 @@
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    545.212
+    507.602
    ],
    "samples": [
     {
-     "pss_kib": 337803,
-     "seconds_after_observed_completion": 10.014937538002414,
+     "pss_kib": 338023,
+     "seconds_after_observed_completion": 10.015145482000662,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -689,8 +689,8 @@
      }
     },
     {
-     "pss_kib": 336143,
-     "seconds_after_observed_completion": 11.013020319001953,
+     "pss_kib": 336363,
+     "seconds_after_observed_completion": 11.013352288999158,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -698,8 +698,8 @@
      }
     },
     {
-     "pss_kib": 336131,
-     "seconds_after_observed_completion": 12.012982113999897,
+     "pss_kib": 336351,
+     "seconds_after_observed_completion": 12.013197173000663,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -709,23 +709,23 @@
    ]
   },
   "fixture-1": {
-   "date_utc": "2026-10-13T14:38:27.191177+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:27:03.454617+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    15.589
+    15.901
    ],
    "samples": [
     {
-     "pss_kib": 197328,
-     "seconds_after_observed_completion": 10.013047492000624,
+     "pss_kib": 199660,
+     "seconds_after_observed_completion": 10.013328094999451,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -733,8 +733,8 @@
      }
     },
     {
-     "pss_kib": 197333,
-     "seconds_after_observed_completion": 11.012076357998012,
+     "pss_kib": 199664,
+     "seconds_after_observed_completion": 11.01179238899931,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -742,8 +742,8 @@
      }
     },
     {
-     "pss_kib": 197333,
-     "seconds_after_observed_completion": 12.012065906998032,
+     "pss_kib": 199664,
+     "seconds_after_observed_completion": 12.011905071998626,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -753,23 +753,23 @@
    ]
   },
   "fixture-2": {
-   "date_utc": "2026-10-13T14:39:42.029578+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:28:18.473984+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    16.911
+    17.564
    ],
    "samples": [
     {
-     "pss_kib": 197466,
-     "seconds_after_observed_completion": 10.011820985000668,
+     "pss_kib": 197175,
+     "seconds_after_observed_completion": 10.013305963002495,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -777,8 +777,8 @@
      }
     },
     {
-     "pss_kib": 197471,
-     "seconds_after_observed_completion": 11.011889684003108,
+     "pss_kib": 197180,
+     "seconds_after_observed_completion": 11.01160477400117,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -786,8 +786,8 @@
      }
     },
     {
-     "pss_kib": 197471,
-     "seconds_after_observed_completion": 12.011637734001852,
+     "pss_kib": 197180,
+     "seconds_after_observed_completion": 12.012451619000785,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -797,23 +797,23 @@
    ]
   },
   "fixture-3": {
-   "date_utc": "2026-10-13T14:40:57.039708+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:29:33.373747+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    17.349
+    16.721
    ],
    "samples": [
     {
-     "pss_kib": 197574,
-     "seconds_after_observed_completion": 10.012514169997303,
+     "pss_kib": 197439,
+     "seconds_after_observed_completion": 10.013485413001035,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -821,8 +821,8 @@
      }
     },
     {
-     "pss_kib": 197578,
-     "seconds_after_observed_completion": 11.010898332999204,
+     "pss_kib": 197444,
+     "seconds_after_observed_completion": 11.011418529000366,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -830,8 +830,8 @@
      }
     },
     {
-     "pss_kib": 197578,
-     "seconds_after_observed_completion": 12.012125078999816,
+     "pss_kib": 197444,
+     "seconds_after_observed_completion": 12.012781363999238,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -841,23 +841,23 @@
    ]
   },
   "fixture-4": {
-   "date_utc": "2026-10-13T14:42:12.000039+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:30:48.391518+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    17.222
+    15.406
    ],
    "samples": [
     {
-     "pss_kib": 197425,
-     "seconds_after_observed_completion": 10.01376219800295,
+     "pss_kib": 197353,
+     "seconds_after_observed_completion": 10.012981396001123,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -865,8 +865,8 @@
      }
     },
     {
-     "pss_kib": 197429,
-     "seconds_after_observed_completion": 11.011664516001474,
+     "pss_kib": 197358,
+     "seconds_after_observed_completion": 11.01140862000102,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -874,8 +874,8 @@
      }
     },
     {
-     "pss_kib": 197429,
-     "seconds_after_observed_completion": 12.011681487001624,
+     "pss_kib": 197358,
+     "seconds_after_observed_completion": 12.012474412000302,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -885,24 +885,24 @@
    ]
   },
   "fixture-warm-reload": {
-   "date_utc": "2026-10-13T14:43:02.589132+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:31:38.818123+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    16.012,
-    4.49
+    16.296,
+    5.571
    ],
    "samples": [
     {
-     "pss_kib": 199636,
-     "seconds_after_observed_completion": 10.011819241000921,
+     "pss_kib": 199220,
+     "seconds_after_observed_completion": 10.012411264000548,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -910,8 +910,8 @@
      }
     },
     {
-     "pss_kib": 199637,
-     "seconds_after_observed_completion": 11.011357584000507,
+     "pss_kib": 199220,
+     "seconds_after_observed_completion": 11.011528016999364,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -919,8 +919,8 @@
      }
     },
     {
-     "pss_kib": 199745,
-     "seconds_after_observed_completion": 12.01237008300086,
+     "pss_kib": 199220,
+     "seconds_after_observed_completion": 12.012745144998917,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -930,23 +930,23 @@
    ]
   },
   "wikipedia-1": {
-   "date_utc": "2026-10-13T14:38:51.938070+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:27:28.204183+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    501.804
+    596.664
    ],
    "samples": [
     {
-     "pss_kib": 336029,
-     "seconds_after_observed_completion": 10.014522960998875,
+     "pss_kib": 339058,
+     "seconds_after_observed_completion": 10.015686217997427,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -954,8 +954,8 @@
      }
     },
     {
-     "pss_kib": 334241,
-     "seconds_after_observed_completion": 11.013231989996711,
+     "pss_kib": 337546,
+     "seconds_after_observed_completion": 11.013322952996532,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -963,8 +963,8 @@
      }
     },
     {
-     "pss_kib": 334229,
-     "seconds_after_observed_completion": 12.013576692999777,
+     "pss_kib": 337534,
+     "seconds_after_observed_completion": 12.013027480999881,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -974,23 +974,23 @@
    ]
   },
   "wikipedia-2": {
-   "date_utc": "2026-10-13T14:40:06.777298+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:28:43.167892+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    552.136
+    566.034
    ],
    "samples": [
     {
-     "pss_kib": 338171,
-     "seconds_after_observed_completion": 10.01504845800082,
+     "pss_kib": 336792,
+     "seconds_after_observed_completion": 10.015060401001392,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -998,8 +998,8 @@
      }
     },
     {
-     "pss_kib": 336511,
-     "seconds_after_observed_completion": 11.013427600999421,
+     "pss_kib": 335136,
+     "seconds_after_observed_completion": 11.01362344300287,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1007,8 +1007,8 @@
      }
     },
     {
-     "pss_kib": 336499,
-     "seconds_after_observed_completion": 12.013990687999467,
+     "pss_kib": 335124,
+     "seconds_after_observed_completion": 12.014179437002895,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1018,23 +1018,23 @@
    ]
   },
   "wikipedia-3": {
-   "date_utc": "2026-10-13T14:41:21.790581+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:29:58.126158+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    488.419
+    548.772
    ],
    "samples": [
     {
-     "pss_kib": 336372,
-     "seconds_after_observed_completion": 10.015084837999893,
+     "pss_kib": 341989,
+     "seconds_after_observed_completion": 10.01417726499858,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1042,8 +1042,8 @@
      }
     },
     {
-     "pss_kib": 334712,
-     "seconds_after_observed_completion": 11.012886574997538,
+     "pss_kib": 340329,
+     "seconds_after_observed_completion": 11.013160014001187,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1051,8 +1051,8 @@
      }
     },
     {
-     "pss_kib": 334700,
-     "seconds_after_observed_completion": 12.013341887999559,
+     "pss_kib": 340317,
+     "seconds_after_observed_completion": 12.014181459999236,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1062,23 +1062,23 @@
    ]
   },
   "wikipedia-4": {
-   "date_utc": "2026-10-13T14:42:36.745734+00:00",
-   "revision": "9c8151513e4e3b79428f625e1b8a5202a5346c9a",
+   "date_utc": "2026-10-13T15:31:13.081313+00:00",
+   "revision": "1fae5706b2bb528a0bc8bc30c1e637a1d06a8b19",
    "source_dirty": false,
-   "source_sha256": "d748f8e3706075c2c87ac142626322ad1e3ac7a693e00dcbaf0ad525de5302b6",
-   "binary_sha256": "53eda7b8f682765bf861775ca6688817acf527ef3d673f6c8a4ff35047b79c34",
+   "source_sha256": "7b3129c2152a918762bc25696c018ef932d2a7cd9ff80ca3af7b028272a565b5",
+   "binary_sha256": "916f7b039f8e10fce6082e97f2fea1c2a540a8eb111649cd547f54449a2c8c4f",
    "condition": "fresh process, ephemeral session; OS caches uncontrolled",
    "result": "pass",
    "exit_code": 0,
    "tracked_identity_count": 8,
    "survivor_count": 0,
    "navigation_elapsed_ms": [
-    611.932
+    557.474
    ],
    "samples": [
     {
-     "pss_kib": 335984,
-     "seconds_after_observed_completion": 10.015119292998861,
+     "pss_kib": 340809,
+     "seconds_after_observed_completion": 10.015269004998117,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1086,8 +1086,8 @@
      }
     },
     {
-     "pss_kib": 334324,
-     "seconds_after_observed_completion": 11.013297534998856,
+     "pss_kib": 339149,
+     "seconds_after_observed_completion": 11.011948573999689,
      "viewport": {
       "width": 950,
       "height": 1188,
@@ -1095,8 +1095,8 @@
      }
     },
     {
-     "pss_kib": 334312,
-     "seconds_after_observed_completion": 12.013660551998328,
+     "pss_kib": 339197,
+     "seconds_after_observed_completion": 12.013936524999735,
      "viewport": {
       "width": 950,
       "height": 1188,
