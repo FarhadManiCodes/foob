@@ -38,3 +38,14 @@ bool foob_target_is_valid(const char *target)
     }
     return g_ascii_strcasecmp(scheme, "file") == 0 && is_local_file_uri(target);
 }
+
+bool foob_uri_is_local(const char *uri)
+{
+    if (!uri)
+        return false;
+    if (strcmp(uri, "about:blank") == 0)
+        return true;
+    g_autoptr(GUri) parsed = g_uri_parse(uri, G_URI_FLAGS_NONE, nullptr);
+    return parsed && g_ascii_strcasecmp(g_uri_get_scheme(parsed), "file") == 0 &&
+        is_local_file_uri(uri);
+}

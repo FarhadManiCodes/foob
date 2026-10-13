@@ -45,11 +45,29 @@ static void test_rejected(void)
     }
 }
 
+static void test_local_uri(void)
+{
+    static const char *const local[] = {
+        "about:blank", "file:///tmp/a.html", "FILE:///tmp/a%20b.md",
+        "file://localhost/tmp/a.typ", "file:///",
+    };
+    static const char *const remote[] = {
+        "https://example.org/", "http://127.0.0.1/", "file://remote-host/tmp/a.html",
+        "file:relative.html", "about:config", "javascript:1", "data:text/html,x",
+        "blob:file:///tmp/x", "", "not a uri",
+    };
+    for (size_t i = 0; i < G_N_ELEMENTS(local); i++)
+        g_assert_true(foob_uri_is_local(local[i]));
+    for (size_t i = 0; i < G_N_ELEMENTS(remote); i++)
+        g_assert_false(foob_uri_is_local(remote[i]));
+    g_assert_false(foob_uri_is_local(nullptr));
+}
+
 static void test_long_input(void)
 {
-    g_autofree char *path = g_strnfill(1 << 20, 'a');
+    g_autofree char *path = g_strnfill(1024 * 1024, 'a');
     g_autofree char *http = g_strconcat("https://example.org/", path, nullptr);
-    g_autofree char *garbage = g_strnfill(1 << 20, ':');
+    g_autofree char *garbage = g_strnfill(1024 * 1024, ':');
     g_assert_true(foob_target_is_valid(http));
     g_assert_false(foob_target_is_valid(garbage));
 }
@@ -59,6 +77,7 @@ int main(int argc, char *argv[])
     g_test_init(&argc, &argv, nullptr);
     g_test_add_func("/target/accepted", test_accepted);
     g_test_add_func("/target/rejected", test_rejected);
+    g_test_add_func("/target/local-uri", test_local_uri);
     g_test_add_func("/target/long-input", test_long_input);
     return g_test_run();
 }

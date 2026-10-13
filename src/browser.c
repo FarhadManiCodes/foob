@@ -6,6 +6,8 @@
 #include "browser.h"
 #include "diagnostics.h"
 #include "exit_status.h"
+#include "target.h"
+#include "window_title.h"
 
 /*
  * The WebKitWebView owns its WPEView, WPEDisplay and WebKitNetworkSession, so
@@ -17,6 +19,22 @@ struct FoobBrowser {
     WebKitWebView *web_view;
     FoobDiagnostics *diagnostics;  /* nullptr unless diagnostics are enabled. */
 };
+
+/* Mirrors the page title into the compositor-visible window title. */
+static void update_window_title(FoobBrowser *browser)
+{
+    /* Only content from this machine is trusted; any other origin is not. */
+    bool local = foob_uri_is_local(webkit_web_view_get_uri(browser->web_view));
+    g_autofree char *title = foob_window_title(webkit_web_view_get_title(browser->web_view), local);
+    WPEView *view = webkit_web_view_get_wpe_view(browser->web_view);
+    wpe_toplevel_set_title(wpe_view_get_toplevel(view), title);
+}
+
+static void title_changed([[maybe_unused]] GObject *object,
+                          [[maybe_unused]] GParamSpec *property, gpointer user_data)
+{
+    update_window_title(user_data);
+}
 
 static void stop_loop(FoobBrowser *browser)
 {
@@ -72,7 +90,8 @@ FoobBrowser *foob_browser_new(bool diagnostics)
                                      "network-session", session, nullptr);
 
     WPEView *view = webkit_web_view_get_wpe_view(browser->web_view);
-    wpe_toplevel_set_title(wpe_view_get_toplevel(view), "foob");
+    update_window_title(browser);
+    g_signal_connect(browser->web_view, "notify::title", G_CALLBACK(title_changed), browser);
     g_signal_connect(view, "closed", G_CALLBACK(view_closed), browser);
     g_signal_connect(browser->web_view, "close", G_CALLBACK(web_view_close), browser);
     g_signal_connect(display, "disconnected", G_CALLBACK(display_disconnected), browser);

@@ -9,4 +9,12 @@
  */
 bool foob_target_is_valid(const char *target);
 
+/*
+ * True for content that comes from this machine and is assumed safe:
+ * "about:blank" and file: URIs with no host or "localhost". Everything else,
+ * including a nullptr or unparsable URI, is remote and untrusted. Later local
+ * document schemes (converted Markdown/Typst) extend this one function.
+ */
+bool foob_uri_is_local(const char *uri);
+
 #endif

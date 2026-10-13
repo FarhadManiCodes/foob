@@ -33,15 +33,17 @@ platform = dependency('wpe-platform-2.0', version: '>=2.54.1')
 wayland = dependency('wpe-platform-wayland-2.0', version: '>=2.54.1')
 
 # Pure GLib logic, kept free of WPE so it is unit-testable without a display.
-target = static_library('foob-target', 'src/target.c',
+core = static_library('foob-core', 'src/target.c', 'src/window_title.c',
     include_directories: 'src', dependencies: glib)
 
 foob = executable('foob', 'src/main.c', 'src/browser.c', 'src/diagnostics.c',
-    link_with: target, include_directories: 'src',
+    link_with: core, include_directories: 'src',
     dependencies: [glib, gobject, wpe, platform, wayland])
 
-test('target allowlist', executable('test-target', 'tests/test_target.c',
-    link_with: target, include_directories: 'src', dependencies: glib))
+foreach unit : ['target', 'window_title']
+    test(unit, executable('test-' + unit, 'tests/test_' + unit + '.c',
+        link_with: core, include_directories: 'src', dependencies: glib))
+endforeach
 
 python = find_program('python3', required: false)
 if python.found()

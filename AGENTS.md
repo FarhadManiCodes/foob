@@ -6,7 +6,7 @@ Foob contains an M1 prototype for a minimal, keyboard-driven Wayland browser. `f
 
 `docs/research/qvu/` contains historical Qt experiments, not current implementation requirements. Local mockups in `design-references/qvu/` are ignored by Git and may be absent from fresh checkouts.
 
-The layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. Start with `src/main.c` and `meson.build`. Modules: `target` (startup allowlist, GLib only, unit-tested by `tests/test_target.c`), `diagnostics` (redacted logging), `browser` (view lifecycle) and `exit_status.h`; split further as responsibilities emerge. `tests/nested_lifecycle.py build/foob` checks close/signal/compositor-loss behaviour against a disposable nested niri.
+The layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. Start with `src/main.c` and `meson.build`. Modules: `target` (startup allowlist, GLib only, unit-tested by `tests/test_target.c`), `window_title` (page title to window title; remote titles untrusted), `diagnostics` (redacted logging), `browser` (view lifecycle) and `exit_status.h`; split further as responsibilities emerge. `tests/nested_lifecycle.py build/foob` checks close/signal/compositor-loss behaviour against a disposable nested niri.
 
 ## Build, Test, and Development Commands
 

@@ -23,6 +23,19 @@ allowlist, unit-tested without a display), `diagnostics.[ch]` (all redacted
 logging, null-safe when disabled, one geometry scheduler instead of two copies),
 `browser.[ch]` (lifecycle), `exit_status.h`. Diagnostics output is
 byte-identical to the baseline on SIGTERM and SIGINT. `.text` grew by ~100 bytes.
+`window_title.[ch]` (pure GLib) maps the page title to the compositor-visible
+window title, `<page title> — foob`, or plain `foob` without a usable title.
+`foob_uri_is_local()` in `target.c` is the single trust decision: `about:blank`
+and `file:` URIs without a remote host are local and trusted; every other origin
+is untrusted. Untrusted titles are repaired to valid UTF-8, lose control
+characters and Unicode bidi overrides (which could visually reorder the
+trailing `foob`), have whitespace collapsed and are cut at 120 characters;
+trusted ones keep their text apart from protocol needs (valid UTF-8, no control
+characters, 240 characters). Titles are never logged. Verified end to end in
+the nested compositor: a hostile loopback page title
+(`  Pay<RLO>evil   <LRI> page<BEL>  `) reaches niri as `Payevil page — foob`.
+Later local document schemes extend `foob_uri_is_local()` only.
+
 The browser no longer keeps its own display/session references; the view owns
 them (as upstream). Benchmark collectors now record a manifest of every
 `src/*.[ch]` digest instead of only `main.c`; hashes are not comparable with
@@ -40,10 +53,16 @@ pre-split records.
   `runtime error`. LeakSanitizer reports 1.8 KB in 28 allocations, every one
   allocated inside libdrm, libwayland-client or GLib `GVariant` calls made by the
   engine during display/view setup, none by our own allocations.
-- clang-tidy bug-finding set (`bugprone`, `cert`, `clang-analyzer`): only
-  `cert-err33-c` for unchecked `fputs` on the usage/error path (not changed).
-  Style checks (braces, "can be static") were reviewed and declined: they
-  conflict with the project's existing style or are single-TU false positives.
+- clang-tidy bug-finding set (`bugprone`, `cert`, `clang-analyzer`,
+  `concurrency`, `portability`), run with correct include flags: `cert-err33-c`
+  for unchecked `fputs` on the usage/error path (a failed stderr write cannot be
+  handled usefully; not changed); `bugprone-signed-bitwise` on GLib flag-enum
+  masks in `diagnostics.c` (GLib idiom; declined) and on `1 << 20` in tests
+  (fixed); remaining hits are inside GLib's own headers or GLib assert macros.
+  Style checks (braces, "can be static") were declined: they conflict with the
+  project's existing style or are single-translation-unit false positives.
+  (An earlier pass in this audit used broken include flags under zsh and was
+  discarded; this is the valid run.)
 - Hardening (readelf): PIE, full RELRO + `BIND_NOW`, non-exec stack, stack
   protector, stack-clash protection, CET (IBT/SHSTK) markers,
   `_FORTIFY_SOURCE=3` at `-O2`. Before: PIE, partial RELRO (no `BIND_NOW`) and
@@ -109,9 +128,9 @@ loaded in this audit.)
 
 ## Open decisions for the maintainer
 
-1. **Window title.** Follow the page title via `notify::title` like upstream?
-   It is not persistent chrome, and compositors show it in overviews and window
-   rules. Currently always `foob`.
+1. **Window title.** Decided (maintainer): follow the page title with a
+   ` — foob` suffix; remote titles untrusted, local content trusted. Implemented
+   and tested.
 2. **Web process crash.** Today the window goes blank and stays. Options: reload
    once, show an error page, or exit with a distinct code. M2 policy.
 3. **Window app-id.** WPE exposes no setter; current app-id comes from the
