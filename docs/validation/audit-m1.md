@@ -67,6 +67,7 @@ pre-split records.
   project's existing style or are single-translation-unit false positives.
   (An earlier pass in this audit used broken include flags under zsh and was
   discarded; this is the valid run.)
+- Final re-run on revision `6088069` (no `src/` change since the measured binary): `gcc -fanalyzer` with `-Wconversion -Wshadow -Wformat=2 -Wnull-dereference` reports nothing; the ASan+UBSan build passes the 3 unit/CLI tests and all 11 nested scenarios with no UBSan runtime error and no leak attributed to foob. LeakSanitizer does report small leaks inside `libWPEWebKit`/`libdrm` (for example a 144-byte `drmGetDeviceFromDevId` allocation reached from `webkit_web_view_load_uri`); these are engine-owned and were suppressed by library (`leak:libWPEWebKit-2.0.so`, `leak:libdrm.so`).
 - Hardening (readelf): PIE, full RELRO + `BIND_NOW`, non-exec stack, stack
   protector, stack-clash protection, CET (IBT/SHSTK) markers,
   `_FORTIFY_SOURCE=3` at `-O2`. Before: PIE, partial RELRO (no `BIND_NOW`) and
