@@ -4,6 +4,13 @@
 review, not approved.** Maintainer returned and completed guided interaction.
 Stop before M2.
 
+## Audit branch (`m1-audit`)
+
+Corrections found by the M1 audit, with re-recorded measurements for the final
+binary, are described in [audit-m1.md](audit-m1.md) and
+[measurements-m1-audit.md](measurements-m1-audit.md). The original evidence below
+describes the unmodified `m0-m1` binary; Gate A remains the maintainer's decision.
+
 ## Revision and reproducibility
 
 - Baseline: `cd93192`.
