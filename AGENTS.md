@@ -6,7 +6,16 @@ Foob contains an M1 prototype for a minimal, keyboard-driven Wayland browser. `f
 
 `docs/research/qvu/` contains historical Qt experiments, not current implementation requirements. Local mockups in `design-references/qvu/` are ignored by Git and may be absent from fresh checkouts.
 
-The layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. Start with `src/main.c` and `meson.build`. Modules: `target` (startup allowlist, GLib only, unit-tested by `tests/test_target.c`), `window_title` (page title to window title; remote titles untrusted), `diagnostics` (redacted logging), `browser` (view lifecycle) and `exit_status.h`; split further as responsibilities emerge. `tests/nested_lifecycle.py build/foob` checks close/signal/compositor-loss/crash/download behaviour against a disposable nested niri. `tests/policy_server.py` serves the policy fixtures for guided checks (`docs/validation/guided-checks-m1-audit.md`).
+The layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. Start with `src/main.c` and `meson.build`. Modules (`src/`):
+
+- `main.c`: argument check and startup only.
+- `target.[ch]`: the startup-URI allowlist, `foob_uri_is_local()` (the single trust decision: `about:blank` and local `file:` are trusted, everything else is untrusted) and `foob_navigation_allowed()` (remote content never navigates to local content). GLib only, unit-tested by `tests/test_target.c`.
+- `window_title.[ch]`: page title to compositor-visible window title (`<title> — foob`); remote titles are sanitized. GLib only, unit-tested by `tests/test_window_title.c`.
+- `diagnostics.[ch]`: redacted logging; it must never print URLs, titles, error text, cookies or input contents.
+- `browser.[ch]`: the view lifecycle, one window, all shutdown paths stop one main loop, teardown in dependency order; signal handlers for close, display loss, web-process death, downloads (cancelled until M3) and new-window policy.
+- `exit_status.h`: exit codes. 1 start failed, 2 rejected argument, 3 compositor connection lost, 4 web process died; `tests/check_cli.py` depends on 1 and 2.
+
+Split further as responsibilities emerge (the policy handlers are the next candidate, roadmap M2-03). Tests: `meson test -C build` runs the two unit tests and `tests/check_cli.py` and needs no display. `python3 tests/nested_lifecycle.py build/foob [--keep] [scenario ...]` runs lifecycle, title, download, crash and fixture scenarios in a disposable nested niri (it opens a window on the desktop, removes its scratch directory after a pass); every scenario should keep a negative control that fails on the pre-fix behaviour. `tests/policy_server.py` serves the policy fixtures for guided checks (`docs/validation/guided-checks-m1-audit.md`); input cannot be synthesized here, so clicks stay guided checks. Milestone audits follow the roadmap's triage rule (section 7) and record evidence in `docs/validation/`.
 
 ## Build, Test, and Development Commands
 
@@ -38,4 +47,4 @@ PR descriptions should explain behavior, link relevant tasks, and include valida
 
 ## Architecture & Security Boundaries
 
-Preserve the toolkit-free WPE direction: one view per window, no persistent chrome, and external PDF viewing. Keep custom engine packaging separate. Never disable TLS checks or sandbox protections to resolve compatibility failures, or commit browser profiles and credentials.
+Preserve the toolkit-free WPE direction: one view per window, no persistent chrome, and external PDF viewing. Keep custom engine packaging separate. Never disable TLS checks or sandbox protections to resolve compatibility failures, or commit browser profiles and credentials. Treat everything from outside this machine as untrusted (page titles, URLs, responses); no download may start or file be created without an explicit user decision, so downloads stay cancelled until roadmap M3-03. `window.open()` is unsupported until the popup policy is decided (M2-11, M3-01).

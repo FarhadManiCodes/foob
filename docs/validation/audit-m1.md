@@ -1,8 +1,10 @@
 # M1 code, integration and efficiency audit
 
 2026-10-13, branch `m1-audit` (cut from `m0-m1` at `4fb9c9c`). Gate A is still
-the maintainer's decision; no M2 feature was added. This audit changes source
-layout and fixes defects only, so the M1 hashes in `measurements.md` describe
+the maintainer's decision; no M2 task was started. This audit restructures the
+code and fixes defects in existing behaviour; two maintainer-decided defaults
+overlap M2-03 (same-window `target=_blank` links, interim download cancel) and
+are tracked there. So the M1 hashes in `measurements.md` describe
 the unmodified `m0-m1` binary, not this branch.
 
 Method: the `foob-milestone-audit` skill (kept local, git-ignored). Everything
@@ -13,10 +15,10 @@ below was measured with stock WPE `2.54.1-2`, Mesa `26.2.4`, GCC 16 / C23.
 | # | Finding | Evidence | Fix |
 |---|---|---|---|
 | 1 | **Compositor loss leaves the browser spinning.** If the compositor exits or crashes, `foob` keeps running at ~23% CPU on the dead socket with its helper processes alive. | Nested niri killed under the baseline binary: still alive 5 s later, state `R`, helpers present. `tests/nested_lifecycle.py` hangs on the baseline and passes on the fix. | Handle `WPEDisplay::disconnected`, exit immediately with new code 3 (`FOOB_EXIT_DISPLAY_LOST`), as upstream MiniBrowser does. Helpers exit when their IPC peer disappears (verified: no survivors). |
-| 2 | Startup allowlist accepted `https://example.org:99999/` and URIs with raw spaces/control characters; GLib's parser tolerates both. | New C unit test `tests/test_target.c`, failed on first run. | Reject ports above 65535 and any byte <= 0x20 or 0x7f before parsing. |
+| 2 | Startup allowlist accepted URIs with raw spaces and control characters; GLib's parser tolerates both. (An out-of-range port such as `:99999` was also suspected; GLib 2.90.1 already rejects it, so that guard is defense in depth for older GLib and `m0-m1` was not affected on this system.) | New C unit test `tests/test_target.c`, failed on first run for the space and control-character cases. | Reject any byte <= 0x20 or 0x7f before parsing; keep an explicit port check. |
 | 3 | `WebKitWebView::close` (page `window.close()`) was ignored. | Upstream handles it; single view means quit. | Connect `close` and stop the loop. Not exercised by a test: WebKit only honours `window.close()` for script-opened windows. |
 | 4 | **Silent downloads.** An attachment response was saved into `~/Downloads` with no prompt. | Probe against the baseline: `payload.bin` appeared. `tests/nested_lifecycle.py download-cancelled` streams a 300 MiB attachment from a loopback server and passes only if the server sees the transfer abort after under 16 MiB of the 300 MiB (it sent 0.1 MiB in the one-off run and 1.2 MiB once under load), the stream stays stopped, and no file holding the payload exists in the download, cache, data or temp directories (all redirected below a temp dir). On the baseline the server is still streaming after 10 s and the test fails (negative control); the earlier one-off run saw 81 MiB sent and `.wkdownload` files there versus 0.1 MiB and no files now. | Cancel every download on `WebKitNetworkSession::download-started` until M3-03 designs an explicit per-download decision (requirement and acceptance criteria added to the roadmap). |
-| 5 | `target=_blank` links and user-triggered `window.open` did nothing (dead links). | Probe: `window.open` returned `null`, no window appeared. | Decided: navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked. **What is verified:** scripted requests (`window.open`, a programmatic click on a `_blank` link, with or without WebKit's popup blocker) never navigate (`tests/nested_lifecycle.py`, re-checked after a 3 s wait). **What is not:** they never reach foob's policy handler at all (a debug build logged no `NEW_WINDOW_ACTION` decision even with popups allowed; WebKit's `create` signal is what fires), so foob's own gesture check is defense in depth that no automated test exercises. Whether a real click on a `_blank` link reaches the handler needs real input and is a guided check below; if it does not, such links simply do nothing (safe, but the same-window behavior would then need a `create` handler). Separate window deferred to roadmap M2-11. |
+| 5 | `target=_blank` links did nothing (dead links); `window.open` returned `null`. | Probe: no window appeared. | Decided: `target=_blank` links and forms navigate the **current** window for user-gesture requests that pass `foob_navigation_allowed()` (startup allowlist; remote never navigates to local); no-gesture requests stay blocked. **`window.open()` is unsupported** and returns `null`: WebKit reports it through the `create` signal, which foob does not handle (maintainer: document only; popups are roadmap M2-11 and M3-01). **Verified:** scripted requests (`window.open`, a programmatic click on a `_blank` link, with or without WebKit's popup blocker) never navigate and never reach foob's policy handler (`tests/nested_lifecycle.py`, re-checked after a 3 s wait); a second review, using a scratch build that forces a user gesture, saw a gesture `a.click()` and a `_blank` form submit reach the handler and navigate the same window, while a gesture `window.open` only fires `create`, and mailto/`javascript:` links reach the handler and are rejected. **Not verified:** a real mouse click (guided check); foob's own gesture check and the remote-to-`file:` rule have no automated end-to-end test (the latter only the `foob_navigation_allowed` unit test, since WebKit stops that request first). Separate window deferred to roadmap M2-11. |
 | 6 | **Web process crash left a blank or frozen window** with no signal. | `tests/nested_lifecycle.py web-process-crash` SIGKILLs the exact `WPEWebProcess`: the baseline stays running (negative control), the fix exits with code 4 and no survivors. | Handle `web-process-terminated`: stop the loop and return `FOOB_EXIT_ENGINE_LOST` (4) through `foob_browser_run()`, so the normal teardown runs. Reload-once recovery stays in roadmap M3-07. |
 | 7 | **Unstable window app-id.** niri reported `org.webkit.app-<sha256 of the executable's absolute path>`, so compositor window rules could not match foob and broke whenever the binary moved. | Nested niri, `niri msg -j windows`: the hash equals the SHA256 of the absolute binary path. Setting the GLib program name to a valid application ID before the view exists changes it; a name without a dot is ignored and the hash returns. Every `tests/nested_lifecycle.py` scenario now asserts the app-id; the baseline binary fails it. | `g_set_prgname("dev.foob.Browser")` in `foob_browser_new()` (name chosen by the maintainer). M2-04 passes explicit profile directories, so the program name does not decide any storage path. |
 
@@ -72,9 +74,11 @@ pre-split records.
 - Final re-run on revision `9c81515` (the revision of the final measurements): `gcc -fanalyzer` with `-Wconversion -Wshadow -Wformat=2 -Wnull-dereference` reports nothing; the ASan+UBSan build passes the 3 unit/CLI tests and all 11 nested scenarios with no UBSan runtime error and no leak attributed to foob. LeakSanitizer does report small leaks inside `libWPEWebKit`/`libdrm` (for example a 144-byte `drmGetDeviceFromDevId` allocation reached from `webkit_web_view_load_uri`); these are engine-owned and were suppressed by library (`leak:libWPEWebKit-2.0.so`, `leak:libdrm.so`).
 - Hardening (readelf): PIE, full RELRO + `BIND_NOW`, non-exec stack, stack
   protector, stack-clash protection, CET (IBT/SHSTK) markers,
-  `_FORTIFY_SOURCE=3` at `-O2`. Before: PIE, partial RELRO (no `BIND_NOW`) and
+  `_FORTIFY_SOURCE=3` at `-O2` (set at compile time; foob imports no checked
+  `*_chk` functions, so it has no effect that `readelf` can show). Before: PIE, partial RELRO (no `BIND_NOW`) and
   the distro-default stack protector, no explicit flags. No measurable
-  cost: blank 168.8 vs 168.9 MiB, load times equal.
+  cost: blank 168.8 vs 168.9 MiB, load times equal (first-pass numbers; the final
+  evidence is [measurements-m1-audit.md](measurements-m1-audit.md)).
 
 ## Compiler flags
 
@@ -109,8 +113,8 @@ Growth since `m0-m1` is +3.5 KB stripped (+18%), +4.5 KB of text. Per object
 this audit (titles and their sanitizing, navigation policy, download cancel,
 compositor-loss and web-process-crash exits, app-id) plus the hardening flags
 (stack protector, CET markers, fortify), whose share was not separated. None of it
-is dead code. Runtime effect: none measurable (168.37 vs 168.80 MiB blank in the
-same session); the engine library is 148 MB on disk.
+is dead code. Runtime effect: none measurable (blank 169.0 vs 169.4 MiB, interleaved,
+see [measurements-m1-audit.md](measurements-m1-audit.md)); the engine library is 148 MB on disk.
 
 Rule: record stripped size and `size` per object at each milestone audit and
 explain growth of more than about 10%. `-Os` would save ~5% of our text (about
@@ -140,7 +144,10 @@ is no measurable slowdown on docs/math/scholarly pages, and no security is
 weakened. Stock-engine tuning will not close the gap to 100 MiB; that decision
 belongs to the custom-engine milestone.
 
-Regression pairing (new vs `m0-m1` binary, same tooling): blank 168.8 vs 168.9,
+Regression pairing, **superseded for memory by
+[measurements-m1-audit.md](measurements-m1-audit.md)** (interleaved, final revision;
+the numbers here are from an earlier revision, kept for the Semantic Scholar row and
+the latency figures, which were not repeated) (new vs `m0-m1` binary, same tooling): blank 168.8 vs 168.9,
 local fixture 193.1 vs 193.3, Wikipedia 332.7 vs 332.9, Semantic Scholar 441.2
 vs 442.5 MiB; all loads `status=ok` with equal timings. Latency, 8 interleaved
 launches each: process start to `load-finished` median 107 ms (new) vs 108 ms
@@ -169,7 +176,7 @@ loaded in this audit.)
 | Probe | Result | Verdict |
 |---|---|---|
 | `alert()` / `confirm()` / `prompt()` | auto-dismissed immediately (`false` / `null`), page continues | Safe default; roadmap M3-01 defines real handling. |
-| `window.open()` without user gesture | `null`, no window | Safe; unchanged. |
+| `window.open()` (with or without user gesture) | `null`, no window (`create` signal unhandled) | Safe; unsupported until M2-11 / M3-01. |
 | Geolocation / Notification permission | denied (`code 1` / `denied`) | Safe default; M3-05 reviews permission defaults. |
 | Expired TLS certificate | load refused (`g-tls-error-quark` code 2) | Correct; TLS never weakened. |
 | HTTP 401 Basic | page stays loading, no prompt, no window title | **Known, accepted for M1** (maintainer: it fails visibly and is a useful signal). Prompt design is roadmap M2-10. |

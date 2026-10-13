@@ -32,7 +32,9 @@ The control is a build of the unmodified `m0-m1` source made earlier in this aud
 not the binary hashed in `measurements.md` (`9a9225d8…`); it differs because it was
 rebuilt. Its records carry the audit tree's `source_sha256` because the collector
 hashes the working tree; only `binary_sha256` identifies the control. Any later C
-change invalidates the audit hashes above.
+change invalidates the audit hashes above. The binary hash depends on the build
+directory (debug info embeds paths); a reviewer building elsewhere got a different one.
+The source hash reproduces exactly and is the stable identifier.
 
 ## Method
 
@@ -112,7 +114,7 @@ original binary. Compare builds only within one session, as above.
   11 scenarios pass, each with exact-PID survivor checks and an app-id assertion:
   `title-follows-page`, `title-remote-sanitized`, `download-cancelled` (300 MiB
   stream aborted after under 16 MiB, nothing on disk),
-  `new-window-without-gesture-blocked` (re-checked after a 3 s wait),
+  `scripted-new-window-requests-do-not-navigate` (re-checked after a 3 s wait),
   `policy-fixture-remote`, `policy-fixture-local`, `compositor-close`, `sigterm`,
   `sigint`, `compositor-lost` (exit 3), `web-process-crash` (exit 4). The pre-fix
   binary fails the compositor-loss, download, app-id and web-process scenarios; those
@@ -121,6 +123,7 @@ original binary. Compare builds only within one session, as above.
 - **Limit of the new-window scenarios:** scripted requests never reach foob's own
   policy handler (WebKit stops them first), so these scenarios prove that scripted
   and no-gesture requests do not navigate, not that foob's gesture check works.
+  The remote-to-`file:` rule is covered only by the `foob_navigation_allowed` unit test.
   Removing that check changes nothing in them (checked with a scratch build); see
   [audit-m1.md](audit-m1.md) defect 5.
 - Analyzer and ASan+UBSan (engine-owned leaks suppressed) were repeated on this code
