@@ -95,6 +95,7 @@ char *foob_window_title(const char *page_title, bool trusted)
     glong limit = trusted ? trusted_max_chars : untrusted_max_chars;
     if (g_utf8_strlen(clean, -1) > limit) {
         g_autofree char *head = g_utf8_substring(clean, 0, limit);
+        g_strchomp(head);  /* A cut after a space must not leave "abc … — foob". */
         return g_strconcat(direction_prefix(head, trusted), head, "… — foob", nullptr);
     }
     return g_strconcat(direction_prefix(clean, trusted), clean, " — foob", nullptr);

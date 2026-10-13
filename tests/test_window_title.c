@@ -146,6 +146,13 @@ static void test_long_title(void)
     g_assert_cmpuint(strlen(local), >, strlen(remote));
     g_assert_cmpuint(strlen(local), <, 300);
 
+    /* A cut right after a space drops the space instead of leaving one before the ellipsis. */
+    g_autofree char *head_a = g_strnfill(119, 'a');
+    g_autofree char *tail_b = g_strnfill(50, 'b');
+    g_autofree char *before_space = g_strconcat(head_a, " ", tail_b, nullptr);
+    g_autofree char *spaced = foob_window_title(before_space, false);
+    g_assert_true(g_str_has_suffix(spaced, "a… — foob"));
+
     /* Multi-byte characters must be cut on a character boundary. */
     GString *wide = g_string_new(nullptr);
     for (int i = 0; i < 5000; i++)

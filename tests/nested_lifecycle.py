@@ -120,14 +120,17 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         wait_for(lambda: not survivors(tracked), 10, f'{name}: helper processes survived')
         print(f'PASS {name}: exit {code}, no survivors')
     finally:
-        for process in (compositor,):
-            if process.poll() is None:
-                process.terminate()
-                process.wait(timeout=10)
         try:
-            os.killpg(browser.pid, signal.SIGKILL)
+            os.killpg(browser.pid, signal.SIGKILL)  # first: a stuck compositor must not skip it
         except (ProcessLookupError, NameError):
             pass
+        if compositor.poll() is None:
+            compositor.terminate()
+            try:
+                compositor.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                compositor.kill()
+                compositor.wait()
 
 
 def close_window(compositor, socket, window, browser):
@@ -227,9 +230,12 @@ def transfer_stopped_without_files(browser, socket, errors):
     assert browser.poll() is None, 'browser exited during download'
     assert not list(downloads.iterdir()), f'download was saved: {list(downloads.iterdir())}'
     # Engine caches (Mesa, GStreamer) legitimately live below `sandbox`; look for the payload.
+    def starts_with_payload(path):
+        size = path.stat().st_size
+        with path.open('rb') as handle:  # engine caches can be large; read only the start
+            return size > 0 and handle.read(4096) == b'x' * min(size, 4096)
     saved = [path for directory in sandbox.values() for path in directory.rglob('*')
-             if path.is_file() and path.stat().st_size > 0
-             and path.read_bytes()[:4096] == b'x' * min(path.stat().st_size, 4096)]
+             if path.is_file() and starts_with_payload(path)]
     assert not saved, f'attachment data was written to disk: {saved}'
 
 
