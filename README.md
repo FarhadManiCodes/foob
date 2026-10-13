@@ -63,8 +63,8 @@ The suite checks all browser descendants, including sandbox helpers and the D-Bu
 proxy, and checks their disappearance after shutdown.
 
 Generated `docs/validation/runs/` outputs are ignored. Commit reviewed Markdown
-and compact `docs/validation/results.json`; regenerate the latter with
-`python3 tests/benchmark/summarize.py`. See
+and compact `docs/validation/results.json`. `python3 tests/benchmark/summarize.py` regenerates it from the top-level runs; to summarize a suite run give its folder and a new output, for example
+`python3 tests/benchmark/summarize.py docs/validation/runs/suite-<time> --output docs/validation/results-<name>.json` (`--replace` overwrites an existing file; empty input is rejected). See
 [blank memory/GPU attribution](docs/validation/blank-memory.md) for the optional
 `--memory-details` collector and current findings.
 

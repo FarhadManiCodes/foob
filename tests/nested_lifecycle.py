@@ -70,7 +70,17 @@ def start_compositor():
         display = re.search(r'listening on Wayland socket: (\S+)', text)
         socket = re.search(r'IPC listening on: (\S+)', text)
         return (display[1], socket[1]) if display and socket else None
-    display, socket = wait_for(endpoints, 15, 'nested niri did not start')
+    try:
+        display, socket = wait_for(endpoints, 15, 'nested niri did not start')
+    except BaseException:
+        # scenario() has no cleanup yet at this point; never leave the compositor behind.
+        compositor.terminate()
+        try:
+            compositor.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            compositor.kill()
+            compositor.wait()
+        raise
     return compositor, display, socket
 
 
