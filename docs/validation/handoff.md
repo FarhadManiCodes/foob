@@ -12,25 +12,24 @@ The audit was fast-forwarded into `m0-m1` through `ced9c6c`; the local audit bra
 was deleted. The final review found no actionable regressions; all three registered
 Meson tests pass. After the merge, further Codex findings (F-35 to F-40) and a security
 review (`/code-review high`, F-41 to F-50) were handled on `m0-m1`; three of the latter
-changed C code (F-43 sanitizer, F-47 allowlist), so the evidence was re-recorded on `89c1ecf`.
+changed C code (F-43 sanitizer, F-47 allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after D-21.
 A second security review (Review-4, F-51 to F-58) found that foob's own reload of a page's
 `target=_blank` request escaped iframe sandboxes (F-51) and reported `Sec-Fetch-Site: none`
 (F-52). An injected script that let the page navigate itself fixed both, and two follow-up
 reviews found problems in the script (F-59, F-60). The maintainer then decided the script was
 not an M1 issue (D-21): it was removed, and foob ignores every new-window request, so a
 `target=_blank` link or form does nothing until M2-03. The low findings F-53 to F-57 (title
-sanitizer, benchmark tools) and F-61 (`summarize.py` guard) stay fixed. These change C code, so
-the evidence below must be re-recorded.
+sanitizer, benchmark tools) and F-61 (`summarize.py` guard) stay fixed.
 Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `89c1ecf280555a00bb3f8f8462a9f1f5cf5174bc`: source SHA256 `d306ff47…`, audit binary `dc22e2c2…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents; any C change invalidates these |
-| After D-21 | Unit tests 3/3 (title tests for F-54/F-55) and nested suite 12/12 on the new `browser.c` (scenario `blank-form-does-not-navigate`; it fails on the script build `f40e4b9`). Memory, sanitizer and analyzer evidence: **to be re-recorded on the D-21 commit** |
-| What is verified | Unit tests 3/3; nested suite 11/11; ASan+UBSan and `-fanalyzer` clean (engine-owned leaks suppressed); interleaved memory comparison shows no regression (blank 167.3 vs 166.2 MiB, fixture 196.0 vs 194.5, Wikipedia 326.2 vs 327.4; all 25 runs passed); binary 22,520 B stripped (unchanged) |
+| Evidence revision | `0af4314ddbb85cc637222f459da9bb2acbdaacf0`: source SHA256 `498cc823…`, audit binary `6e650bf4…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents; any C change invalidates these |
+| After D-21 | Re-recorded on `0af4314`: unit tests 3/3, nested suite 12/12 (scenario `blank-form-does-not-navigate` fails on the script build `f40e4b9`), ASan+UBSan 3/3 and 12/12 with no report, analyzer clean on all 5 files, clean `git archive` build, binary 22,520 B stripped, text 13,107 B. Interleaved memory: blank 170.7 vs 170.7 MiB, fixture 195.8 vs 196.2, Wikipedia 336.3 vs 329.7 (one audit launch at 356 MiB; the other three equal the control, 329.7 vs 329.7; five more pairs 331.0 vs 328.5); all 25 runs passed. Wikipedia navigation time of the audit build was about 5% above the control over nine pairs (median 1668 vs 1586 ms), unexplained, within live-network spread |
+| What is verified | See the row above; the PSS comparison shows no regression in memory beyond one single-launch spike; the under-100-MiB stretch target is still not met (blank about 170 MiB) |
 | Maintainer checks done | All 18 guided rows, the `pointer.html` click-position check (within 10 CSS px) and the geometry probe on `d9ea90d` (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)) |
 | What is not | Multi-monitor and fractional scaling (unavailable here, M6-07); the maintainer's Gate A decision |
-| Raw runs | `docs/validation/runs/m1-audit-89c1ecf/` (this evidence); `m1-audit-9abb6fe/` and `m1-audit-final/` are superseded sets; both ignored by git, the original M1 runs sit beside them, untouched |
+| Raw runs | `docs/validation/runs/m1-audit-0af4314/` (this evidence) and `m1-audit-0af4314-nav/` (five extra Wikipedia pairs); `m1-audit-89c1ecf/`, `m1-audit-93bdf41/`, `m1-audit-9abb6fe/` and `m1-audit-final/` are superseded sets; both ignored by git, the original M1 runs sit beside them, untouched |
 
 **Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
 I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
@@ -39,8 +38,8 @@ roadmap section 7 (triage rule).
 
 **Open right now**
 1. Maintainer: decide Gate A. Review and merge are complete. The 18 guided checks are done (all pass or recorded); `pointer.html` and the geometry probe were checked on `d9ea90d`.
-2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified and the evidence was re-recorded (now on `89c1ecf`, after the security-review fixes F-43, F-47 and F-50).
-3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). **Due now** for the D-21 change (`browser.c` lost the injected script).
+2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified and the evidence was re-recorded (now on `0af4314`).
+3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done for D-21 on `0af4314`; due again after the next C change.
 4. Maintainer: real clicks on guided rows 1, 3, 9, 15, 16 and 19 ([re-check section](guided-checks-m1-audit.md#re-check-after-d-21)): every `target=_blank` item must do nothing now.
 5. Review-4 findings: F-51 and F-52 are closed by D-21 (no script, no load on a page's behalf). F-53 holds by construction; F-54 (left-to-right mark before right-to-left remote titles) and F-55 (rest of the default-ignorable set) are in `window_title.c` with unit tests that abort on the old code; F-56 and F-61 (`summarize.py` curated-file guard) and F-57 (`desktop_probe.py` writes into a new private directory) are in the benchmark tools. F-58, F-59, F-60 are moot with the script gone; the `target=_blank` policy is M2-03.
 
