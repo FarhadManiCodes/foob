@@ -25,7 +25,9 @@ import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
+import policy_server  # noqa: E402
 
 binary = str(Path(sys.argv[1]).resolve())
 keep = '--keep' in sys.argv[2:]
@@ -179,7 +181,9 @@ for directory in sandbox.values():
 (sandbox['xdg'] / 'user-dirs.dirs').write_text(f'XDG_DOWNLOAD_DIR="{downloads}"\n')
 download_env = {'XDG_CONFIG_HOME': str(sandbox['xdg']), 'XDG_CACHE_HOME': str(sandbox['cache']),
                 'XDG_DATA_HOME': str(sandbox['data']), 'TMPDIR': str(sandbox['tmp'])}
-stream_limit = 1024 * 1024  # a cancelled transfer ends within a few chunks; 1 MiB is generous
+# Socket buffers and cancel latency let a few MiB through under load (1.2 MiB seen once);
+# an uncancelled download streams the full 300 MiB, so 16 MiB still separates the two.
+stream_limit = 16 * 1024 * 1024
 
 
 def transfer_stopped_without_files(browser):
@@ -216,6 +220,15 @@ def still_first(browser):
 scenario('new-window-without-gesture-blocked', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
          expected_title='first \u2014 foob', after_load=still_first)
+# The guided-check fixtures must keep loading and keep their expected window titles.
+policy, policy_url = policy_server.serve()
+scenario('policy-fixture-remote', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+         uri=policy_url, expected_title='Policy fixture (remote) \u2014 foob',
+         after_load=still_first)
+policy.shutdown()
+scenario('policy-fixture-local', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+         uri=(Path(__file__).resolve().parent / 'fixtures' / 'policy-local.html').as_uri(),
+         expected_title='Policy fixture (local) \u2014 foob')
 scenario('compositor-close', 0, close_window)
 scenario('sigterm', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM))
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))

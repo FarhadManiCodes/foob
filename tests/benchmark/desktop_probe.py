@@ -16,6 +16,7 @@ from process_tree import browser_tree, processes, survivors
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
 parser.add_argument('--label', required=True)
+parser.add_argument('--binary', default='build/foob')
 parser.add_argument('--resize', action='store_true')
 args = parser.parse_args()
 log = Path(f'/tmp/foob-{args.label}.log')
@@ -53,7 +54,7 @@ def health():
 
 
 with log.open('w') as stream:
-    process = subprocess.Popen([str(Path('build/foob').resolve()), args.uri],
+    process = subprocess.Popen([str(Path(args.binary).resolve()), args.uri],
                                env={**os.environ, 'FOOB_DIAGNOSTICS': '1'},
                                stdout=stream, stderr=stream, start_new_session=True)
     try:

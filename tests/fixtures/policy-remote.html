@@ -1,0 +1,61 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Policy &#x202E; fixture   (remote)</title>
+<style>
+  body { font: 20px/1.5 sans-serif; margin: 24px; background: #fff8ee; color: #2b1d13; }
+  li { margin: 10px 0; }
+  code, #log { background: #f3e6d4; padding: 2px 6px; }
+  #log { display: block; white-space: pre-wrap; margin-top: 16px; padding: 10px; }
+</style>
+<h1>Policy fixture: remote page</h1>
+<p>Served from loopback, which foob treats as <b>remote</b> (untrusted). Click each
+item and compare with the expected result. The window title (see
+<code>niri msg windows</code>) must read <code>Policy fixture (remote) — foob</code>:
+the hidden direction override and the extra spaces in this page's title are removed.</p>
+<ol>
+  <li><a href="second.html" target="_blank">New-window link to a remote page</a><br>
+    Expected: opens in <b>this</b> window ("Second page").</li>
+  <li><a href="second.html">Ordinary link to a remote page</a> (control)<br>
+    Expected: opens in this window.</li>
+  <li><a href="@LOCAL_FILE@" target="_blank">New-window link to a local file</a><br>
+    Expected: <b>nothing happens</b> (remote content never opens local content).</li>
+  <li><a href="@LOCAL_FILE@">Ordinary link to a local file</a><br>
+    Expected: nothing happens (WebKit refuses it).</li>
+  <li><button id="open">window.open() from a click</button><br>
+    Expected: opens "Second page" in this window.</li>
+  <li><button id="later">window.open() 5 s after a click (no user gesture)</button><br>
+    Expected: nothing happens; the log below says <code>returned null</code>.</li>
+  <li><a href="attachment.bin">Link to an attachment download</a><br>
+    Expected: <b>nothing happens</b>; no file in your Downloads folder. The server
+    terminal shows <code>GET /attachment.bin</code> (the request still reaches the server).</li>
+  <li><a href="plain.bin" download>Link with the download attribute</a><br>
+    Expected: nothing happens; no file is saved.</li>
+</ol>
+<h2>Record only (features arrive in M3; note what happens today)</h2>
+<ol start="9">
+  <li><input type="file" id="file"> Choose a file.<br>
+    Record: does a picker open, nothing, or something else? (M3-02)</li>
+  <li><button id="camera">Request camera and microphone</button><br>
+    Record: any prompt? The log should say a permission error. (M3-05)</li>
+  <li><a href="sample.pdf">Link to a PDF</a><br>
+    Record: what is shown? (M3-04)</li>
+  <li>Right-click anywhere on the page.<br>
+    Record: is a context menu shown? (M3-01)</li>
+</ol>
+<code id="log">log</code>
+<script>
+  const log = (text) => { document.getElementById('log').textContent += '\n' + text; };
+  document.getElementById('open').onclick = () => {
+    log('window.open from click returned ' + window.open('second.html'));
+  };
+  document.getElementById('later').onclick = () => {
+    setTimeout(() => log('window.open without gesture returned ' + window.open('second.html')), 5000);
+  };
+  document.getElementById('camera').onclick = () => {
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then(() => log('camera/microphone: granted'), (e) => log('camera/microphone: ' + e.name));
+  };
+  document.getElementById('file').onchange = () => log('file input changed');
+  log('window.open at load returned ' + window.open('second.html'));
+</script>

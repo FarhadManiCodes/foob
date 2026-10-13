@@ -88,12 +88,12 @@ original binary. Compare builds only within one session, as above.
 
 - `meson test -C build`: 3 of 3 pass (`target` and `window_title` unit tests,
   startup URI contract).
-- `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 9 of
-  9 scenarios pass, each with exact-PID survivor checks and an app-id assertion:
+- `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 11 of
+  11 scenarios pass, each with exact-PID survivor checks and an app-id assertion:
   `title-follows-page`, `title-remote-sanitized`, `download-cancelled`
-  (300 MiB stream aborted under 1 MiB, nothing on disk), `new-window-without-gesture-blocked`,
+  (300 MiB stream aborted after under 16 MiB, nothing on disk), `new-window-without-gesture-blocked`,
   `compositor-close`, `sigterm`, `sigint`, `compositor-lost` (exit 3),
-  `web-process-crash` (exit 4). The pre-fix binary fails the compositor-loss,
+  `web-process-crash` (exit 4), plus `policy-fixture-remote` and `policy-fixture-local` (the guided-check fixtures load and keep their expected window titles; added after the measurements, no source change). The pre-fix binary fails the compositor-loss,
   download, app-id and web-process scenarios (negative controls).
 - Startup, exit latency, sanitizer and static-analysis results: [audit-m1.md](audit-m1.md).
 

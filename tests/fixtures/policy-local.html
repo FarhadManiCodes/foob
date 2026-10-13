@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Policy fixture (local)</title>
+<style>
+  body { font: 20px/1.5 sans-serif; margin: 24px; background: #eef6ff; color: #132b35; }
+  li { margin: 10px 0; }
+  code { background: #dbe9f7; padding: 2px 6px; }
+</style>
+<h1>Policy fixture: local page</h1>
+<p>A <code>file:</code> page is trusted. Click each item and compare with the expected
+result. The window title must read <code>Policy fixture (local) — foob</code>.</p>
+<ol>
+  <li><a href="linked.html" target="_blank">New-window link to another local file</a><br>
+    Expected: opens in <b>this</b> window ("Local link navigation PASS"); the link
+    there returns to the viewport fixture.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Mathematics" target="_blank">New-window link to a remote page</a><br>
+    Expected: opens in this window (local pages may go to remote pages).</li>
+  <li><button id="open">window.open() to https://example.org/ from a click</button><br>
+    Expected: opens in this window.</li>
+</ol>
+<script>
+  document.getElementById('open').onclick = () => window.open('https://example.org/');
+</script>

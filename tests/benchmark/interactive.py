@@ -17,12 +17,13 @@ from process_tree import browser_tree, processes, source_manifest, survivors
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
 parser.add_argument('--output', required=True)
+parser.add_argument('--binary', default='build/foob')
 args = parser.parse_args()
 output = Path(args.output)
 output.parent.mkdir(parents=True, exist_ok=True)
 if output.exists() or output.with_suffix('.log').exists():
     raise SystemExit('Choose a new output path to preserve existing evidence')
-binary = Path('build/foob').resolve()
+binary = Path(args.binary).resolve()
 source_digest, source_files = source_manifest()
 record = {
     'date_utc': datetime.now(timezone.utc).isoformat(),
