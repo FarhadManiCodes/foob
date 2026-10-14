@@ -29,6 +29,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
 import policy_server  # noqa: E402
 
+if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help') or not os.access(sys.argv[1], os.X_OK):
+    sys.exit(__doc__)  # usage, before any scratch directory or server exists
 binary = str(Path(sys.argv[1]).resolve())
 keep = '--keep' in sys.argv[2:]
 selected = set(sys.argv[2:]) - {'--keep'}  # empty means every scenario
