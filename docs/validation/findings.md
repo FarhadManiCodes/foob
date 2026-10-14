@@ -35,6 +35,7 @@ maintainer's request and then listed under [Retired entries](#retired-entries).
 | D-19 | PDFs open inline in the stock engine's PDF.js viewer; keep it as is for now (2026-10-13). The viewer's save button must still obey the M3-03 download rule. |
 | D-20 | Removing accessibility (`USE_ATK` off) from the custom engine is a requested evaluation, tracked as roadmap M5-11; the a11y-bus warnings stay until then (2026-10-13). |
 | D-21 | Maintainer, 2026-10-13, after the second security review: foob ignores **every** new-window request (`target=_blank` links and forms) and ships no injected script. A `_blank` link does nothing until M2-03 defines the behaviour and M2-11 the second window; feedback for the ignored click is M2-12. Supersedes D-04. Reason: it was not an M1 issue. The script re-implemented WebKit's target resolution (three follow-up findings in one review round, now retired as moot), cannot be tested without real clicks, and M2 would replace it. Safe default: nothing loads on a page's behalf, so the sandbox, Fetch Metadata and remote-to-local rules stay WebKit's |
+| D-22 | Maintainer, 2026-10-14, after comparing `src/` with upstream MiniBrowser's `main.cpp`: M2 and M3 each get a task that repeats the comparison (M2-13, M3-09) so foob stays more concise, accurate and safer than the engine team's own minimal browser, and the items it does that foob does not (key handling, settings key file, mode indicator, path argument, background colour, `--version`) each get an owner. Baseline and method: [minibrowser-comparison.md](minibrowser-comparison.md). Cog is not a comparison target (a kiosk shell with its own Wayland layer, about 8,000 code lines). No code changed |
 
 ## Findings register
 
@@ -123,8 +124,8 @@ clicks and submits with an injected script and was removed again).
 
 | Milestone | Items |
 |---|---|
-| M2 | M2-03 notes (unify navigation policy and split `browser.c`, sanitizer limits, trust per committed load, POST handling, `%` URLs, handler reachability, `target=_blank` and named targets, D-21), M2-10 HTTP auth, M2-11 second window and `window.open`, M2-12 blocked-action feedback |
-| M3 | M3-01 popups and `window.opener`, right-click default; M3-02 file input default; M3-03 no silent downloads and downloaded-file trust; M3-04 PDF URL display; M3-05 permission and certificate defaults; M3-07 crash recovery |
+| M2 | M2-13 MiniBrowser comparison (D-22; items I-09 to I-14), M2-03 notes (unify navigation policy and split `browser.c`, sanitizer limits, trust per committed load, POST handling, `%` URLs, handler reachability, `target=_blank` and named targets, D-21), M2-10 HTTP auth, M2-11 second window and `window.open`, M2-12 blocked-action feedback |
+| M3 | M3-09 MiniBrowser comparison (D-22), M3-05 also decides the engine-default settings (media stream, ITP, site quirks), M3-01 popups and `window.opener`, right-click default; M3-02 file input default; M3-03 no silent downloads and downloaded-file trust; M3-04 PDF URL display; M3-05 permission and certificate defaults; M3-07 crash recovery |
 | M4 | Local-file trust rule (D-09), remote iframe in a local page |
 | M5 | M5-10 JIT-off opt-in, GL renderer measurement, under-100-MiB attribution |
 | M6 | M6-07 fractional scaling, multi-monitor, nested suite and size/hardening checks as release gates |
@@ -162,4 +163,10 @@ stay unused so older commits and notes still resolve; the git history has the fu
 | I-05 | Untrusted-site mode with JIT off | M5-10 |
 | I-06 | Hardening-vs-feature split of the +3.5 KB binary growth | measure by building without hardening flags |
 | I-08 | A benchmark-only fixture without the "Reload this fixture" button would stop a stray click from invalidating a run (F-36) | changes the fixture hash recorded since M1, so only if it recurs |
+| I-09 | Key handling through `WPEView::event` returning TRUE, as MiniBrowser does | M2-01, M2-09; probe event consumption first |
+| I-10 | `webkit_settings_apply_from_key_file()` / `wpe_settings_load_from_keyfile()` as the configuration path (both in the installed headers, not tried) | M2-04 |
+| I-11 | Show persistent versus ephemeral in the window title (`[Private]` upstream) | M2-04, M2-12 |
+| I-12 | Accept a plain path as the startup argument (`g_file_new_for_commandline_arg()` upstream) | M2-02; the allowlist stays the only gate |
+| I-13 | Check for a white flash before first paint; `webkit_web_view_set_background_color()` | M2-12 |
+| I-14 | `--version` (a rejected URI today, exit 2) | M2-02; weigh against binary size (D-18) |
 | I-07 | Run `desktop_probe.py` on the final binary | done on `d9ea90d` (pass, 2026-10-13); repeat after any C change |

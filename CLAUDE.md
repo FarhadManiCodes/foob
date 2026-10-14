@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo hygiene
 
-- `build/`, `build-m0/`, `build-final/` are ignored local build directories. `design-references/qvu/`, `.agents/`, `.codex/` and `.aws/` are also ignored.
+- `build/`, `build-m0/`, `build-final/` are ignored local build directories. `design-references/qvu/`, `.agents/`, `.codex/` and `.aws/` are also ignored. `reference-minibrowser/` (upstream MiniBrowser source for the M2-13/M3-09 comparison, reading only, never built or copied) is ignored through `.git/info/exclude` and may be absent; see `docs/validation/minibrowser-comparison.md` to refetch it.
 - `docs/research/qvu/` is historical Qt-era research, not a requirement.
 - Another agent (Codex) may share the checkout; check `git status` and `git branch --show-current` first. Work in the main checkout on the branch the maintainer names; do not create worktrees, clones or extra project folders without asking, because the maintainer reviews and runs other agents in this one folder.
 - The global rule against `Co-Authored-By` or AI-attribution trailers in commits and PR bodies applies here.
