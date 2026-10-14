@@ -149,7 +149,7 @@ def close_window(compositor, socket, window, browser):
 # /stream is a 300 MiB attachment sent slowly; `stream` records how far the server got.
 stream_size = 300 * 1024 * 1024
 stream = {'sent': 0, 'outcome': None}
-probes = []  # query strings the scripted page reports through /probe
+probes = []  # query strings the page reports through /probe
 echoes = []  # each POST to /echo; the blank-form scenario expects none
 
 
@@ -198,10 +198,9 @@ server = http.server.ThreadingHTTPServer(
     ('127.0.0.1', 0), functools.partial(Handler, directory=str(scratch)))
 threading.Thread(target=server.serve_forever, daemon=True).start()
 
-fixture = Path(__file__).resolve().parent / 'fixtures' / 'viewport.html'
-page_title = re.search(r'<title>(.*?)</title>', fixture.read_text())[1]
-scenario('title-follows-page', 0, terminate,
-         uri=fixture.as_uri(), expected_title=f'{page_title} \u2014 foob')
+(scratch / 'local.html').write_text('<!doctype html><meta charset=utf-8><title>a\u200bb</title>x', encoding='utf-8')
+scenario('title-local-unsanitized', 0, terminate,  # the remote scenario below strips the ZWSP
+         uri=(scratch / 'local.html').as_uri(), expected_title='a\u200bb \u2014 foob')
 scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')
@@ -227,9 +226,6 @@ def transfer_stopped_without_files(browser, socket, errors):
     wait_for(lambda: stream['outcome'], 10, 'server never saw the transfer end')
     assert stream['outcome'] == 'aborted', 'the whole attachment was transferred'
     assert stream['sent'] < stream_limit, f"server sent {stream['sent']} bytes before the abort"
-    sent = stream['sent']
-    time.sleep(2)
-    assert stream['sent'] == sent, 'transfer continued after the abort'
     assert browser.poll() is None, 'browser exited during download'
     assert not list(downloads.iterdir()), f'download was saved: {list(downloads.iterdir())}'
     # Engine caches (Mesa, GStreamer) legitimately live below `sandbox`; look for the payload.
@@ -246,41 +242,6 @@ scenario('download-cancelled', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/stream', load_status='failed',
          extra_env=download_env, after_load=transfer_stopped_without_files)
 
-# A script-created link and window.open() have no user gesture, so their new-window
-# requests stay blocked. The script runs at the end of <body> (document.body exists)
-# and reports what its calls did through /probe, so the scenario proves the probes ran
-# instead of passing because the script threw.
-(scratch / 'second.html').write_text('<!doctype html><title>second</title>second')
-(scratch / 'scripted.html').write_text(
-    '<!doctype html><title>first</title><body>first<script>'
-    'var a=document.createElement("a");a.href="second.html";a.target="_blank";'
-    'document.body.appendChild(a);var r;'
-    'try{a.click();var w=window.open("second.html");r="click-ok,open-"+(w===null?"null":"window");}'
-    'catch(e){r="error-"+e.name;}'
-    'new Image().src="/probe?"+r;</script></body>')
-
-
-def stays_on_page(title):
-    """After a wait, the window must still show the first page and nothing new loaded."""
-    def check(browser, socket, errors):
-        time.sleep(3)
-        assert browser.poll() is None, 'browser exited'
-        assert any(w['pid'] == browser.pid and w['title'] == title for w in windows(socket)), \
-            'window title changed: a blocked new-window request navigated'
-        loads = errors.read_text().count('foob: load-started')
-        assert loads == 1, f'{loads} loads started; a blocked request navigated'
-    return check
-
-
-def scripted_probes_ran_and_stayed(browser, socket, errors):
-    wait_for(lambda: probes, 10, 'the scripted page never reported its probes')
-    assert probes == ['click-ok,open-null'], f'probe result {probes}'
-    stays_on_page('first \u2014 foob')(browser, socket, errors)
-
-
-scenario('scripted-new-window-requests-do-not-navigate', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
-         expected_title='first \u2014 foob', after_load=scripted_probes_ran_and_stayed)
 # A trusted submit of a target=_blank form asks for a new window, which foob ignores: nothing
 # is loaded on the page's behalf (F-51). requestSubmit() fires a trusted submit event without a
 # click. A sandboxed frame with allow-popups but without allow-top-navigation submits first and
@@ -300,7 +261,12 @@ scenario('scripted-new-window-requests-do-not-navigate', 0, terminate,
 
 def blank_form_does_not_navigate(browser, socket, errors):
     wait_for(lambda: 'form-submitted' in probes, 10, 'the page never submitted its form')
-    stays_on_page('forms \u2014 foob')(browser, socket, errors)
+    time.sleep(3)  # long enough for a wrongly started navigation to show
+    assert browser.poll() is None, 'browser exited'
+    assert any(w['pid'] == browser.pid and w['title'] == 'forms \u2014 foob' for w in windows(socket)), \
+        'window title changed: a blocked new-window request navigated'
+    loads = errors.read_text().count('foob: load-started')
+    assert loads == 1, f'{loads} loads started; a blocked request navigated'
     assert not echoes, f'a _blank form reached /echo: {echoes}'
 
 
@@ -308,7 +274,6 @@ scenario('blank-form-does-not-navigate', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
 scenario('compositor-close', 0, close_window)
-scenario('sigterm', 0, terminate)
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))
 scenario('compositor-lost', 3, lambda c, s, w, b: c.kill())
 

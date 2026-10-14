@@ -125,27 +125,25 @@ range for the original binary.
 - `meson test -C build`: 3 of 3 pass (`target` and `window_title` unit tests,
   startup URI contract). A clean `git archive` export builds without warnings.
 - `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 12 of
-  12 scenarios passed on `147ae45`; two that only checked that the guided-check pages load (`policy-fixture-remote`, `policy-fixture-local`) were removed afterwards, and the remaining 10 passed again on the same binary. Each has exact-PID survivor checks and an app-id assertion:
-  `title-follows-page`, `title-remote-sanitized`, `download-cancelled` (300 MiB
+  12 scenarios passed on `147ae45`; afterwards the suite was trimmed to 8 (test trim, see `handoff.md`) and the 8 passed again on the same binary. Each has exact-PID survivor checks and an app-id assertion:
+  `title-local-unsanitized` (a zero-width space in a local page's title survives; renamed from `title-follows-page`), `title-remote-sanitized` (the same character is stripped from a remote title), `download-cancelled` (300 MiB
   stream aborted after under 16 MiB, nothing on disk),
-  `scripted-new-window-requests-do-not-navigate` (re-checked after a 3 s wait),
   `blank-form-does-not-navigate` (a trusted `_blank` form submit from the page and from a
   sandboxed frame reaches no `/echo`; the window stays on the page; the script build `f40e4b9`
-  fails it),
-  `compositor-close`, `sigterm`,
-  `sigint`, `compositor-lost` (exit 3), `web-process-crash` (exit 4). The pre-fix
+  fails it), `compositor-close`, `sigint`, `compositor-lost` (exit 3), `web-process-crash` (exit 4). The pre-fix
   binary fails the compositor-loss, download, app-id and web-process scenarios; those
   negative controls were run during the audit and are recorded in prose, not as
   committed logs.
-- **Limit of the new-window scenarios:** with default settings scripted requests never
-  reach foob's own policy handler (WebKit's popup blocker stops them first), so the
-  scenarios prove that scripted and no-gesture requests do not navigate and that a trusted
-  script submit of a `_blank` form does nothing, not what a real click does (guided rows
-  1, 3, 9, 15, 16 and 19, clicked by the maintainer after D-21: all pass). The page reports its probe result
-  (`click-ok,open-null`, `form-submitted`) to the test server, so a scenario cannot pass
-  without the probes having run (Codex F-31). Since D-21 `decide_policy` ignores every
-  new-window request; there is no gesture check and no remote-to-`file:` check on this
-  path to test (`foob_navigation_allowed` is covered by its unit test only).
+- **Limit of the new-window scenario:** with default settings scripted requests (`window.open`, a
+  script-made link click) never reach foob's own policy handler, because WebKit's popup blocker
+  stops them first, so no automated scenario covers them (the former scripted scenario was removed
+  for that reason; guided rows 5, 6 and 17 cover `window.open`). `blank-form-does-not-navigate`
+  is the one scenario that reaches the handler: a trusted script submit of a `_blank` form does
+  nothing, not what a real click does (guided rows 1, 3, 9, 15, 16 and 19, clicked by the
+  maintainer after D-21: all pass). The page reports `form-submitted` to the test server, so
+  the scenario cannot pass without the probe having run (Codex F-31). Since D-21 `decide_policy`
+  ignores every new-window request; there is no gesture check and no remote-to-`file:` check on
+  this path to test (`foob_navigation_allowed` is covered by its unit test only).
 - Repeated on revision `147ae45`: `gcc -fanalyzer` with `-Wall -Wextra -Wconversion
   -Wshadow -Wformat=2 -Wnull-dereference` on every translation unit (exit 0, no
   warning); ASan+UBSan build (engine-owned leaks suppressed by library) passes the 3
