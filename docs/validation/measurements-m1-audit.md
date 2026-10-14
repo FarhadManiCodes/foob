@@ -27,10 +27,10 @@ stay ignored and local (`docs/validation/runs/m1-audit-679fb9a/`).
 Earlier measurements of this branch (revisions `2dfe12d`, `9c81515`, `1fae570`,
 `9abb6fe`, `89c1ecf` and `0af4314`, source hashes `7b3129c2…` for `1fae570`, `0c7dc10f…` for `9abb6fe`, `d306ff47…` for `89c1ecf` and `498cc823…` for `0af4314`) are
 superseded: each change to C source (sanitizer, exit-status handling, the
-`_FORTIFY_SOURCE` check, the new-window handler that loads the action's request, the
+`_FORTIFY_SOURCE` check, the new-window handler that once loaded the action's request, the
 title sanitizer, the URI allowlist, the removal of the same-window script, and now the trimmed cut title) invalidates the hashes. They showed the
 same picture (audit and control within a few MiB). Later commits change only tests,
-fixtures and documents.
+fixtures, documents and one comment in `src/target.h` (the rebuilt binary is byte-identical).
 
 The control is a build of the unmodified `m0-m1` source made earlier in this audit,
 not the binary hashed in `measurements.md` (`9a9225d8…`); it differs because it was
@@ -130,7 +130,7 @@ range for the original binary.
   reach foob's own policy handler (WebKit's popup blocker stops them first), so the
   scenarios prove that scripted and no-gesture requests do not navigate and that a trusted
   script submit of a `_blank` form does nothing, not what a real click does (guided rows
-  1, 3, 9, 15, 16 and 19, pending). The page reports its probe result
+  1, 3, 9, 15, 16 and 19, clicked by the maintainer after D-21: all pass). The page reports its probe result
   (`click-ok,open-null`, `form-submitted`) to the test server, so a scenario cannot pass
   without the probes having run (Codex F-31). Since D-21 `decide_policy` ignores every
   new-window request; there is no gesture check and no remote-to-`file:` check on this

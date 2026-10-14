@@ -24,7 +24,7 @@ Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `679fb9ad…` (full hash in the records): source SHA256 `667746fc…`, audit binary `e0b89b8f…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents; any C change invalidates these |
+| Evidence revision | `679fb9ad…` (full hash in the records): source SHA256 `667746fc…`, audit binary `e0b89b8f…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures, documents and one comment in `src/target.h` (the rebuilt binary is byte-identical, same SHA256); any other C change invalidates these |
 | After D-21 and the final review | Re-recorded on `679fb9a`: unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean on all 5 files, binary 22,520 B stripped, text 13,125 B; a clean archive build was checked on `0af4314` (the later change is one line). Interleaved memory (25 launches, all passed): blank 170.3 vs 169.8 MiB, fixture 194.8 vs 194.8, Wikipedia 330.9 vs 329.4; navigation times equal, so the slower Wikipedia navigation seen in two earlier busy sessions did not reappear |
 | What is verified | See the row above; the PSS comparison shows no regression in memory beyond one single-launch spike; the under-100-MiB stretch target is still not met (blank about 170 MiB) |
 | Maintainer checks done | All 18 guided rows (rows 1, 3, 9, 15, 16 and the new row 19 re-clicked after D-21 on `4e9b6c2`), the `pointer.html` click-position check (within 10 CSS px) and the geometry probe on `d9ea90d` (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)) |
