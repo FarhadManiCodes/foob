@@ -169,4 +169,7 @@ stay unused so older commits and notes still resolve; the git history has the fu
 | I-12 | Accept a plain path as the startup argument (`g_file_new_for_commandline_arg()` upstream) | M2-02; the allowlist stays the only gate |
 | I-13 | Check for a white flash before first paint; `webkit_web_view_set_background_color()` | M2-12 |
 | I-14 | `--version` (a rejected URI today, exit 2) | M2-02; weigh against binary size (D-18) |
+| I-15 | MiniBrowser opens a second view with `related-view` plus the first view's settings and user-content manager, which shares the web process | M2-11: decide sharing with the memory and isolation consequences first |
+| I-16 | `enable-developer-extras` (inspector) only when diagnostics are on, to debug compatibility problems and the M2-06 JavaScript-error log | M2-06; weigh the extra process and attack surface, never in a default launch |
+| I-17 | `wpe_display_headless_new()` (headers installed) would let tests that do not need a compositor (load, download, crash) run without a nested niri; and `webkit_settings_set_feature_enabled()` plus `webkit://gpu` allow runtime feature and GPU comparisons without a rebuild | M6 / M5-09; a headless switch in product code conflicts with D-12 and with building `WPEDisplayWayland` directly, so it needs a decision first |
 | I-07 | Run `desktop_probe.py` on the final binary | done on `d9ea90d` (pass, 2026-10-13); repeat after any C change |

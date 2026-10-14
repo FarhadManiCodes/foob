@@ -47,6 +47,8 @@ process-tree PSS) for any shell.
 | 5 | Background colour | `webkit_web_view_set_background_color()`; whether foob flashes white before first paint is not checked | M2-12 |
 | 6 | `--version` | prints the engine version; foob treats it as a rejected URI (usage, exit 2) | M2-02 |
 
+Also seen, parked (I-15 to I-17): `related-view` for a second window (M2-11), developer extras only in a diagnostics mode (M2-06), a headless display for tests and runtime feature switches (M6, M5-09).
+
 Not to take: permission auto-grant, `--ignore-tls-errors`, proxy, cookie-file and
 content-filter options, automation, XR, headless mode, the legacy libwpe path (D-16).
 
@@ -68,10 +70,12 @@ small program (not committed) created `webkit_settings_new()` and an ephemeral
 | `javascript-can-open-windows-automatically` | off |
 | file-from-file / universal-from-file access | off |
 | ITP | off |
+| autoplay (`WebKitWebsitePolicies`) | allow without sound (MiniBrowser sets allow) |
+| automation | not allowed (MiniBrowser sets it from `--automation`) |
 | TLS errors policy | fail (strict) |
 | cookie accept policy | no third party |
 
-Owners: media stream and ITP are decided under M3-05 (permission defaults), the
+Owners: media stream, ITP and autoplay are decided under M3-05 (permission defaults), the
 feature list under M5-09. Nothing was changed.
 
 ## How M2-13 and M3-09 judge "better"
