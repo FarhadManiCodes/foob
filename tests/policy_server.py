@@ -10,7 +10,6 @@ at tests/fixtures/linked.html.
 import http.server
 from pathlib import Path
 import sys
-import threading
 
 fixtures = Path(__file__).resolve().parent / 'fixtures'
 local_file = (fixtures / 'linked.html').as_uri()
@@ -24,8 +23,6 @@ PDF = (b'%PDF-1.1\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n'
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
-    quiet = False
-
     def do_GET(self):
         path = self.path.split('?')[0]
         pages = {'/': 'policy-remote.html', '/second.html': 'policy-second.html',
@@ -80,26 +77,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
             pass  # the client cancelled the transfer
 
     def log_message(self, fmt, *arguments):
-        if not self.quiet:
-            print(self.command, self.path.split('?')[0], status_of(arguments), flush=True)
-
-
-def status_of(arguments):
-    return arguments[1] if len(arguments) > 1 else ''
-
-
-def serve(port=0, quiet=True):
-    """Starts the server in a thread; returns (server, URL of the fixture page)."""
-    Handler.quiet = quiet
-    server = http.server.ThreadingHTTPServer(('127.0.0.1', port), Handler)
-    threading.Thread(target=server.serve_forever, daemon=True).start()
-    return server, f'http://127.0.0.1:{server.server_port}/'
+        print(self.command, self.path.split('?')[0], arguments[1] if len(arguments) > 1 else '', flush=True)
 
 
 if __name__ == '__main__':
-    server, url = serve(int(sys.argv[1]) if len(sys.argv) > 1 else 8765, quiet=False)
-    print(f'Open with: ./build/foob {url}', flush=True)
+    server = http.server.ThreadingHTTPServer(
+        ('127.0.0.1', int(sys.argv[1]) if len(sys.argv) > 1 else 8765), Handler)
+    print(f'Open with: ./build/foob http://127.0.0.1:{server.server_port}/', flush=True)
     try:
-        threading.Event().wait()
+        server.serve_forever()
     except KeyboardInterrupt:
         pass

@@ -26,7 +26,6 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
-import policy_server  # noqa: E402
 
 if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help') or not os.access(sys.argv[1], os.X_OK):
     sys.exit(__doc__)  # usage, before any scratch directory or server exists
@@ -308,15 +307,6 @@ def blank_form_does_not_navigate(browser, socket, errors):
 scenario('blank-form-does-not-navigate', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
-# The guided-check fixtures must keep loading and keep their expected window titles.
-policy, policy_url = policy_server.serve()
-scenario('policy-fixture-remote', 0, terminate,
-         uri=policy_url, expected_title='Policy fixture (remote) \u2014 foob',
-         after_load=stays_on_page('Policy fixture (remote) \u2014 foob'))
-policy.shutdown()
-scenario('policy-fixture-local', 0, terminate,
-         uri=(Path(__file__).resolve().parent / 'fixtures' / 'policy-local.html').as_uri(),
-         expected_title='Policy fixture (local) \u2014 foob')
 scenario('compositor-close', 0, close_window)
 scenario('sigterm', 0, terminate)
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))

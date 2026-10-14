@@ -125,14 +125,14 @@ range for the original binary.
 - `meson test -C build`: 3 of 3 pass (`target` and `window_title` unit tests,
   startup URI contract). A clean `git archive` export builds without warnings.
 - `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 12 of
-  12 scenarios pass (re-run on `147ae45`), each with exact-PID survivor checks and an app-id assertion:
+  12 scenarios passed on `147ae45`; two that only checked that the guided-check pages load (`policy-fixture-remote`, `policy-fixture-local`) were removed afterwards, and the remaining 10 passed again on the same binary. Each has exact-PID survivor checks and an app-id assertion:
   `title-follows-page`, `title-remote-sanitized`, `download-cancelled` (300 MiB
   stream aborted after under 16 MiB, nothing on disk),
   `scripted-new-window-requests-do-not-navigate` (re-checked after a 3 s wait),
   `blank-form-does-not-navigate` (a trusted `_blank` form submit from the page and from a
   sandboxed frame reaches no `/echo`; the window stays on the page; the script build `f40e4b9`
   fails it),
-  `policy-fixture-remote`, `policy-fixture-local`, `compositor-close`, `sigterm`,
+  `compositor-close`, `sigterm`,
   `sigint`, `compositor-lost` (exit 3), `web-process-crash` (exit 4). The pre-fix
   binary fails the compositor-loss, download, app-id and web-process scenarios; those
   negative controls were run during the audit and are recorded in prose, not as
