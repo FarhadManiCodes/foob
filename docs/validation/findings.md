@@ -145,7 +145,7 @@ stay unused so older commits and notes still resolve; the git history has the fu
 | F-45, F-70 | Duplicates of F-26 (trust is decided on title change only); the fix is M2-03 note 3. |
 | F-49 | Duplicate of F-27 (`_exit(3)` on compositor loss, deliberate). |
 | F-58, F-59, F-60 | Moot: they concerned the injected same-window script, which D-21 removed. |
-| F-62 | Observation: the audit build's Wikipedia navigation time was higher in two busy sessions. It did not reappear on `679fb9a` (493-536 ms against 517-544 ms for the control); the data is in `measurements-m1-audit.md`. |
+| F-62 | Observation: the audit build's Wikipedia navigation time was higher in two busy sessions. It did not reappear on `679fb9a`, and on `147ae45` only one first-launch outlier (1136 ms, three others 530-545 ms) (493-536 ms against 517-544 ms for the control); the data is in `measurements-m1-audit.md`. |
 | F-69 | Not reproduced: a scratch build logging the toplevel at the first `update_window_title()` call showed it set for `about:blank` and a file fixture. The null check stays as defence. |
 | F-71 | Not a defect: `SIGHUP` to a running foob (8 tracked processes) ended it by the signal with 0 survivors after 10 s, as `SIGTERM` does. |
 | F-72 | Declined by design: the default `summarize.py` call is the documented regeneration of the curated file (F-56, F-61); change to always requiring `--replace` if the maintainer prefers. |

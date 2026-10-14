@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_utc": "2026-10-13T21:44:05.125766+00:00",
+  "generated_utc": "2026-10-14T07:34:19.681543+00:00",
   "raw_artifacts": "docs/validation/runs/ is ignored; preserved locally",
   "measurements": {
     "blank-1": {
-      "date_utc": "2026-10-13T21:38:43.687535+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:24:22.197396+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -16,8 +16,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 175983,
-          "seconds_after_completion": 10.012983330001589,
+          "pss_kib": 175815,
+          "seconds_after_completion": 10.012621955000213,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -32,8 +32,8 @@
           }
         },
         {
-          "pss_kib": 175997,
-          "seconds_after_completion": 11.01125867600058,
+          "pss_kib": 175829,
+          "seconds_after_completion": 11.012338525004452,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -48,8 +48,8 @@
           }
         },
         {
-          "pss_kib": 175997,
-          "seconds_after_completion": 12.011966889003816,
+          "pss_kib": 175829,
+          "seconds_after_completion": 12.011144978998345,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -65,22 +65,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        0.319
+        0.207
       ],
       "mean_role_pss_kib": {
-        "foob": 34067.0,
-        "WPENetworkProce": 30110.667,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 859.0,
-        "WPEWebProcess": 110351.667
+        "foob": 34163.0,
+        "WPENetworkProce": 27996.667,
+        "bwrap": 606.0,
+        "xdg-dbus-proxy": 833.0,
+        "WPEWebProcess": 112225.667
       }
     },
     "blank-2": {
-      "date_utc": "2026-10-13T21:39:58.584994+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:25:37.678455+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -88,8 +88,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 173783,
-          "seconds_after_completion": 10.012609019999218,
+          "pss_kib": 173908,
+          "seconds_after_completion": 10.011272374002147,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -104,8 +104,8 @@
           }
         },
         {
-          "pss_kib": 173797,
-          "seconds_after_completion": 11.011584003994358,
+          "pss_kib": 173921,
+          "seconds_after_completion": 11.011589344008826,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -120,8 +120,8 @@
           }
         },
         {
-          "pss_kib": 173797,
-          "seconds_after_completion": 12.01121434099332,
+          "pss_kib": 173921,
+          "seconds_after_completion": 12.012387036011205,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -129,6 +129,222 @@
           },
           "process_roles": {
             "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.358
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34024.333,
+        "WPENetworkProce": 28064.667,
+        "bwrap": 599.0,
+        "xdg-dbus-proxy": 846.0,
+        "WPEWebProcess": 110382.667
+      }
+    },
+    "blank-3": {
+      "date_utc": "2026-10-14T07:26:52.582300+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
+      "source_dirty": false,
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 173851,
+          "seconds_after_completion": 10.012733978001052,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173864,
+          "seconds_after_completion": 11.012346360002994,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173864,
+          "seconds_after_completion": 12.01217339100549,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.234
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34040.333,
+        "WPENetworkProce": 28084.667,
+        "bwrap": 603.0,
+        "xdg-dbus-proxy": 842.0,
+        "WPEWebProcess": 110289.667
+      }
+    },
+    "blank-4": {
+      "date_utc": "2026-10-14T07:28:07.545692+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
+      "source_dirty": false,
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 173840,
+          "seconds_after_completion": 10.011663065000903,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173853,
+          "seconds_after_completion": 11.012153423987911,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173853,
+          "seconds_after_completion": 12.011991615989245,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        }
+      ],
+      "navigation_elapsed_ms": [
+        0.276
+      ],
+      "mean_role_pss_kib": {
+        "foob": 34058.333,
+        "WPENetworkProce": 28099.667,
+        "bwrap": 600.0,
+        "xdg-dbus-proxy": 835.0,
+        "WPEWebProcess": 110255.667
+      }
+    },
+    "control-blank-1": {
+      "date_utc": "2026-10-14T07:24:34.405539+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
+      "source_dirty": false,
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
+      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
+      "result": "pass",
+      "exit_code": 0,
+      "tracked_identity_count": 8,
+      "survivor_count": 0,
+      "samples": [
+        {
+          "pss_kib": 173605,
+          "seconds_after_completion": 10.01145364799595,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob-baseline": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173618,
+          "seconds_after_completion": 11.011736672997358,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob-baseline": 1,
+            "WPENetworkProce": 1,
+            "bwrap": 4,
+            "xdg-dbus-proxy": 1,
+            "WPEWebProcess": 1
+          }
+        },
+        {
+          "pss_kib": 173618,
+          "seconds_after_completion": 12.011582940001972,
+          "viewport": {
+            "width": 950,
+            "height": 1188,
+            "scale": 1.0
+          },
+          "process_roles": {
+            "foob-baseline": 1,
             "WPENetworkProce": 1,
             "bwrap": 4,
             "xdg-dbus-proxy": 1,
@@ -140,234 +356,18 @@
         0.247
       ],
       "mean_role_pss_kib": {
-        "foob": 34080.0,
-        "WPENetworkProce": 28024.667,
-        "bwrap": 596.0,
-        "xdg-dbus-proxy": 841.0,
-        "WPEWebProcess": 110250.667
-      }
-    },
-    "blank-3": {
-      "date_utc": "2026-10-13T21:41:13.532980+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
-      "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
-      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-      "result": "pass",
-      "exit_code": 0,
-      "tracked_identity_count": 8,
-      "survivor_count": 0,
-      "samples": [
-        {
-          "pss_kib": 174081,
-          "seconds_after_completion": 10.012682109001616,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 174095,
-          "seconds_after_completion": 11.01231388800079,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 174095,
-          "seconds_after_completion": 12.01142666299711,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        }
-      ],
-      "navigation_elapsed_ms": [
-        0.574
-      ],
-      "mean_role_pss_kib": {
-        "foob": 34121.0,
-        "WPENetworkProce": 28125.667,
-        "bwrap": 600.0,
-        "xdg-dbus-proxy": 839.0,
-        "WPEWebProcess": 110404.667
-      }
-    },
-    "blank-4": {
-      "date_utc": "2026-10-13T21:42:28.539354+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
-      "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
-      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-      "result": "pass",
-      "exit_code": 0,
-      "tracked_identity_count": 8,
-      "survivor_count": 0,
-      "samples": [
-        {
-          "pss_kib": 173855,
-          "seconds_after_completion": 10.01273738299642,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 173869,
-          "seconds_after_completion": 11.012166658998467,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 173869,
-          "seconds_after_completion": 12.011795202997746,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        }
-      ],
-      "navigation_elapsed_ms": [
-        0.427
-      ],
-      "mean_role_pss_kib": {
-        "foob": 34303.0,
-        "WPENetworkProce": 27947.667,
-        "bwrap": 600.0,
-        "xdg-dbus-proxy": 839.0,
-        "WPEWebProcess": 110174.667
-      }
-    },
-    "control-blank-1": {
-      "date_utc": "2026-10-13T21:38:55.898550+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
-      "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
-      "condition": "fresh process, ephemeral session; OS caches uncontrolled",
-      "result": "pass",
-      "exit_code": 0,
-      "tracked_identity_count": 8,
-      "survivor_count": 0,
-      "samples": [
-        {
-          "pss_kib": 173968,
-          "seconds_after_completion": 10.011733988998458,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob-baseline": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 173982,
-          "seconds_after_completion": 11.011798630999692,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob-baseline": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        },
-        {
-          "pss_kib": 173982,
-          "seconds_after_completion": 12.010464248000062,
-          "viewport": {
-            "width": 950,
-            "height": 1188,
-            "scale": 1.0
-          },
-          "process_roles": {
-            "foob-baseline": 1,
-            "WPENetworkProce": 1,
-            "bwrap": 4,
-            "xdg-dbus-proxy": 1,
-            "WPEWebProcess": 1
-          }
-        }
-      ],
-      "navigation_elapsed_ms": [
-        0.294
-      ],
-      "mean_role_pss_kib": {
-        "foob-baseline": 34070.0,
-        "WPENetworkProce": 28082.667,
-        "bwrap": 596.0,
-        "xdg-dbus-proxy": 836.0,
-        "WPEWebProcess": 110392.667
+        "foob-baseline": 34031.333,
+        "WPENetworkProce": 28016.667,
+        "bwrap": 604.0,
+        "xdg-dbus-proxy": 832.0,
+        "WPEWebProcess": 110129.667
       }
     },
     "control-blank-2": {
-      "date_utc": "2026-10-13T21:40:10.796724+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:25:49.890213+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -376,8 +376,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 173892,
-          "seconds_after_completion": 10.01234536999982,
+          "pss_kib": 174163,
+          "seconds_after_completion": 10.012256842004717,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -392,8 +392,8 @@
           }
         },
         {
-          "pss_kib": 173905,
-          "seconds_after_completion": 11.011238879000302,
+          "pss_kib": 174176,
+          "seconds_after_completion": 11.012165727006504,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -408,8 +408,8 @@
           }
         },
         {
-          "pss_kib": 173905,
-          "seconds_after_completion": 12.011910382003407,
+          "pss_kib": 174176,
+          "seconds_after_completion": 12.011014151008567,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -425,21 +425,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        0.381
+        0.248
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 34169.333,
-        "WPENetworkProce": 28160.667,
-        "bwrap": 595.0,
-        "xdg-dbus-proxy": 835.0,
-        "WPEWebProcess": 110140.667
+        "foob-baseline": 34230.333,
+        "WPENetworkProce": 28150.667,
+        "bwrap": 604.0,
+        "xdg-dbus-proxy": 840.0,
+        "WPEWebProcess": 110346.667
       }
     },
     "control-blank-3": {
-      "date_utc": "2026-10-13T21:41:25.744273+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:27:04.795350+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -448,8 +448,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 173820,
-          "seconds_after_completion": 10.012789583000995,
+          "pss_kib": 173679,
+          "seconds_after_completion": 10.011578143996303,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -464,8 +464,8 @@
           }
         },
         {
-          "pss_kib": 173833,
-          "seconds_after_completion": 11.011879794998094,
+          "pss_kib": 174583,
+          "seconds_after_completion": 11.010894695995376,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -480,8 +480,8 @@
           }
         },
         {
-          "pss_kib": 173833,
-          "seconds_after_completion": 12.011628296997515,
+          "pss_kib": 174583,
+          "seconds_after_completion": 12.012422793995938,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -497,21 +497,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        0.264
+        0.241
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 34057.333,
-        "WPENetworkProce": 28115.667,
-        "bwrap": 596.0,
-        "xdg-dbus-proxy": 835.0,
-        "WPEWebProcess": 110224.667
+        "foob-baseline": 33971.333,
+        "WPENetworkProce": 28140.0,
+        "bwrap": 604.0,
+        "xdg-dbus-proxy": 850.0,
+        "WPEWebProcess": 110716.333
       }
     },
     "control-blank-4": {
-      "date_utc": "2026-10-13T21:42:40.854551+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:28:19.756749+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -520,8 +520,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 173770,
-          "seconds_after_completion": 10.012098009996407,
+          "pss_kib": 174104,
+          "seconds_after_completion": 10.011168867000379,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -536,8 +536,8 @@
           }
         },
         {
-          "pss_kib": 173783,
-          "seconds_after_completion": 11.010746433996246,
+          "pss_kib": 174118,
+          "seconds_after_completion": 11.01142466100282,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -552,8 +552,8 @@
           }
         },
         {
-          "pss_kib": 173783,
-          "seconds_after_completion": 12.011812194999948,
+          "pss_kib": 174118,
+          "seconds_after_completion": 12.011079795003752,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -569,21 +569,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        0.409
+        0.258
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 34092.333,
-        "WPENetworkProce": 28056.667,
-        "bwrap": 600.0,
-        "xdg-dbus-proxy": 835.0,
-        "WPEWebProcess": 110194.667
+        "foob-baseline": 34007.0,
+        "WPENetworkProce": 28026.667,
+        "bwrap": 599.0,
+        "xdg-dbus-proxy": 830.0,
+        "WPEWebProcess": 110650.667
       }
     },
     "control-fixture-1": {
-      "date_utc": "2026-10-13T21:39:20.481926+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:24:58.991027+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -592,8 +592,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198861,
-          "seconds_after_completion": 10.012873642001068,
+          "pss_kib": 201126,
+          "seconds_after_completion": 10.012003851006739,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -608,8 +608,8 @@
           }
         },
         {
-          "pss_kib": 198866,
-          "seconds_after_completion": 11.012218538002344,
+          "pss_kib": 201129,
+          "seconds_after_completion": 11.011402288000681,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -624,8 +624,8 @@
           }
         },
         {
-          "pss_kib": 198866,
-          "seconds_after_completion": 12.012535597998067,
+          "pss_kib": 201129,
+          "seconds_after_completion": 12.011935128000914,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -641,21 +641,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        16.108
+        15.56
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33689.0,
-        "WPENetworkProce": 30188.333,
-        "bwrap": 595.0,
-        "xdg-dbus-proxy": 847.0,
-        "WPEWebProcess": 133545.0
+        "foob-baseline": 33795.333,
+        "WPENetworkProce": 32256.667,
+        "bwrap": 600.0,
+        "xdg-dbus-proxy": 850.0,
+        "WPEWebProcess": 133626.0
       }
     },
     "control-fixture-2": {
-      "date_utc": "2026-10-13T21:40:35.381853+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:26:14.476186+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -664,8 +664,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198901,
-          "seconds_after_completion": 10.012878802001069,
+          "pss_kib": 198908,
+          "seconds_after_completion": 10.01179970400699,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -680,8 +680,8 @@
           }
         },
         {
-          "pss_kib": 198905,
-          "seconds_after_completion": 11.011916034003661,
+          "pss_kib": 198912,
+          "seconds_after_completion": 11.012716001001536,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -696,8 +696,8 @@
           }
         },
         {
-          "pss_kib": 198905,
-          "seconds_after_completion": 12.01174788299977,
+          "pss_kib": 198912,
+          "seconds_after_completion": 12.012924795999425,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -713,21 +713,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        17.542
+        15.935
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33723.0,
-        "WPENetworkProce": 30229.667,
+        "foob-baseline": 33917.0,
+        "WPENetworkProce": 30169.667,
         "bwrap": 604.0,
-        "xdg-dbus-proxy": 853.0,
-        "WPEWebProcess": 133494.0
+        "xdg-dbus-proxy": 850.0,
+        "WPEWebProcess": 133370.0
       }
     },
     "control-fixture-3": {
-      "date_utc": "2026-10-13T21:41:50.379174+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:27:29.383839+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -736,8 +736,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198685,
-          "seconds_after_completion": 10.012888639997982,
+          "pss_kib": 198666,
+          "seconds_after_completion": 10.013217845000327,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -752,8 +752,8 @@
           }
         },
         {
-          "pss_kib": 198690,
-          "seconds_after_completion": 11.012229717998707,
+          "pss_kib": 198671,
+          "seconds_after_completion": 11.011994653003057,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -768,8 +768,8 @@
           }
         },
         {
-          "pss_kib": 199634,
-          "seconds_after_completion": 12.012706563000393,
+          "pss_kib": 198671,
+          "seconds_after_completion": 12.011732573999325,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -785,21 +785,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        15.643
+        15.641
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33770.0,
-        "WPENetworkProce": 30212.333,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 850.0,
-        "WPEWebProcess": 133566.667
+        "foob-baseline": 33898.0,
+        "WPENetworkProce": 30140.333,
+        "bwrap": 599.0,
+        "xdg-dbus-proxy": 841.0,
+        "WPEWebProcess": 133191.0
       }
     },
     "control-fixture-4": {
-      "date_utc": "2026-10-13T21:43:05.439534+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:28:44.339030+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -808,8 +808,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 201293,
-          "seconds_after_completion": 10.011809071998869,
+          "pss_kib": 198827,
+          "seconds_after_completion": 10.013405791003606,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -824,8 +824,8 @@
           }
         },
         {
-          "pss_kib": 201298,
-          "seconds_after_completion": 11.012299802001507,
+          "pss_kib": 198831,
+          "seconds_after_completion": 11.012393269003951,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -840,8 +840,8 @@
           }
         },
         {
-          "pss_kib": 201298,
-          "seconds_after_completion": 12.012129647999245,
+          "pss_kib": 198831,
+          "seconds_after_completion": 12.011565125998459,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -857,21 +857,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        16.028
+        15.362
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33780.0,
-        "WPENetworkProce": 30197.333,
-        "bwrap": 603.0,
-        "xdg-dbus-proxy": 837.0,
-        "WPEWebProcess": 135879.0
+        "foob-baseline": 33648.0,
+        "WPENetworkProce": 30379.667,
+        "bwrap": 596.0,
+        "xdg-dbus-proxy": 835.0,
+        "WPEWebProcess": 133371.0
       }
     },
     "control-wikipedia-1": {
-      "date_utc": "2026-10-13T21:39:45.690338+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:25:24.840840+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -880,8 +880,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 340460,
-          "seconds_after_completion": 10.013599578996946,
+          "pss_kib": 338466,
+          "seconds_after_completion": 10.01532287900045,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -896,8 +896,8 @@
           }
         },
         {
-          "pss_kib": 338800,
-          "seconds_after_completion": 11.013599567995698,
+          "pss_kib": 336678,
+          "seconds_after_completion": 11.013349462999031,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -912,8 +912,8 @@
           }
         },
         {
-          "pss_kib": 338788,
-          "seconds_after_completion": 12.013757376000285,
+          "pss_kib": 336666,
+          "seconds_after_completion": 12.013714564003749,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -929,21 +929,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        526.25
+        525.868
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33441.0,
-        "WPENetworkProce": 50095.0,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 842.0,
-        "WPEWebProcess": 254367.333
+        "foob-baseline": 32925.0,
+        "WPENetworkProce": 50331.0,
+        "bwrap": 603.0,
+        "xdg-dbus-proxy": 836.0,
+        "WPEWebProcess": 252575.0
       }
     },
     "control-wikipedia-2": {
-      "date_utc": "2026-10-13T21:41:00.642252+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:26:39.743819+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -952,8 +952,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 340869,
-          "seconds_after_completion": 10.013273470998683,
+          "pss_kib": 339196,
+          "seconds_after_completion": 10.014255985006457,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -968,8 +968,8 @@
           }
         },
         {
-          "pss_kib": 339209,
-          "seconds_after_completion": 11.01317423099681,
+          "pss_kib": 337516,
+          "seconds_after_completion": 11.013847688998794,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -984,8 +984,8 @@
           }
         },
         {
-          "pss_kib": 339197,
-          "seconds_after_completion": 12.014509131993691,
+          "pss_kib": 337504,
+          "seconds_after_completion": 12.013780730005237,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1001,21 +1001,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        516.898
+        484.854
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 32938.0,
-        "WPENetworkProce": 50314.0,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 843.0,
-        "WPEWebProcess": 255059.333
+        "foob-baseline": 35605.0,
+        "WPENetworkProce": 48246.0,
+        "bwrap": 596.0,
+        "xdg-dbus-proxy": 851.0,
+        "WPEWebProcess": 252774.0
       }
     },
     "control-wikipedia-3": {
-      "date_utc": "2026-10-13T21:42:15.645604+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:27:54.651819+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -1024,8 +1024,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 337006,
-          "seconds_after_completion": 10.015003522996267,
+          "pss_kib": 340598,
+          "seconds_after_completion": 10.015044169995235,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1040,8 +1040,8 @@
           }
         },
         {
-          "pss_kib": 335346,
-          "seconds_after_completion": 11.01290614199388,
+          "pss_kib": 338938,
+          "seconds_after_completion": 11.014315786000225,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1056,8 +1056,8 @@
           }
         },
         {
-          "pss_kib": 335334,
-          "seconds_after_completion": 12.014063465998333,
+          "pss_kib": 338978,
+          "seconds_after_completion": 12.013956823997432,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1073,21 +1073,21 @@
         }
       ],
       "navigation_elapsed_ms": [
-        532.395
+        539.45
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33382.0,
-        "WPENetworkProce": 48161.0,
-        "bwrap": 608.0,
-        "xdg-dbus-proxy": 853.0,
-        "WPEWebProcess": 252891.333
+        "foob-baseline": 32915.0,
+        "WPENetworkProce": 49780.0,
+        "bwrap": 599.0,
+        "xdg-dbus-proxy": 834.0,
+        "WPEWebProcess": 255376.667
       }
     },
     "control-wikipedia-4": {
-      "date_utc": "2026-10-13T21:43:30.700192+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:29:09.607671+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
       "binary_sha256": "3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
@@ -1096,8 +1096,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 335379,
-          "seconds_after_completion": 10.015103502999409,
+          "pss_kib": 365037,
+          "seconds_after_completion": 10.013678770003025,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1112,8 +1112,8 @@
           }
         },
         {
-          "pss_kib": 333719,
-          "seconds_after_completion": 11.013407053003903,
+          "pss_kib": 366229,
+          "seconds_after_completion": 11.013226078997832,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1128,8 +1128,8 @@
           }
         },
         {
-          "pss_kib": 333707,
-          "seconds_after_completion": 12.014018731999386,
+          "pss_kib": 362277,
+          "seconds_after_completion": 12.013156386004994,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1145,22 +1145,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        543.941
+        541.089
       ],
       "mean_role_pss_kib": {
-        "foob-baseline": 33067.0,
-        "WPENetworkProce": 47850.0,
+        "foob-baseline": 32970.0,
+        "WPENetworkProce": 50698.333,
         "bwrap": 600.0,
-        "xdg-dbus-proxy": 844.0,
-        "WPEWebProcess": 251907.333
+        "xdg-dbus-proxy": 840.0,
+        "WPEWebProcess": 279406.0
       }
     },
     "fixture-1": {
-      "date_utc": "2026-10-13T21:39:08.107043+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:24:46.617107+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1168,8 +1168,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 200939,
-          "seconds_after_completion": 10.012680134997936,
+          "pss_kib": 198887,
+          "seconds_after_completion": 10.013041600992437,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1184,8 +1184,8 @@
           }
         },
         {
-          "pss_kib": 200943,
-          "seconds_after_completion": 11.012128577000112,
+          "pss_kib": 198892,
+          "seconds_after_completion": 11.012233365996508,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1200,8 +1200,8 @@
           }
         },
         {
-          "pss_kib": 200943,
-          "seconds_after_completion": 12.012410890994943,
+          "pss_kib": 198892,
+          "seconds_after_completion": 12.012594920990523,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1217,22 +1217,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        16.059
+        16.686
       ],
       "mean_role_pss_kib": {
-        "foob": 33669.0,
-        "WPENetworkProce": 30254.667,
-        "bwrap": 595.0,
-        "xdg-dbus-proxy": 855.0,
-        "WPEWebProcess": 135568.0
+        "foob": 33730.0,
+        "WPENetworkProce": 30313.333,
+        "bwrap": 596.0,
+        "xdg-dbus-proxy": 840.0,
+        "WPEWebProcess": 133411.0
       }
     },
     "fixture-2": {
-      "date_utc": "2026-10-13T21:40:23.007417+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:26:02.102191+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1240,8 +1240,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198760,
-          "seconds_after_completion": 10.013473460996465,
+          "pss_kib": 198392,
+          "seconds_after_completion": 10.013263802000438,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1256,8 +1256,8 @@
           }
         },
         {
-          "pss_kib": 198764,
-          "seconds_after_completion": 11.012358021995169,
+          "pss_kib": 198396,
+          "seconds_after_completion": 11.011369436004316,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1272,8 +1272,8 @@
           }
         },
         {
-          "pss_kib": 198764,
-          "seconds_after_completion": 12.01213261399971,
+          "pss_kib": 198504,
+          "seconds_after_completion": 12.012032373007969,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1289,22 +1289,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        16.085
+        16.823
       ],
       "mean_role_pss_kib": {
-        "foob": 33695.333,
-        "WPENetworkProce": 30173.333,
-        "bwrap": 596.0,
-        "xdg-dbus-proxy": 830.0,
-        "WPEWebProcess": 133468.0
+        "foob": 33679.0,
+        "WPENetworkProce": 30128.667,
+        "bwrap": 608.0,
+        "xdg-dbus-proxy": 845.0,
+        "WPEWebProcess": 133170.0
       }
     },
     "fixture-3": {
-      "date_utc": "2026-10-13T21:41:38.059202+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:27:17.008464+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1312,8 +1312,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198929,
-          "seconds_after_completion": 10.011897299002158,
+          "pss_kib": 198747,
+          "seconds_after_completion": 10.012567230005516,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1328,8 +1328,8 @@
           }
         },
         {
-          "pss_kib": 198934,
-          "seconds_after_completion": 11.012267340003746,
+          "pss_kib": 198751,
+          "seconds_after_completion": 11.012919107000926,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1344,8 +1344,8 @@
           }
         },
         {
-          "pss_kib": 198934,
-          "seconds_after_completion": 12.0122281139993,
+          "pss_kib": 198751,
+          "seconds_after_completion": 12.012396564008668,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1361,22 +1361,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        15.586
+        17.673
       ],
       "mean_role_pss_kib": {
-        "foob": 33664.0,
-        "WPENetworkProce": 30189.333,
-        "bwrap": 608.0,
-        "xdg-dbus-proxy": 841.0,
-        "WPEWebProcess": 133630.0
+        "foob": 33683.333,
+        "WPENetworkProce": 30228.333,
+        "bwrap": 595.0,
+        "xdg-dbus-proxy": 845.0,
+        "WPEWebProcess": 133398.0
       }
     },
     "fixture-4": {
-      "date_utc": "2026-10-13T21:42:53.065929+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:28:31.966851+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1384,8 +1384,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 198781,
-          "seconds_after_completion": 10.012620271998458,
+          "pss_kib": 198741,
+          "seconds_after_completion": 10.013098358002026,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1400,8 +1400,8 @@
           }
         },
         {
-          "pss_kib": 199398,
-          "seconds_after_completion": 11.011727566998161,
+          "pss_kib": 198745,
+          "seconds_after_completion": 11.012387096998282,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1416,8 +1416,8 @@
           }
         },
         {
-          "pss_kib": 199398,
-          "seconds_after_completion": 12.012291364997509,
+          "pss_kib": 198745,
+          "seconds_after_completion": 12.011766126990551,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1433,22 +1433,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        15.988
+        17.544
       ],
       "mean_role_pss_kib": {
-        "foob": 33668.0,
-        "WPENetworkProce": 30233.333,
-        "bwrap": 598.0,
-        "xdg-dbus-proxy": 838.0,
-        "WPEWebProcess": 133855.0
+        "foob": 33852.0,
+        "WPENetworkProce": 30129.667,
+        "bwrap": 604.0,
+        "xdg-dbus-proxy": 837.0,
+        "WPEWebProcess": 133321.0
       }
     },
     "fixture-warm-reload": {
-      "date_utc": "2026-10-13T21:43:43.595845+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:29:22.498991+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "warm reload within a fresh ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1456,8 +1456,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 201252,
-          "seconds_after_completion": 10.012586115997692,
+          "pss_kib": 202984,
+          "seconds_after_completion": 10.011573705007322,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1472,8 +1472,8 @@
           }
         },
         {
-          "pss_kib": 201257,
-          "seconds_after_completion": 11.012548352999147,
+          "pss_kib": 202989,
+          "seconds_after_completion": 11.011679354007356,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1488,8 +1488,8 @@
           }
         },
         {
-          "pss_kib": 201257,
-          "seconds_after_completion": 12.011718186004146,
+          "pss_kib": 202989,
+          "seconds_after_completion": 12.0121972150082,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1505,23 +1505,23 @@
         }
       ],
       "navigation_elapsed_ms": [
-        16.744,
-        5.246
+        16.713,
+        4.864
       ],
       "mean_role_pss_kib": {
-        "foob": 32822.0,
-        "WPENetworkProce": 30704.333,
-        "bwrap": 600.0,
-        "xdg-dbus-proxy": 850.0,
-        "WPEWebProcess": 136279.0
+        "foob": 34729.0,
+        "WPENetworkProce": 30646.333,
+        "bwrap": 608.0,
+        "xdg-dbus-proxy": 846.0,
+        "WPEWebProcess": 136158.0
       }
     },
     "wikipedia-1": {
-      "date_utc": "2026-10-13T21:39:32.856515+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:25:11.368258+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1529,8 +1529,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 340461,
-          "seconds_after_completion": 10.015068375003466,
+          "pss_kib": 339660,
+          "seconds_after_completion": 10.014506709994748,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1545,8 +1545,8 @@
           }
         },
         {
-          "pss_kib": 338801,
-          "seconds_after_completion": 11.01423802899808,
+          "pss_kib": 338000,
+          "seconds_after_completion": 11.014429862989346,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1561,8 +1561,8 @@
           }
         },
         {
-          "pss_kib": 338789,
-          "seconds_after_completion": 12.012921800000186,
+          "pss_kib": 337976,
+          "seconds_after_completion": 12.013666001992533,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1578,22 +1578,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        493.384
+        1136.185
       ],
       "mean_role_pss_kib": {
-        "foob": 33393.0,
-        "WPENetworkProce": 47968.0,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 846.0,
-        "WPEWebProcess": 256539.333
+        "foob": 33175.0,
+        "WPENetworkProce": 49707.0,
+        "bwrap": 603.0,
+        "xdg-dbus-proxy": 840.0,
+        "WPEWebProcess": 254220.333
       }
     },
     "wikipedia-2": {
-      "date_utc": "2026-10-13T21:40:47.753093+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:26:26.850119+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1601,8 +1601,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 339429,
-          "seconds_after_completion": 10.014671261997137,
+          "pss_kib": 338197,
+          "seconds_after_completion": 10.01479517800908,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1617,8 +1617,8 @@
           }
         },
         {
-          "pss_kib": 337769,
-          "seconds_after_completion": 11.013420919000055,
+          "pss_kib": 336533,
+          "seconds_after_completion": 11.013994687004015,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1633,8 +1633,8 @@
           }
         },
         {
-          "pss_kib": 337757,
-          "seconds_after_completion": 12.012251157997525,
+          "pss_kib": 336521,
+          "seconds_after_completion": 12.013574809010606,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1650,22 +1650,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        525.16
+        545.411
       ],
       "mean_role_pss_kib": {
-        "foob": 33072.0,
-        "WPENetworkProce": 50078.0,
-        "bwrap": 604.0,
-        "xdg-dbus-proxy": 833.0,
-        "WPEWebProcess": 253731.333
+        "foob": 33084.0,
+        "WPENetworkProce": 48129.0,
+        "bwrap": 608.0,
+        "xdg-dbus-proxy": 849.0,
+        "WPEWebProcess": 254413.667
       }
     },
     "wikipedia-3": {
-      "date_utc": "2026-10-13T21:42:02.752718+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:27:41.759267+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1673,8 +1673,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 336641,
-          "seconds_after_completion": 10.013656166003784,
+          "pss_kib": 340886,
+          "seconds_after_completion": 10.015044700994622,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1689,8 +1689,8 @@
           }
         },
         {
-          "pss_kib": 334981,
-          "seconds_after_completion": 11.013401361000433,
+          "pss_kib": 339226,
+          "seconds_after_completion": 11.013258449995192,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1705,8 +1705,8 @@
           }
         },
         {
-          "pss_kib": 334969,
-          "seconds_after_completion": 12.013137508998625,
+          "pss_kib": 339214,
+          "seconds_after_completion": 12.013468067001668,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1722,22 +1722,22 @@
         }
       ],
       "navigation_elapsed_ms": [
-        518.733
+        541.186
       ],
       "mean_role_pss_kib": {
-        "foob": 33289.0,
-        "WPENetworkProce": 50172.0,
-        "bwrap": 608.0,
-        "xdg-dbus-proxy": 846.0,
-        "WPEWebProcess": 250615.333
+        "foob": 33397.0,
+        "WPENetworkProce": 48414.0,
+        "bwrap": 604.0,
+        "xdg-dbus-proxy": 841.0,
+        "WPEWebProcess": 256519.333
       }
     },
     "wikipedia-4": {
-      "date_utc": "2026-10-13T21:43:17.810668+00:00",
-      "revision": "679fb9ad37d228ca0156874a80f33eaa480d0475",
+      "date_utc": "2026-10-14T07:28:56.713224+00:00",
+      "revision": "147ae452b5746ae02a3a47279829d6d19a24f53c",
       "source_dirty": false,
-      "source_sha256": "667746fc73624bf710b9d039dfca8c54ae964f10f12951f22fa7b2aa4ee40158",
-      "binary_sha256": "e0b89b8f40589f3c58a182576060fe336c342bedbc3311b20d789a9530777459",
+      "source_sha256": "a7c70db4b04272bb7d8eb4710c09a3b435fe3247455054c32f2d7560f978943f",
+      "binary_sha256": "f1c00899786e6581768dc3d8ca60d062dfab07d7a17f5c388ba8254f1382a974",
       "condition": "fresh process, ephemeral session; OS caches uncontrolled",
       "result": "pass",
       "exit_code": 0,
@@ -1745,8 +1745,8 @@
       "survivor_count": 0,
       "samples": [
         {
-          "pss_kib": 343275,
-          "seconds_after_completion": 10.014287404002971,
+          "pss_kib": 336292,
+          "seconds_after_completion": 10.01367530299467,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1761,8 +1761,8 @@
           }
         },
         {
-          "pss_kib": 341615,
-          "seconds_after_completion": 11.014259630006563,
+          "pss_kib": 334748,
+          "seconds_after_completion": 11.013760753005045,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1777,8 +1777,8 @@
           }
         },
         {
-          "pss_kib": 341603,
-          "seconds_after_completion": 12.01332040700072,
+          "pss_kib": 334736,
+          "seconds_after_completion": 12.014269496998168,
           "viewport": {
             "width": 950,
             "height": 1188,
@@ -1794,14 +1794,14 @@
         }
       ],
       "navigation_elapsed_ms": [
-        535.914
+        529.495
       ],
       "mean_role_pss_kib": {
-        "foob": 32884.0,
-        "WPENetworkProce": 50169.0,
-        "bwrap": 599.0,
-        "xdg-dbus-proxy": 841.0,
-        "WPEWebProcess": 257671.333
+        "foob": 33144.0,
+        "WPENetworkProce": 47786.667,
+        "bwrap": 600.0,
+        "xdg-dbus-proxy": 838.0,
+        "WPEWebProcess": 252890.0
       }
     }
   },

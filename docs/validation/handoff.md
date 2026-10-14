@@ -12,7 +12,7 @@ The audit was fast-forwarded into `m0-m1` through `ced9c6c`; the local audit bra
 was deleted. The final review found no actionable regressions; all three registered
 Meson tests pass. After the merge, further Codex findings (F-35 to F-40) and a security
 review (`/code-review high`, F-41 to F-50) were handled on `m0-m1`; three of the latter
-changed C code (F-43 sanitizer, F-47 allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after D-21 and on `679fb9a` after the last review fixes.
+changed C code (F-43 sanitizer, F-47 allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after D-21 and on `679fb9a` after the last review fixes and on `147ae45` after the final cleanup review.
 A second security review (Review-4, F-51 to F-57) found that foob's own reload of a page's
 `target=_blank` request escaped iframe sandboxes (F-51) and reported `Sec-Fetch-Site: none`
 (F-52). An injected script that let the page navigate itself fixed both, and two follow-up
@@ -24,12 +24,12 @@ Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `679fb9ad…` (full hash in the records): source SHA256 `667746fc…`, audit binary `e0b89b8f…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures, documents and one comment in `src/target.h` (the rebuilt binary is byte-identical, same SHA256); any other C change invalidates these |
-| After D-21 and the final review | Re-recorded on `679fb9a`: unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean on all 5 files, binary 22,520 B stripped, text 13,125 B; a clean archive build was checked on `0af4314` (the later change is one line). Interleaved memory (25 launches, all passed): blank 170.3 vs 169.8 MiB, fixture 194.8 vs 194.8, Wikipedia 330.9 vs 329.4; navigation times equal, so the slower Wikipedia navigation seen in two earlier busy sessions did not reappear |
+| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents; any C change invalidates these |
+| After the final cleanup review | Re-recorded on `147ae45` (the review removed duplicate handlers and dead code: text 13,125 to 13,061 B): unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean, a clean archive build 3/3 with no warning, binary 22,520 B stripped. Interleaved memory (25 launches, all passed): blank 170.3 vs 170.0 MiB, fixture 194.0 vs 194.7, Wikipedia 329.8 vs 336.8 (one control launch at 357 MiB); one first-launch audit Wikipedia navigation took 1136 ms, the rest 530-545 ms. The geometry probe could not be re-run: it failed the same way (the browser did not close within 10 s after `close-window`) with the previous binary and the previous script, so it is the desktop session state (the earlier failure was a locked screen); repeat it with the session unlocked (I-07) |
 | What is verified | See the row above; the PSS comparison shows no regression in memory beyond one single-launch spike; the under-100-MiB stretch target is still not met (blank about 170 MiB) |
 | Maintainer checks done | All 18 guided rows (rows 1, 3, 9, 15, 16 and the new row 19 re-clicked after D-21 on `4e9b6c2`), the `pointer.html` click-position check (within 10 CSS px) and the geometry probe on `d9ea90d` (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)) |
 | What is not | Multi-monitor and fractional scaling (unavailable here, M6-07); the maintainer's Gate A decision |
-| Raw runs | `docs/validation/runs/m1-audit-679fb9a/` (this evidence); `m1-audit-0af4314/`, `m1-audit-0af4314-nav/` (five extra Wikipedia pairs), `m1-audit-89c1ecf/`, `m1-audit-93bdf41/`, `m1-audit-9abb6fe/` and `m1-audit-final/` are superseded sets; both ignored by git, the original M1 runs sit beside them, untouched |
+| Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); `m1-audit-679fb9a/`, `m1-audit-0af4314/`, `m1-audit-0af4314-nav/` (five extra Wikipedia pairs), `m1-audit-89c1ecf/`, `m1-audit-93bdf41/`, `m1-audit-9abb6fe/` and `m1-audit-final/` are superseded sets; both ignored by git, the original M1 runs sit beside them, untouched |
 
 **Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
 I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
@@ -39,7 +39,7 @@ roadmap section 7 (triage rule).
 **Open right now**
 1. Maintainer: decide Gate A. Review and merge are complete. The 18 guided checks are done (all pass or recorded); `pointer.html` and the geometry probe were checked on `d9ea90d`.
 2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified and the evidence was re-recorded (now on `679fb9a`).
-3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done on `679fb9a`; due again after the next C change.
+3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done on `147ae45`; due again after the next C change.
 4. Done: the real-click re-check after D-21 (rows 1, 3, 9, 15, 16, 19) passed on `4e9b6c2`; every `target=_blank` item does nothing and the sandboxed frame stays put ([record](guided-checks-m1-audit.md#re-check-after-d-21)).
 5. Review-4 and later findings: F-51 and F-52 are closed by D-21 (no script, no load on a page's behalf). F-53 holds by construction. F-54 (left-to-right mark before right-to-left remote titles) and F-55 (rest of the default-ignorable set) are in `window_title.c` with unit tests that abort on the old code. F-56, F-61, F-63 and F-64 (`summarize.py`: curated-file guard, run-record validation, dirty flag kept), F-57 and F-65 (`desktop_probe.py` private output directory; every benchmark record carries provenance) are in the benchmark tools. The final PR-style `/code-review high` (F-66 to F-68) led to three small fixes (test cleanup order, partial file read, cut-title trailing space); its other findings were not defects, duplicates or already carried and are retired (see the Retired entries in findings.md). The `target=_blank` policy is M2-03.
 
