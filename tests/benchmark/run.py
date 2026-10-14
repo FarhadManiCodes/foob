@@ -13,7 +13,7 @@ import signal
 import subprocess
 import time
 
-from process_tree import browser_tree, processes, provenance, sample, survivors
+from process_tree import FAILURE_MARKERS, browser_tree, processes, provenance, sample, stop, survivors_after_wait
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--binary', default='build/foob')
@@ -42,13 +42,14 @@ if output.exists() or log.exists():
 output.parent.mkdir(parents=True, exist_ok=True)
 tracked = {}
 process = None
+VIEWPORT = r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)'
 geometry_reference = None
 geometry_guard_offset = 0
 
 
 def check_health(expected_loads=None, allow_exit=False):
     text = log.read_text()
-    if any(marker in text for marker in ['load-failed ', 'status=failed', 'web-process-terminated']):
+    if any(marker in text for marker in FAILURE_MARKERS):
         raise RuntimeError('navigation failure or abnormal web-process termination')
     if not allow_exit and process.poll() is not None:
         raise RuntimeError('browser exited before requested shutdown')
@@ -56,7 +57,7 @@ def check_health(expected_loads=None, allow_exit=False):
         if text.count('foob: load-started') != expected_loads or text.count('foob: load-finished status=ok') != expected_loads:
             raise RuntimeError('navigation changed after requested completion; idle interval invalid')
         if geometry_reference is not None:
-            geometry = re.findall(r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)', text[geometry_guard_offset:])
+            geometry = re.findall(VIEWPORT, text[geometry_guard_offset:])
             if any(item != geometry_reference for item in geometry):
                 raise RuntimeError('viewport/scale changed after completion; fixed-geometry interval invalid')
     return text
@@ -74,7 +75,7 @@ try:
             finished = re.findall(r'load-finished status=ok elapsed_ms=([0-9.]+)', text)
             if len(finished) >= args.loads:
                 geometry_guard_offset = text.rfind('foob: load-finished status=ok')
-                geometry = re.findall(r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)', text[geometry_guard_offset:])
+                geometry = re.findall(VIEWPORT, text[geometry_guard_offset:])
                 if not geometry:
                     time.sleep(0.05)
                     continue
@@ -108,7 +109,7 @@ try:
                 check_health(args.loads)
                 item['seconds_after_observed_completion'] = time.monotonic() - completion
                 tracked.update({row['pid']: row for row in item['processes']})
-                geometry = re.findall(r'viewport width=(\d+) height=(\d+) scale=([0-9.]+)', log.read_text())
+                geometry = re.findall(VIEWPORT, log.read_text())
                 if not geometry:
                     raise RuntimeError('missing viewport diagnostic')
                 item['viewport'] = {'width': int(geometry[-1][0]), 'height': int(geometry[-1][1]),
@@ -156,17 +157,8 @@ except Exception as error:
 finally:
     if process is not None:
         tracked.update(browser_tree(process.pid, processes()))
-        if process.poll() is None:
-            process.terminate()
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-        deadline = time.monotonic() + 10
-        while survivors(tracked) and time.monotonic() < deadline:
-            time.sleep(0.1)
-        record['survivors_after_10s'] = survivors(tracked)
+        stop(process)
+        record['survivors_after_10s'] = survivors_after_wait(tracked)
         if record['survivors_after_10s']:
             record['result'] = 'fail'
         record['tracked_processes'] = tracked

@@ -11,7 +11,7 @@ from pathlib import Path
 import subprocess
 import time
 
-from process_tree import browser_tree, processes, provenance, survivors
+from process_tree import browser_tree, processes, provenance, stop, survivors_after_wait
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
@@ -43,20 +43,13 @@ with output.with_suffix('.log').open('w') as stream:
         record['exit_code'] = process.wait()
     finally:
         tracked.update(browser_tree(process.pid, processes()))
-        if process.poll() is None:
+        killed = stop(process)
+        if killed is not None:
             record['interrupted'] = True
-            process.terminate()
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                record['cleanup_kill_required'] = True
-                process.kill()
-                process.wait()
-        deadline = time.monotonic() + 10
-        while survivors(tracked) and time.monotonic() < deadline:
-            time.sleep(0.1)
+        if killed:
+            record['cleanup_kill_required'] = True
         record['tracked_processes'] = tracked
-        record['survivors_after_10s'] = survivors(tracked)
+        record['survivors_after_10s'] = survivors_after_wait(tracked)
         record['lifecycle_result'] = ('pass' if record.get('exit_code') == 0
                                       and not record['survivors_after_10s'] else 'fail')
         output.write_text(json.dumps(record, indent=2) + '\n')

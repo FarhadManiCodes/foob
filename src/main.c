@@ -1,7 +1,3 @@
-#if __STDC_VERSION__ < 202311L
-#error foob requires C23
-#endif
-
 #include <stdio.h>
 #include <glib.h>
 #include "browser.h"

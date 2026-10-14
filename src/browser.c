@@ -45,14 +45,8 @@ static void stop_loop(FoobBrowser *browser)
     g_main_loop_quit(browser->loop);
 }
 
-/* Compositor-initiated close (window close request). */
-static void view_closed([[maybe_unused]] WPEView *view, gpointer user_data)
-{
-    stop_loop(user_data);
-}
-
-/* Page-initiated close, e.g. window.close(); the only view means the whole app. */
-static void web_view_close([[maybe_unused]] WebKitWebView *web_view, gpointer user_data)
+/* Compositor close request, or page-initiated close (window.close()); the only view means the whole app. */
+static void close_requested([[maybe_unused]] gpointer instance, gpointer user_data)
 {
     stop_loop(user_data);
 }
@@ -152,8 +146,8 @@ FoobBrowser *foob_browser_new(bool diagnostics)
     WPEView *view = webkit_web_view_get_wpe_view(browser->web_view);
     update_window_title(browser);
     g_signal_connect(browser->web_view, "notify::title", G_CALLBACK(title_changed), browser);
-    g_signal_connect(view, "closed", G_CALLBACK(view_closed), browser);
-    g_signal_connect(browser->web_view, "close", G_CALLBACK(web_view_close), browser);
+    g_signal_connect(view, "closed", G_CALLBACK(close_requested), browser);
+    g_signal_connect(browser->web_view, "close", G_CALLBACK(close_requested), browser);
     g_signal_connect(display, "disconnected", G_CALLBACK(display_disconnected), browser);
     g_signal_connect(session, "download-started", G_CALLBACK(download_started), browser);
     g_signal_connect(browser->web_view, "decide-policy", G_CALLBACK(decide_policy), browser);

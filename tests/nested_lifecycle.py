@@ -25,7 +25,6 @@ import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
 import policy_server  # noqa: E402
 
@@ -60,6 +59,15 @@ def wait_for(predicate, seconds, message):
     raise AssertionError(message)
 
 
+def stop_compositor(compositor):
+    compositor.terminate()
+    try:
+        compositor.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        compositor.kill()
+        compositor.wait()
+
+
 def start_compositor():
     log = scratch / 'niri.log'
     env = {key: value for key, value in os.environ.items() if key != 'NIRI_SOCKET'}
@@ -76,12 +84,7 @@ def start_compositor():
         display, socket = wait_for(endpoints, 15, 'nested niri did not start')
     except BaseException:
         # scenario() has no cleanup yet at this point; never leave the compositor behind.
-        compositor.terminate()
-        try:
-            compositor.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            compositor.kill()
-            compositor.wait()
+        stop_compositor(compositor)
         raise
     return compositor, display, socket
 
@@ -93,7 +96,7 @@ def windows(socket):
 
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
-             load_status='ok', extra_env=None, after_load=None, expected_app_id='dev.foob.Browser'):
+             load_status='ok', extra_env=None, after_load=None):
     known.append(name)
     if selected and name not in selected:
         return
@@ -111,7 +114,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         wait_for(lambda: any(w['pid'] == browser.pid and w['title'] == expected_title
                              for w in windows(socket)),
                  10, f'{name}: window title never became {expected_title!r}')
-        assert window['app_id'] == expected_app_id, f"{name}: app-id {window['app_id']!r}"
+        assert window['app_id'] == 'dev.foob.Browser', f"{name}: app-id {window['app_id']!r}"
         if after_load:
             after_load(browser, socket, errors)
         time.sleep(1)
@@ -127,12 +130,11 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         except (ProcessLookupError, NameError):
             pass
         if compositor.poll() is None:
-            compositor.terminate()
-            try:
-                compositor.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                compositor.kill()
-                compositor.wait()
+            stop_compositor(compositor)
+
+
+def terminate(compositor, socket, window, browser):
+    browser.send_signal(signal.SIGTERM)
 
 
 def close_window(compositor, socket, window, browser):
@@ -199,9 +201,9 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 
 fixture = Path(__file__).resolve().parent / 'fixtures' / 'viewport.html'
 page_title = re.search(r'<title>(.*?)</title>', fixture.read_text())[1]
-scenario('title-follows-page', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('title-follows-page', 0, terminate,
          uri=fixture.as_uri(), expected_title=f'{page_title} \u2014 foob')
-scenario('title-remote-sanitized', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
@@ -241,7 +243,7 @@ def transfer_stopped_without_files(browser, socket, errors):
     assert not saved, f'attachment data was written to disk: {saved}'
 
 
-scenario('download-cancelled', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('download-cancelled', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/stream', load_status='failed',
          extra_env=download_env, after_load=transfer_stopped_without_files)
 
@@ -277,7 +279,7 @@ def scripted_probes_ran_and_stayed(browser, socket, errors):
     stays_on_page('first \u2014 foob')(browser, socket, errors)
 
 
-scenario('scripted-new-window-requests-do-not-navigate', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('scripted-new-window-requests-do-not-navigate', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/scripted.html',
          expected_title='first \u2014 foob', after_load=scripted_probes_ran_and_stayed)
 # A trusted submit of a target=_blank form asks for a new window, which foob ignores: nothing
@@ -303,20 +305,20 @@ def blank_form_does_not_navigate(browser, socket, errors):
     assert not echoes, f'a _blank form reached /echo: {echoes}'
 
 
-scenario('blank-form-does-not-navigate', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('blank-form-does-not-navigate', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
 # The guided-check fixtures must keep loading and keep their expected window titles.
 policy, policy_url = policy_server.serve()
-scenario('policy-fixture-remote', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('policy-fixture-remote', 0, terminate,
          uri=policy_url, expected_title='Policy fixture (remote) \u2014 foob',
          after_load=stays_on_page('Policy fixture (remote) \u2014 foob'))
 policy.shutdown()
-scenario('policy-fixture-local', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM),
+scenario('policy-fixture-local', 0, terminate,
          uri=(Path(__file__).resolve().parent / 'fixtures' / 'policy-local.html').as_uri(),
          expected_title='Policy fixture (local) \u2014 foob')
 scenario('compositor-close', 0, close_window)
-scenario('sigterm', 0, lambda c, s, w, b: b.send_signal(signal.SIGTERM))
+scenario('sigterm', 0, terminate)
 scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))
 scenario('compositor-lost', 3, lambda c, s, w, b: c.kill())
 

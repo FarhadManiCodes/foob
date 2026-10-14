@@ -21,6 +21,4 @@ void foob_diagnostics_free(FoobDiagnostics *diagnostics);
 void foob_diagnostics_log(const FoobDiagnostics *diagnostics, const char *format, ...)
     G_GNUC_PRINTF(2, 3);
 
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(FoobDiagnostics, foob_diagnostics_free)
-
 #endif

@@ -12,9 +12,10 @@
  * joiners U+200C/U+200D or variation selectors 1-16) are removed, whitespace is
  * collapsed and the title is cut at 120 characters. A remote title that may hold
  * right-to-left text starts with U+200E LEFT-TO-RIGHT MARK, so the line stays
- * left to right and "foob" stays at its end. Titles of
- * local content (trusted = true, see foob_uri_is_local()) keep their text apart from what the Wayland protocol
- * requires: valid UTF-8, no control characters, at most 240 characters.
+ * left to right and "foob" stays at its end. Titles of local content
+ * (trusted = true, see foob_uri_is_local()) keep their text apart from what the
+ * Wayland protocol requires: valid UTF-8, no control characters, at most 240
+ * characters.
  * Returns a newly allocated string; free with g_free(). Depends only on GLib.
  */
 char *foob_window_title(const char *page_title, bool trusted);

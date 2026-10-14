@@ -95,12 +95,12 @@ static void test_invisible_characters(void)
     check("a" CSI "b", false, "a b \u2014 foob");
     check("pay" ZWSP "pal" BOM "x" TAG, false, "paypalx \u2014 foob");
     check("a" DEPRECATED_FORMAT CGJ HANGUL_FILLER HALFWIDTH_FILLER VS17 "b", false, "ab \u2014 foob");
-    /* Review-3 additions: blank-looking and annotation characters. */
+    /* Blank-looking and annotation characters. */
     check("pay" SHY "pal" BRAILLE_BLANK BRAILLE_BLANK "x" KHMER_VOWEL INTERLINEAR "y" OBJECT_REPLACEMENT MUSICAL_FORMAT "z",
           false, "paypalxyz \u2014 foob");
     check(BRAILLE_BLANK BRAILLE_BLANK, false, "foob");
     check("a" SHY "b" BRAILLE_BLANK "c", true, "a" SHY "b" BRAILLE_BLANK "c \u2014 foob");
-    /* Review-4: the rest of the default-ignorable set (Mongolian free variation
+    /* The rest of the default-ignorable set (Mongolian free variation
      * selectors, unassigned default-ignorable code points). */
     check("Pay" MONGOLIAN_FVS1 "pal" MONGOLIAN_FVS4 UNASSIGNED_2065 UNASSIGNED_FFF0 UNASSIGNED_E0FFF,
           false, "Paypal \u2014 foob");
@@ -117,7 +117,7 @@ static void test_invisible_characters(void)
 
 static void test_direction(void)
 {
-    /* Review-4: a leading right-to-left letter must not make the line right to left. */
+    /* A leading right-to-left letter must not make the line right to left. */
     check("\u05d0 Bank", false, LRM "\u05d0 Bank \u2014 foob");
     check("Bank \u0628\u0646\u0643", false, LRM "Bank \u0628\u0646\u0643 \u2014 foob");
     /* An unassigned code point in a right-to-left block counts as right to left. */

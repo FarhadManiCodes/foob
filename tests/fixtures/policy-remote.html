@@ -3,9 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Policy &#x202E; fixture   (remote)</title>
 <style>
-  body { font: 20px/1.5 sans-serif; margin: 24px; background: #fff8ee; color: #2b1d13; }
+  body { font: 20px/1.5 sans-serif; margin: 24px; padding-bottom: 40vh; background: #fff8ee; color: #2b1d13; }
   li { margin: 10px 0; }
-  body { padding-bottom: 40vh; }
   code { background: #f3e6d4; padding: 2px 6px; }
   /* The log stays at the bottom of the window so no scrolling is needed to read it. */
   #log { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; margin: 0;
@@ -15,7 +14,7 @@
 <p>Served from loopback, which foob treats as <b>remote</b> (untrusted). Click each
 item and compare with the expected result. <b>Item numbers match the checklist.</b>
 The dark panel at the bottom is this page's own log (what the page saw); it also
-confirms that each click registered. Tell Claude the item number and what you saw.
+confirms that each click registered. Report the item number and what you saw.
 The window title (see
 <code>niri msg windows</code>) must read <code>Policy fixture (remote) — foob</code>:
 the hidden direction override and the extra spaces in this page's title are removed.</p>

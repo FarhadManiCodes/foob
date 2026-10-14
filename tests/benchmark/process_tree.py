@@ -3,6 +3,7 @@ import hashlib
 from pathlib import Path
 import re
 import subprocess
+import time
 
 
 def source_manifest(root='src'):
@@ -70,3 +71,28 @@ def survivors(tracked):
     table = processes()
     return {pid: table[pid] for pid, identity in tracked.items()
             if pid in table and table[pid]['start'] == identity['start']}
+
+
+FAILURE_MARKERS = ('load-failed ', 'status=failed', 'web-process-terminated')
+
+
+def stop(process):
+    """Terminates a browser that is still running. None: it had already exited; else whether it was killed."""
+    if process.poll() is not None:
+        return None
+    process.terminate()
+    try:
+        process.wait(timeout=10)
+        return False
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+        return True
+
+
+def survivors_after_wait(tracked):
+    """The tracked processes still alive after up to 10 s."""
+    deadline = time.monotonic() + 10
+    while survivors(tracked) and time.monotonic() < deadline:
+        time.sleep(0.1)
+    return survivors(tracked)
