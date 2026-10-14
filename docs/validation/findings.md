@@ -164,7 +164,7 @@ stay unused so older commits and notes still resolve; the git history has the fu
 | I-06 | Hardening-vs-feature split of the +3.5 KB binary growth | measure by building without hardening flags |
 | I-08 | A benchmark-only fixture without the "Reload this fixture" button would stop a stray click from invalidating a run (F-36) | changes the fixture hash recorded since M1, so only if it recurs |
 | I-09 | Key handling through `WPEView::event` returning TRUE, as MiniBrowser does | M2-01, M2-09; probe event consumption first |
-| I-10 | `webkit_settings_apply_from_key_file()` / `wpe_settings_load_from_keyfile()` as the configuration path (both in the installed headers, not tried) | M2-04 |
+| I-10 | `webkit_settings_apply_from_key_file()` / `wpe_settings_load_from_keyfile()` as a configuration path (both in the installed headers, not tried) | **No owner; not planned (maintainer, 2026-10-14: a single-user browser needs no settings file).** Revisit only if a value must differ per user or machine, cannot be a constant, argument or environment variable, and must be read before the first page loads; then use this API before writing a parser |
 | I-11 | Show persistent versus ephemeral in the window title (`[Private]` upstream) | M2-04, M2-12 |
 | I-12 | Accept a plain path as the startup argument (`g_file_new_for_commandline_arg()` upstream) | M2-02; the allowlist stays the only gate |
 | I-13 | Check for a white flash before first paint; `webkit_web_view_set_background_color()` | M2-12 |
