@@ -1,6 +1,6 @@
 # Guided checks for the M1 audit binary (maintainer at the keyboard)
 
-**Status: all 18 rows were done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). D-21 then changed what `target=_blank` does (nothing now); rows 1, 3, 9, 15, 16 and the new row 19 were clicked again on `4e9b6c2` and pass, see [Re-check after D-21](#re-check-after-d-21). Optional pointer and geometry checks below were done earlier.** These check behavior changed or added by the M1 audit, which
+**Status: all 18 rows were done on 2026-10-13 (maintainer at the keyboard; row 18 read by Claude). The D-05 update then changed what `target=_blank` does (nothing now); rows 1, 3, 9, 15, 16 and the new row 19 were clicked again on `4e9b6c2` and pass, see [Re-check after the D-05 update](#re-check-after-the-d-05-update). Optional pointer and geometry checks below were done earlier.** These check behavior changed or added by the M1 audit, which
 cannot be automated here because input cannot be synthesized. The nested lifecycle
 suite already covers close, signals, crashes, downloads, titles and app-ids; the
 original [desktop checklist](desktop-checklist.md) covers resize, typing, scrolling
@@ -27,7 +27,7 @@ should do nothing; if the window changes to an "Echo FAIL" page, foob submitted 
 
 | # | Item on the page | Expected | Result |
 |---|---|---|---|
-| 1 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens "Second page" in the same window | Old behaviour **PASS** (maintainer, real click, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
+| 1 | New-window link to a remote page | nothing happens (D-05). Earlier expectation, now void: opens "Second page" in the same window | Old behaviour **PASS** (maintainer, real click, 2026-10-13); re-clicked after the D-05 update: **PASS**, see [below](#re-check-after-the-d-05-update) |
 | 2 | Ordinary link to a remote page | opens in the same window | **PASS** (maintainer, 2026-10-13) |
 | 3 | New-window link to a local file | nothing happens | **PASS** (maintainer, 2026-10-13); passed on the old behaviour |
 | 4 | Ordinary link to a local file | nothing happens | Page log: "click registered on item 4" (maintainer, 2026-10-13) |
@@ -35,7 +35,7 @@ should do nothing; if the window changes to an "Echo FAIL" page, foob submitted 
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | **PASS** (maintainer, 2026-10-13) |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads`; server prints `GET /attachment.bin` | **PASS** (maintainer, 2026-10-13): server printed `GET /attachment.bin 200`; no file in `~/Downloads` (listing checked) |
 | 8 | Link with `download` attribute | nothing happens; no file saved | **PASS** (maintainer, 2026-10-13): server printed `GET /plain.bin 200`; no file saved (listing checked) |
-| 9 | Submit a POST form (`target=_blank`) | nothing happens; the server prints no `POST /echo` (D-21). A red FAIL page means foob submitted it. Earlier expectation, now void: green PASS (POST, 15 bytes) | Old behaviour **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)"; re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
+| 9 | Submit a POST form (`target=_blank`) | nothing happens; the server prints no `POST /echo` (D-05). A red FAIL page means foob submitted it. Earlier expectation, now void: green PASS (POST, 15 bytes) | Old behaviour **PASS** (maintainer, 2026-10-13, real click): "PASS: the form body arrived (POST, 15 bytes)"; re-clicked after the D-05 update: **PASS**, see [below](#re-check-after-the-d-05-update) |
 | 10 | File input (record only, M3-02) | what happens? | Recorded (maintainer, 2026-10-13): **no file picker opens**; the input does nothing. Carried to M3-02 |
 | 11 | Camera and microphone request (record only, M3-05) | prompt? the page log shows `camera/microphone: <error name>` | Recorded (maintainer, 2026-10-13): no prompt; page log `camera/microphone: OverconstrainedError`; terminal: "Audio capture was requested but no device was found amongst 0 devices". The engine sees no capture device, so the **permission default is untested** (carried to M3-05) |
 | 12 | PDF link (record only, M3-04) | what is shown? | Recorded (maintainer, 2026-10-13): the stock engine shows the PDF **inline** in a PDF.js viewer (toolbar with search, zoom, annotate, print, save). Decided to keep as is (D-19) |
@@ -51,16 +51,16 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 | # | Item | Expected | Result |
 |---|---|---|---|
-| 15 | New-window link to another local file | nothing happens (D-21). Earlier expectation, now void: opens "Local link navigation PASS" in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
-| 16 | New-window link to a remote page | nothing happens (D-21). Earlier expectation, now void: opens in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after D-21: **PASS**, see [below](#re-check-after-d-21) |
+| 15 | New-window link to another local file | nothing happens (D-05). Earlier expectation, now void: opens "Local link navigation PASS" in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after the D-05 update: **PASS**, see [below](#re-check-after-the-d-05-update) |
+| 16 | New-window link to a remote page | nothing happens (D-05). Earlier expectation, now void: opens in the same window | Old behaviour **PASS** (maintainer, 2026-10-13); re-clicked after the D-05 update: **PASS**, see [below](#re-check-after-the-d-05-update) |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` (unsupported) | **PASS** (maintainer, 2026-10-13) |
 | 18 | Window title | `Policy fixture (local) — foob` | **PASS** (verified by Claude, 2026-10-13: window title `Policy fixture (local) — foob`, app-id `dev.foob.Browser` read from `niri msg -j windows`; the maintainer was unsure; also asserted by the nested suite) |
 
-## Re-check after D-21
+## Re-check after the D-05 update
 
 The second security review (F-51, F-52) showed that loading a page's `target=_blank`
 request from foob drops the asking frame's sandbox and Fetch Metadata. An injected script
-that avoided this was tried and then removed (D-21): foob now ignores every new-window
+that avoided this was tried and then removed (D-05): foob now ignores every new-window
 request, so a `target=_blank` link or form does nothing until M2-03. Scripted requests
 cannot exercise a real click (the nested scenario `blank-form-does-not-navigate` covers
 trusted script submits), so these rows need real clicks on the new binary. Use the

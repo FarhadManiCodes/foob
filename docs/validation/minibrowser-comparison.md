@@ -1,7 +1,7 @@
 # Comparison with upstream MiniBrowser (WPE)
 
 Why: MiniBrowser (`Tools/MiniBrowser/wpe/main.cpp` in the WPE WebKit release) is the
-engine team's own minimal browser on the same API (D-22). foob should be more concise,
+engine team's own minimal browser on the same API (D-21). foob should be more concise,
 more accurate and safer than it for what foob does, and learn from what it does that
 foob has not yet needed. M2-13 and M3-09 repeat this comparison; this page is the
 baseline taken at the end of M1 (2026-10-14, WPE WebKit 2.54.1).
