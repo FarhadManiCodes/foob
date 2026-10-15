@@ -1,7 +1,7 @@
 # Comparison with upstream MiniBrowser (WPE)
 
 Why: MiniBrowser (`Tools/MiniBrowser/wpe/main.cpp` in the WPE WebKit release) is the
-engine team's own minimal browser on the same API (D-21). foob should be more concise,
+engine team's own minimal browser on the same API (D-14). foob should be more concise,
 more accurate and safer than it for what foob does, and learn from what it does that
 foob has not yet needed. M2-13 and M3-09 repeat this comparison; this page is the
 baseline taken at the end of M1 (2026-10-14, WPE WebKit 2.54.1).
@@ -14,7 +14,7 @@ tarball (`https://wpewebkit.org/releases/wpewebkit-2.54.1.tar.xz`, file
 directory, and never build or run it. Two-clause BSD license, copyright Igalia; it is
 reference reading, not foob code, and nothing is copied from it.
 
-## Size (a signal, not a target; D-18)
+## Size (a signal, not a target; `AGENTS.md`)
 
 Non-blank, non-comment-start lines, crude filter. foob `src/`: 432 code lines (C, six
 headers included), 22,520 B stripped. MiniBrowser `main.cpp`: 690 code lines (838
@@ -50,7 +50,7 @@ process-tree PSS) for any shell.
 Also seen, parked (I-15 to I-17): `related-view` for a second window (M2-11), developer extras only in a diagnostics mode (M2-06), a headless display for tests and runtime feature switches (M6, M5-09).
 
 Not to take: permission auto-grant, `--ignore-tls-errors`, proxy, cookie-file and
-content-filter options, automation, XR, headless mode, the legacy libwpe path (D-16).
+content-filter options, automation, XR, headless mode, the legacy libwpe path (`AGENTS.md`).
 
 ## Engine defaults foob runs with (measured 2026-10-14)
 

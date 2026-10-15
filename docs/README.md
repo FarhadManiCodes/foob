@@ -14,7 +14,7 @@ Current [handoff](validation/handoff.md): M0/M1 P0 complete; M1 implemented and
 independently reviewed, with [runtime evidence](validation/m1.md),
 [measurements](validation/measurements.md) and
 [desktop checks passed](validation/desktop-checklist.md). Gate A is ready for
-maintainer review, not approved. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-21) is the baseline
+maintainer review, not approved. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-14) is the baseline
 for roadmap tasks M2-13 and M3-09. A [font issue](validation/font-follow-up.md)
 reported during guided Scholar testing is explicitly deferred.
 
