@@ -101,9 +101,9 @@ static void web_process_terminated([[maybe_unused]] WebKitWebView *web_view,
 /*
  * The compositor connection is gone (compositor exited or crashed). Without
  * this handler the process keeps spinning on the dead socket. An orderly
- * teardown would talk to the lost display, so exit immediately as upstream's
- * MiniBrowser does; the engine's helper processes exit when their IPC peer
- * disappears.
+ * teardown would talk to the lost display, so exit immediately, even during a
+ * requested shutdown (`stopping` is deliberately unchecked), as upstream's MiniBrowser
+ * does; the engine's helper processes exit when their IPC peer disappears.
  */
 static void display_disconnected([[maybe_unused]] WPEDisplay *display,
                                  [[maybe_unused]] GError *error, gpointer user_data)

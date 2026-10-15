@@ -5,6 +5,7 @@ directory readable only by you (--output-dir, which must not exist yet, or a fre
 $TMPDIR/foob-probe-<label>-* by default), so a rerun never replaces an earlier probe and
 other local users cannot read the captures; inspect/delete it afterward.
 This supplements but cannot replace user pointer/typing/scroll observations.
+Probe a fixture, not about:blank: that load ends before niri lists the window.
 """
 import argparse
 from datetime import datetime, timezone
