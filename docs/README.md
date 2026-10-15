@@ -4,13 +4,13 @@ The current project scope is defined by the existing
 [architecture decision](../foob_architecture_decision.md) and
 [development roadmap](../foob_development_roadmap.md).
 
-Implementation: [M0 validation](validation/m0.md) and [build instructions](../README.md).
+Build and run: [build instructions](../README.md).
 
 **Start here:** [handoff](validation/handoff.md) (current state and rules for every agent) and
 [findings, decisions and ideas](validation/findings.md).
 
 Current [handoff](validation/handoff.md): M0/M1 P0 complete; M1 implemented and
-audited, with the [audit](validation/audit-m1.md), [acceptance record](validation/m1.md),
+audited, with the [audit](validation/audit-m1.md), the [M0/M1 acceptance record](validation/m1.md),
 [measurements](validation/measurements-m1-audit.md) and
 [guided checks](validation/guided-checks-m1-audit.md). Gate A is ready for
 maintainer review, not approved. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-14) is the baseline

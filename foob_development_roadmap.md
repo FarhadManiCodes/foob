@@ -114,7 +114,7 @@ M1 is intentionally small. M2–M4 form the **usable browser MVP**, while M5 is 
 
 ### Suggested first commands
 
-M0 P0 complete on 2026-10-12: [installed versions and C23/link evidence](docs/validation/m0.md).
+M0 P0 complete on 2026-10-12: [installed versions and C23/link evidence](docs/validation/m1.md#environment).
 M0-05 license remains a maintainer P1 deferral.
 
 ```bash
