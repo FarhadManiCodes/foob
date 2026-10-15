@@ -1,10 +1,13 @@
-# M1 audit: re-recorded process-tree PSS evidence
+# M1 process-tree PSS measurements
 
 **The audit binary shows no memory or timing regression against the unmodified
 `m0-m1` build, measured interleaved in the same session. The under-100-MiB stretch
-target is still not met.** This file supplements [measurements.md](measurements.md);
-it does not replace it. That file describes the original `m0-m1` binary, whose
-source and binary hashes no longer match this branch.
+target is still not met.** This is the M1 measurement record (roadmap M1-06). The first
+baseline, taken before the audit on binary `9a9225d8…` (three launches each), read blank
+174.3, local fixture 202.4 and Wikipedia 333.7 MiB; it is superseded, see
+[below](#why-these-numbers-differ-from-the-first-baseline) (its write-up is in the git
+history as `docs/validation/measurements.md`, its compact results in
+[results.json](results.json)).
 
 Collected 2026-10-13 after the Codex fixes and both security reviews (with the
 same-window script removed again, D-04); run start times are in the raw records. WPE
@@ -24,16 +27,13 @@ stay ignored and local (`docs/validation/runs/m1-audit-147ae45/`).
 | Control binary SHA256 | `3369eeadb352e812bfc7c3f7b1fd009f491ac663062fa3afccf3a424c9245bcb` (unchanged) |
 | Fixtures | `viewport.html` unchanged from `m0-m1`; `linked.html` gained a back link and the policy fixtures changed after the first audit measurement, none of them used by these workloads except `viewport.html` |
 
-Earlier measurements of this branch (revisions `2dfe12d`, `9c81515`, `1fae570`,
-`9abb6fe`, `89c1ecf`, `0af4314` and `679fb9a` (source hash `667746fc…`), source hashes `7b3129c2…` for `1fae570`, `0c7dc10f…` for `9abb6fe`, `d306ff47…` for `89c1ecf` and `498cc823…` for `0af4314`) are
-superseded: each change to C source (sanitizer, exit-status handling, the
-`_FORTIFY_SOURCE` check, the new-window handler that once loaded the action's request, the
-title sanitizer, the URI allowlist, the removal of the same-window script, the trimmed cut title, and now the merged close handlers and dead-code removal) invalidates the hashes. They showed the
-same picture (audit and control within a few MiB). Later commits change only tests,
-fixtures, documents and one comment in `src/target.h` (the rebuilt binary is byte-identical).
+Seven earlier measurements during the audit (from `2dfe12d` to `679fb9a`) are superseded,
+because each C change invalidated their hashes; they showed the same picture (audit and
+control within a few MiB). Later commits change only tests, fixtures, documents and two
+comments (the rebuilt binary is byte-identical, source hash now `ed80ae36…`, see the handoff).
 
 The control is a build of the unmodified `m0-m1` source made earlier in this audit,
-not the binary hashed in `measurements.md` (`9a9225d8…`); it differs because it was
+not the first baseline's binary (`9a9225d8…`); it differs because it was
 rebuilt. Its records carry the audit tree's `source_sha256` because the collector
 hashes the working tree; only `binary_sha256` identifies the control. Any later C
 change invalidates the audit hashes above. The binary hash depends on the build
@@ -42,13 +42,19 @@ The source hash reproduces exactly and is the stable identifier.
 
 ## Method
 
-The `tests/benchmark/run.py` collector and the protocol of `measurements.md`: explicit
-ephemeral session, three samples one second apart starting at least ten seconds after
-the observed successful load, process tree from `/proc` including reparented helpers,
-`Pss` summed per PID from `smaps_rollup`. Every sample: **950x1188 logical viewport,
-scale 1.0**, eight tracked processes, exit code 0, no survivors after ten seconds.
-OS, filesystem and network caches are uncontrolled; Wikipedia is live content. The
-maintainer was not using the desktop during this run.
+The `tests/benchmark/run.py` collector. Workloads: `about:blank`,
+`tests/fixtures/viewport.html` through `file:`, and
+`https://en.wikipedia.org/wiki/Mathematics` (live content); one window at a time, explicit
+ephemeral session, no login or cookie import. After the observed successful load, three
+samples one second apart starting at least ten seconds later; this is navigation-completion
+timing, not first frame or startup latency. The process tree comes from `/proc`, including
+reparented bubblewrap helpers and the D-Bus proxy (eight processes: UI, network, web, four
+helpers, one proxy), with `Pss` summed once per PID from `smaps_rollup`; an unreadable value
+fails the run. Every sample: **950x1188 logical viewport, scale 1.0**, and any geometry
+change after the load fails the run. Every run exits 0 with no survivor (PID plus start
+time) after ten seconds; a load failure, crash, extra navigation or early exit fails it.
+OS, filesystem and network caches are uncontrolled, so a fresh process is not a cold
+start. The maintainer was not using the desktop during this run.
 
 **Interleaved design:** four launches per workload for each binary, alternating audit
 and control (audit blank, control blank, audit fixture, control fixture, audit
@@ -111,9 +117,9 @@ away from the others (here: the `control-wikipedia-4` launch at 357 MiB; the `wi
 and one Wikipedia launch 15-30 MiB high in earlier runs. They are session state, not a
 property of either binary, and they are why launches are interleaved and repeated.
 
-## Why these numbers differ from `measurements.md` and from the earlier runs
+## Why these numbers differ from the first baseline
 
-`measurements.md` reports blank 174.3, fixture 202.4 and Wikipedia 333.7 MiB. In the
+The first baseline reports blank 174.3, fixture 202.4 and Wikipedia 333.7 MiB. In the
 session of an earlier run (`89c1ecf`) the **control** (the old code) read 166.2, 194.5 and 327.4 MiB; in this one it reads 169.8, 194.8 and 329.4 MiB, so the lower
 numbers are session drift (system state, caches, library mapping sharing), not an
 improvement from this branch. Do not cite it as one. Compare builds only within one
@@ -125,7 +131,7 @@ range for the original binary.
 - `meson test -C build`: 3 of 3 pass (`target` and `window_title` unit tests,
   startup URI contract). A clean `git archive` export builds without warnings.
 - `python3 tests/nested_lifecycle.py build/foob` in a disposable nested niri: 12 of
-  12 scenarios passed on `147ae45`; afterwards the suite was trimmed to 8 (test trim, see `handoff.md`) and the 8 passed again on the same binary. Each has exact-PID survivor checks and an app-id assertion:
+  12 scenarios passed on `147ae45`; afterwards the suite was trimmed to 8 (test trim, see `handoff.md`), and the trimmed suite has no recorded run yet (handoff, open list). Each has exact-PID survivor checks and an app-id assertion:
   `title-local-unsanitized` (a zero-width space in a local page's title survives; renamed from `title-follows-page`), `title-remote-sanitized` (the same character is stripped from a remote title), `download-cancelled` (300 MiB
   stream aborted after under 16 MiB, nothing on disk),
   `blank-form-does-not-navigate` (a trusted `_blank` form submit from the page and from a
@@ -154,11 +160,12 @@ range for the original binary.
 
 ## Not covered
 
-Not repeated here: the original [desktop checklist](desktop-checklist.md) (the audit's own guided checks are done, see
+Not repeated here: the pre-audit [desktop checklist](desktop-checklist.md) (the audit's own guided checks are done, see
 [guided-checks-m1-audit.md](guided-checks-m1-audit.md)); multi-monitor and fractional
 scaling (unavailable); Scholar and Semantic Scholar page loads; GPU participation
 beyond the earlier amdgpu counter evidence. PSS does not account for all GPU memory
-and the per-process snapshots are not atomic (see `measurements.md`).
+and the per-process snapshots are not atomic: short-lived helpers can disappear between
+scans, and shares of memory mapped by unrelated processes can drift.
 
 ## Reproduce
 

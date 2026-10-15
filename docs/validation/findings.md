@@ -10,14 +10,14 @@ the maintainer read it with [handoff.md](handoff.md) before starting work, and u
 |---|---|
 | D-01 | Window title = page title + ` — foob`. Remote titles are untrusted and sanitized; local content is trusted. |
 | D-02 | Downloads are cancelled until M3; "no silent downloads" is a requirement in roadmap M3-03 and the M3 exit. |
-| D-03 | HTTP 401 authentication is left as is (page stays loading); decided in M2-10. |
+| D-03 | HTTP 401 authentication is left as is (the page stays loading, no prompt), a visible failure; the prompt is designed in M2-10. |
 | D-04 | New windows. `window.open()` is unsupported and returns `null` (WebKit's `create` signal is not handled). **Updated 2026-10-13** after the second security review: foob ignores **every** new-window request (`target=_blank` links and forms), ships no injected script and loads nothing on a page's behalf, so a `_blank` link does nothing until M2-03 defines the behaviour. Popups and the second window: M2-11 / M3-01; feedback for the ignored click: M2-12 (D-09). Supersedes the retired same-window decision (old D-04). Reason for the update: a load foob makes on a page's behalf drops the asking frame's context. When foob loaded a page's `target=_blank` request itself, a sandboxed iframe (`allow-popups`, no `allow-top-navigation`) replaced the top page at its real origin, unsandboxed, and WebKit sent `Sec-Fetch-Site: none` instead of `cross-site` (second security review). A script that let the page navigate itself avoided this but re-implemented WebKit's target resolution, could not be tested without real clicks, and M2 would replace it, so it was removed. Safe default: the sandbox, Fetch Metadata and remote-to-local rules stay WebKit's; any future load on a page's behalf must keep them (roadmap M2-03 note 8). Scenario `blank-form-does-not-navigate` fails on the script build `f40e4b9`; real clicks are guided rows 1, 3, 9, 15, 16 and 19 (pass on `4e9b6c2`). (Numbered D-05 until 2026-10-15, with the update as a separate D-21; see [Decision numbering](#decision-numbering).) |
 | D-05 | JIT-off is not adopted (2.3x slower on a CPU-heavy page, saves 11-32 MiB); revisit at M5-10. |
 | D-06 | A dead web process makes foob exit with status 4 (option A); recovery such as one reload is M3-07. |
 | D-07 | App-id is `dev.foob.Browser`. |
 | D-08 | All local files (`file:`, `about:blank`) are trusted. **Not closed**: revisit in M4 (roadmap open-decisions table). |
 | D-09 | Feedback for blocked actions (download, popup, rejected link) is an M2 task (M2-12). |
-| D-10 | No gesture-forcing hook inside the product just to test the policy handler (skip). |
+| D-10 | No test hook in product code: foob gets no switch that forces a user gesture (or anything else) only so a test can reach the policy handler; such checks use a scratch build or a guided check. |
 | D-11 | Deferred by the maintainer: the font-language-menu glyph issue and the project license (M0-05). |
 | D-12 | PDFs open inline in the stock engine's PDF.js viewer; keep it as is for now (2026-10-13). The viewer's save button must still obey the M3-03 download rule. |
 | D-13 | Removing accessibility (`USE_ATK` off) from the custom engine is a requested evaluation, tracked as roadmap M5-11; the a11y-bus warnings stay until then (2026-10-13). |
@@ -36,7 +36,10 @@ reviewed every finding: what was still needed moved to the roadmap, the code, D-
 `AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
 refer to that earlier register (see its git history).
 
-None open.
+None open. A new finding is a row in this table:
+
+| ID | Finding | Found by | How checked | Status |
+|---|---|---|---|---|
 
 ## Ideas parking lot (not tasks yet)
 

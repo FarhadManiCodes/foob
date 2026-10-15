@@ -137,7 +137,7 @@ If needed, inspect package details with `pacman -Si wpewebkit`; install missing 
 ### Backlog
 
 - [x] **M1-01 / P0:** Create a `WebKitWebView` through the stable WPEPlatform API, using `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)`; run a GLib main loop.
-- [x] **M1-02 / P0:** Select/use the **Wayland** backend (`WPE_PLATFORM=wayland` for explicit testing) and load a **trusted** CLI URI or harmless default HTTPS page. Full validation/policy for arbitrary input and unsupported schemes belongs to M2.
+- [x] **M1-02 / P0:** Use the **Wayland** backend (foob builds `WPEDisplayWayland` directly, so `WPE_PLATFORM` cannot select another) and load a **trusted** CLI URI or harmless default HTTPS page. Full validation/policy for arbitrary input and unsupported schemes belongs to M2.
 - [x] **M1-03 / P0:** Quit on the WPE view's `closed` signal; release owned GObjects; confirm no leftover application subprocesses after normal exit.
 - [x] **M1-04 / P0:** Verify niri tiling, resize, maximize/fullscreen where applicable, focus and mouse scrolling; use the WPE-managed toplevel rather than writing another xdg-shell implementation.
 - [x] **M1-05 / P0:** Verify simple keyboard input in an HTML text box and navigation/link clicking; observe whether rendering is GPU accelerated, or record inability to verify.
@@ -148,9 +148,10 @@ If needed, inspect package details with `pacman -Si wpewebkit`; install missing 
 
 ### Gate A — stop, review and decide next implementation tasks
 
-Checkpoint 2026-10-13: [M1 runtime evidence](docs/validation/m1.md),
-[PSS measurements](docs/validation/measurements.md),
-[independent review](docs/validation/c23-review.md), and
+Checkpoint 2026-10-13: [M1 acceptance record](docs/validation/m1.md),
+[audit](docs/validation/audit-m1.md),
+[PSS measurements](docs/validation/measurements-m1-audit.md),
+[guided checks](docs/validation/guided-checks-m1-audit.md), and
 [handoff](docs/validation/handoff.md). The maintainer completed the
 [desktop checklist](docs/validation/desktop-checklist.md), with
 [guided session evidence](docs/validation/interactive-2026-10-13.md), including
@@ -225,30 +226,25 @@ Evidence to bring to the review:
 
 - [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures. *M1 guided check:* a right-click shows no context menu today.
 
-  **Carried from the M1 audit:** `window.open()` is unsupported today (returns `null`; WebKit's `create` signal is unhandled) and `target=_blank` links do nothing (D-04), so popup flows that need `window.opener` (OAuth sign-in popups) do not work; decide the popup policy with that in mind. Record the current default for right-click context menus, which has not been observed.
+  **Carried from the M1 audit:** `window.open()` is unsupported today (returns `null`; WebKit's `create` signal is unhandled) and `target=_blank` links do nothing (D-04), so popup flows that need `window.opener` (OAuth sign-in popups) do not work; decide the popup policy with that in mind.
 - [ ] **M3-02 / P0:** File-upload chooser integration (evaluate XDG portal or another truly toolkit-free solution on niri); test single and multiple file uploads. *M1 guided check:* a file input does nothing today (no picker opens).
-
-  **Carried from the M1 audit:** record what `<input type=file>` does today before choosing the mechanism (unverified).
 - [ ] **M3-03 / P0:** WebKit-managed downloads with validated destinations, file-name collisions, cancellation/failure reporting and authenticated PDF links.
 
   **No silent downloads (requirement from the M1 audit, 2026-10-13).** No download may start, and no file may be created, without an explicit user decision. M1 probing showed that WebKit's default saved an attachment response into `~/Downloads` with no prompt. Until this task is complete foob cancels every download (`WebKitNetworkSession::download-started` -> `webkit_download_cancel`) because there is no UI to ask yet. M3-03 replaces that interim default with an explicit per-download decision on a validated destination. Acceptance fixtures (local server, download directory redirected to a temporary directory through `XDG_CONFIG_HOME/user-dirs.dirs`): `Content-Disposition: attachment`, a link with the `download` attribute, a `blob:` download, a download started by a script without a user gesture, and a PDF link. For each, **before** the user accepts, no file, partial file or temporary file exists; after acceptance the file lands only in the validated destination, never overwrites silently, and leaves nothing behind when cancelled. Today the single `download-started` cancel is the only guard; also decide whether the response policy should ignore non-displayable responses before a download object exists. Replace the `download-cancelled` scenario in `tests/nested_lifecycle.py` with accept/cancel/never-silent scenarios and keep a negative control that fails on a build with WebKit's default behavior.
 
   **Trust note:** a file saved by a download is afterwards a local file, so `foob_uri_is_local()` would trust it. Validate destinations with that in mind; M4 revisits the local-file trust rule.
 - [ ] **M3-04 / P0:** Open downloaded PDFs through a carefully controlled external reader/desktop mechanism; avoid launching raw page-supplied commands. *Found in the M1 audit guided check:* the stock engine renders a PDF URL inline with PDF.js (toolbar with save, print and annotate buttons), which differs from the "external viewer, no embedded PDF renderer" decision. **Maintainer decision (D-12): keep the inline viewer as is for now.** Remaining requirement: the viewer's save button must not bypass the M3-03 download rule; revisit if the custom build sets `ENABLE_PDFJS=OFF` (architecture table).
-
-  **Carried from the M1 audit:** what foob displays for a PDF URL is unverified; record it first (the downloads are cancelled until M3-03).
 - [ ] **M3-05 / P0:** Verify TLS error handling, permission defaults and **effective runtime** sandbox isolation. The older `webkit_web_context_{get,set}_sandbox_enabled` accessors are **not available in WPE 2.0**; use current build/runtime evidence rather than coding against those symbols. **Do not disable sandbox/TLS checks to make a site work**. *From the M1 guided check:* `getUserMedia` on this machine fails with `OverconstrainedError` ("no device was found amongst 0 devices") before any permission decision, so the real prompt/deny default is untested; test it with a present device or WebKit's mock capture devices (`enable-mock-capture-devices` setting, scratch build) and record the default.
 
   **Carried from the M1 audit:** probing showed permission requests are denied and invalid certificates refused by WebKit's defaults, not by foob code; camera and microphone prompts have not been observed at the keyboard. Record the observed defaults before relying on them. **Also decide** (baseline in [minibrowser-comparison.md](docs/validation/minibrowser-comparison.md)): foob runs with engine-default settings, where media stream and site-specific quirks are on and ITP is off, whereas MiniBrowser sets its feature switches explicitly. For each, state whether foob keeps the default, with the reason.
 - [ ] **M3-06 / P1:** Test Wikipedia, Scholar and Semantic Scholar search/forms/links and representative ChatGPT/Claude/Gemini editing/login/upload flows, documenting incompatibilities.
+- [ ] **M3-07 / P1:** Basic crash recovery (interim since the M1 audit: a dead web process makes foob exit with code 4, `FOOB_EXIT_ENGINE_LOST`; recovery, such as one reload before exiting, replaces this and must keep a test that kills the web process), safe shutdown with downloads active and sensible user-visible errors without conventional chrome.
 - [ ] **M3-08 / P0:** Extend the accepted M2 Scholar baseline with M3's integrations: repeat search/result/scroll checks across restarts and separate sessions, record recurring challenges or loss of clearance, and verify paper/PDF links, authenticated downloads where applicable, and external PDF handoff. Bring renewed blocking to review; the M2 result establishes initial viability, not proof of long-term reliability.
 
   **Reliability checks for M3-08:** Retest in later sessions, including after any observed clearance expires naturally; do not extend expiry or generate background requests to preserve access. Record elapsed time since clearance, challenge recurrence, and whether manual completion restores usable search/result navigation. Review and agree on an acceptable challenge frequency before declaring the workflow reliable. If no expiry or recurrence was observed during testing, report the observation period and leave behavior beyond it unverified. The [qvu post-expiry comparison](docs/research/qvu/findings/scholar-post-expiry.md) showed that a successful restart could precede renewed blocking even with a complete profile; it did not prove expiry was the sole cause. Validate the ordinary dedicated persistent session first. Any later selective-cookie/storage minimization requires a separate comparison against that working baseline.
-
-- [ ] **M3-07 / P1:** Basic crash recovery (interim since the M1 audit: a dead web process makes foob exit with code 4, `FOOB_EXIT_ENGINE_LOST`; recovery, such as one reload before exiting, replaces this and must keep a test that kills the web process), safe shutdown with downloads active and sensible user-visible errors without conventional chrome.
 - [ ] **M3-09 / P1:** Repeat the MiniBrowser comparison (M2-13, [minibrowser-comparison.md](docs/validation/minibrowser-comparison.md), D-14) for the M3 features: permissions, downloads, popups and `window.open`, dialogs, crash handling, file input. Upstream grants every permission and handles no download, new window or crash; foob must show a tested, explicit decision for each, and report its code size for them next to upstream's as a signal (`AGENTS.md`), not as a target.
 
-**Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads **with no file created before explicit user action**, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. the M3-09 comparison is recorded; M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
+**Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads **with no file created before explicit user action**, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. The M3-09 comparison is recorded; M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
 
 ## M4 — Local documents, math and offline research
 

@@ -45,7 +45,7 @@ ignored/local; [curated results](docs/validation/results.json) remain committed.
 upstream audit with installed/runtime evidence. [M0 evidence](docs/validation/m0.md) verifies the
 installed packages/C23 linkage; [M1 evidence](docs/validation/m1.md) records native
 Wayland loading/cleanup, simple math/JS, web-process confinement and
-[stock process-tree PSS](docs/validation/measurements.md). Hardware GPU participation
+[stock process-tree PSS](docs/validation/measurements-m1-audit.md). Hardware GPU participation
 for blank is now confirmed within the limits above;
 [guided interactive acceptance](docs/validation/interactive-2026-10-13.md)
 now passes and Gate A is ready for maintainer review, not approved. The M1 session is

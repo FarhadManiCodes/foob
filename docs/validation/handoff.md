@@ -1,170 +1,68 @@
 # M0/M1 resumable handoff
 
-**M0/M1 P0 complete; Gate A ready for maintainer review, not approved.** Stop before
-M2. The sections below "Revision and reproducibility" are the original M0/M1
-record and describe the unmodified `m0-m1` binary.
+**M0/M1 P0 complete; Gate A ready for maintainer review, not approved.** Stop before M2.
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-15. **Branch `m0-m1`, in the main checkout.**
-The maintainer authorized merging `m1-audit` and deleting the local audit branch.
-The audit was fast-forwarded into `m0-m1` through `ced9c6c`; the local audit branch
-was deleted. The final review found no actionable regressions; all three registered
-Meson tests pass. After the merge, further Codex findings and a security
-review (`/code-review high`) were handled on `m0-m1`; two of the latter
-changed C code (title sanitizer, startup allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after the D-04 update and on `679fb9a` after the last review fixes and on `147ae45` after the final cleanup review.
-A second security review found that foob's own reload of a page's
-`target=_blank` request escaped iframe sandboxes and reported `Sec-Fetch-Site: none`. An injected script that let the page navigate itself fixed both, and two follow-up
-reviews found problems in the script. The maintainer then decided the script was
-not an M1 issue (D-04): it was removed, and foob ignores every new-window request, so a
-`target=_blank` link or form does nothing until M2-03. Its low findings (title
-sanitizer, benchmark tools) stay fixed.
-Gate A is **not approved**; no M2 work is authorized.
+Updated 2026-10-15. **Branch `m0-m1`, in the main checkout.** The
+M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
+security reviews, a final cleanup review) were handled here, and the evidence was
+re-recorded after each C change, last on `147ae45`. The second security review led to
+D-04: foob ignores every new-window request, so a `target=_blank` link or form does
+nothing until M2-03. Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents, except two comments (2026-10-15: `src/target.h` decision number, `src/browser.c` why `_exit(3)` ignores a requested shutdown, line count kept): the stripped binary built from today's `src/` and from `147ae45` in the same directory is byte-identical, but the source SHA256 of `src/` is now `ed80ae36…`; any other C change invalidates these |
-| After the final cleanup review | Re-recorded on `147ae45` (the review removed duplicate handlers and dead code: text 13,125 to 13,061 B): unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean, a clean archive build 3/3 with no warning, binary 22,520 B stripped. Interleaved memory (25 launches, all passed): blank 170.3 vs 170.0 MiB, fixture 194.0 vs 194.7, Wikipedia 329.8 vs 336.8 (one control launch at 357 MiB); one first-launch audit Wikipedia navigation took 1136 ms, the rest 530-545 ms. The geometry probe could not be re-run: it failed the same way (the browser did not close within 10 s after `close-window`) with the previous binary and the previous script, so it is the desktop session state (the earlier failure was a locked screen); repeat it with the session unlocked (open list, item 5) |
-| M1 documents cut (docs only) | 2026-10-15, maintainer: `audit-m1.md` (233 to 104 lines) and `m1.md` (163 to 40) keep only what later work needs: defects with their guarding tests, static-check results, the binary-size and memory baselines, the observed WebKit defaults, the acceptance table, the environment, sandbox and Scholar observations. Stale text (the old new-window decision, the pending merge and guided checks) and copies of `findings.md`, `AGENTS.md` and `minibrowser-comparison.md` were removed |
-| Decision renumbering (docs and one comment) | 2026-10-15, maintainer: the new-window decisions (then D-05 and D-21) were merged into one, the agent rules (then D-11, D-16, D-18) moved to roadmap section 7 and `AGENTS.md`, and every gap was closed, so the decisions now run D-01 to D-14; every citation was updated. Old-to-new table: [findings.md](findings.md#decision-numbering). `AGENTS.md` lists the three interim defaults (downloads D-02, new windows D-04, inline PDFs D-12) in one place |
-| Ideas cleanup, step 2 (2026-10-15) | The idea rows were removed except two, renumbered: I-01 (was I-08, benchmark fixture without the reload button, reworded) and I-02 (was I-17, headless display for tests, reworded); the next idea is I-03. Citations in other documents point to the roadmap, D-14 or the open list. Docs only |
-| Ideas cleanup, step 1 (2026-10-15) | The maintainer reviewed every idea; before any row is removed, the points still needed move to their homes: roadmap M2-06 (inspector only with diagnostics on), M2-11 (`related-view` shares the web process), M5-09 (runtime feature and GPU comparisons), M5-10 (JIT off for untrusted sites), D-14 (no settings file, with the revisit condition) and the open list above (probe re-run). Docs only |
-| Findings cleanup, step 2 (2026-10-15) | The finding rows (F-01 to F-74), the retired-entries list and the carried-items table were removed: every finding was fixed, carried into the roadmap (which holds each carried item) or decided. findings.md now has decisions, open findings (none), ideas and the decision-numbering table; new findings start at F-75. Citations in other documents were rewritten in words, F-51 became D-04. Comment-only C change: stripped binary byte-identical to `147ae45` |
-| Findings cleanup, step 1 (2026-10-15) | The maintainer reviewed every finding; before any row is removed, the points still needed move to their homes: roadmap M4 trust row (`about:blank` origin), M3-03 (response-policy ignore), M2-03 notes 1 (committed versus pending URI) and 2 (title cut by code point), the `desktop_probe.py` usage text (fixture, not `about:blank`), a `src/browser.c` comment (`_exit(3)` during a requested shutdown is deliberate) and the D-04 reason (the security finding behind it). Comment-only C change: stripped binary byte-identical to `147ae45` |
-| Scholar load rule (docs only) | 2026-10-15: Google Scholar may be opened on purpose for a check that needs it (M2-08), at most once or twice a minute, never in automated tests, scripts, benchmarks or loops, so Google does not block the IP. The rule is in `AGENTS.md` (Testing Guidelines). No C change, evidence stays valid |
-| MiniBrowser comparison (docs only) | 2026-10-14: foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14): foob is ahead on crash, app-id, title, argument, downloads, new windows and permissions; each of the six upstream items has an owner in the roadmap or D-14; engine defaults foob runs with were probed. New roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored via `.git/info/exclude`, may be absent; provenance in its `SOURCE.txt` and in [minibrowser-comparison.md](minibrowser-comparison.md)). No C change, evidence stays valid |
-| Test trim (tests only, binary unchanged) | Reviewed test by test (mutation checks of `target.c`, `window_title.c` and `main.c`; no padded test was found, redundant cases were cut). Unit tests: `test_target.c` 112 to 90 lines and `test_window_title.c` 179 to 167 (11 test functions remain; `/target/long-input` removed because a 1 MiB URI cannot reach the validator from `argv`; `/target/navigation` cut from 17 to 8 cases, M2-03 can add more). `tests/check_cli.py`: 23 launches to 4 (exit codes 1 and 2 wiring; the validity rules are unit-tested). Nested suite: 12 to 8 scenarios (`nested_lifecycle.py` 339 to 294 lines; all test files together 1,415 to 1,314). Removed: `policy-fixture-remote` and `policy-fixture-local` (only checked that guided-check pages load), `sigterm` (four other scenarios end with SIGTERM and assert the same), and `scripted-new-window-requests-do-not-navigate` (WebKit's popup blocker stops scripted requests before foob's handler, so it could not fail from foob code; `window.open` returning null stays a guided check, rows 5, 6 and 17). `title-follows-page` became `title-local-unsanitized` (a zero-width space in a local page's title must survive; it pairs with `title-remote-sanitized` and is the only test that foob derives trust from the loaded URI). `download-cancelled` lost a redundant 2 s re-check; `policy_server.py` lost its unused `serve()` helper. The counts above (12/12 scenarios, 23 launches) describe `147ae45`. Known and accepted: the `window_title.c` character table is sampled by the tests, not pinned entry by entry |
-| What is verified | See the row above; the PSS comparison shows no regression in memory beyond one single-launch spike; the under-100-MiB stretch target is still not met (blank about 170 MiB) |
-| Maintainer checks done | All 18 guided rows (rows 1, 3, 9, 15, 16 and the new row 19 re-clicked after the D-04 update on `4e9b6c2`), the `pointer.html` click-position check (within 10 CSS px) and the geometry probe on `d9ea90d` (2026-10-13, [guided-checks-m1-audit.md](guided-checks-m1-audit.md)) |
-| What is not | Multi-monitor and fractional scaling (unavailable here, M6-07); the maintainer's Gate A decision |
-| Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); `m1-audit-679fb9a/`, `m1-audit-0af4314/`, `m1-audit-0af4314-nav/` (five extra Wikipedia pairs), `m1-audit-89c1ecf/`, `m1-audit-93bdf41/`, `m1-audit-9abb6fe/` and `m1-audit-final/` are superseded sets; both ignored by git, the original M1 runs sit beside them, untouched |
+| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)). Later commits change only tests, fixtures and documents, except two comments (2026-10-15, `src/target.h` and `src/browser.c`, line count kept): the stripped binary built from today's `src/` and from `147ae45` in the same directory is byte-identical, but the source SHA256 is now `ed80ae36…`. Any other C change invalidates these |
+| Verified on `147ae45` | Unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean, a clean archive build 3/3 with no warning, binary 22,520 B stripped (text 13,061 B). Interleaved memory (25 launches, all passed): blank 170.3 vs 170.0 MiB, fixture 194.0 vs 194.7, Wikipedia 329.8 vs 336.8 (one control launch at 357 MiB): no regression; the under-100-MiB stretch target is not met |
+| Test trim (after `147ae45`, binary unchanged) | Reviewed test by test with mutation checks; redundant cases cut. `check_cli.py` 23 launches to 4 (exit codes 1 and 2; the validity rules are unit-tested), `/target/navigation` 17 cases to 8, nested suite 12 scenarios to 8. Removed scenarios: `policy-fixture-remote` and `policy-fixture-local` (only checked that pages load), `sigterm` (four scenarios end with SIGTERM), `scripted-new-window-requests-do-not-navigate` (WebKit's popup blocker stops scripted requests before foob's handler, so it could not fail from foob code; guided rows 5, 6 and 17 cover it). `title-follows-page` became `title-local-unsanitized`. Accepted: the `window_title.c` character table is sampled, not pinned entry by entry. **The trimmed suite has no recorded run yet** (open item 1) |
+| Maintainer checks done | All 18 guided rows (rows 1, 3, 9, 15, 16 and 19 re-clicked after the D-04 update on `4e9b6c2`), the `pointer.html` click check (within 10 CSS px) and the geometry probe on `d9ea90d` ([guided-checks-m1-audit.md](guided-checks-m1-audit.md)). Typing, scrolling, focus and maximize were checked on the pre-audit binary only ([interactive-2026-10-13.md](interactive-2026-10-13.md)). The probe attempt on `147ae45` failed (the browser did not close within 10 s of `close-window`) and failed the same way on the previous binary; the screen was probably locked, as in an earlier failure, but no log shows the cause |
+| Not verified | Multi-monitor and fractional scaling (unavailable, M6-07). The negative controls for compositor loss, downloads, app-id and web-process death were run during the audit and are recorded in prose, not as logs. Page `window.close()` is untested (WebKit honours it only for script-opened windows) and shares its handler with the compositor close |
+| Known consequences of the interim defaults | Cancelled downloads (D-02), ignored new windows (D-04) and inline PDFs (D-12) are deliberate, but the Scholar and PDF flows of M2-08 and M3 will meet them: OAuth popups and `_blank` result links do nothing, and no PDF can be saved |
+| Documentation cleanup (2026-10-15, docs and two comments) | The maintainer reviewed the register: decisions renumbered D-01 to D-14 (table in [findings.md](findings.md#decision-numbering)), agent rules moved to `AGENTS.md` (with the three interim defaults), findings emptied (next F-75) and ideas cut to I-01 and I-02, with every point still needed moved to the roadmap, D-04 or D-14 first. The M1 records were cut to what later work needs: `c23-review.md` and `plans/m0-m1.md` deleted, `measurements.md` folded into `measurements-m1-audit.md`, `audit-m1.md` and `m1.md` shortened, this file's pre-audit sections replaced by the evidence index below. Git keeps the removed text |
+| MiniBrowser comparison (2026-10-14, docs only) | foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14); new roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored, may be absent; provenance in [minibrowser-comparison.md](minibrowser-comparison.md)) |
+| Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); the other `m1-audit-*` sets are superseded; the pre-audit M1 runs sit beside them. All ignored by git and kept only on this disk |
 
-**Where to look:** [findings.md](findings.md) (decisions D-xx, findings F-xx, ideas
-I-xx), [audit-m1.md](audit-m1.md) (what was found and measured),
-[guided-checks-m1-audit.md](guided-checks-m1-audit.md) (maintainer's checklist), the
-roadmap section 7 (triage rule).
+**Where to look:** [findings.md](findings.md) (decisions, findings, ideas), the evidence
+index below, roadmap section 7 (triage rule).
 
 **Open right now**
-1. Maintainer: decide Gate A. Review and merge are complete. The 18 guided checks are done (all pass or recorded); `pointer.html` and the geometry probe were checked on `d9ea90d`.
-2. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done on `147ae45`; due again after the next C change.
-3. Done: the real-click re-check after the D-04 update (rows 1, 3, 9, 15, 16, 19) passed on `4e9b6c2`; every `target=_blank` item does nothing and the sandboxed frame stays put ([record](guided-checks-m1-audit.md#re-check-after-the-d-04-update)).
-4. Done: every finding from the reviews is fixed, carried into the roadmap or decided; the register lists none open (2026-10-15). The `target=_blank` policy is M2-03.
-5. Maintainer at the desk, screen unlocked (both open a window for a short time): rerun the geometry probe on the current binary, `python3 tests/benchmark/desktop_probe.py --binary build/foob --uri file://$PWD/tests/fixtures/viewport.html --label final --resize` (last pass `d9ea90d`; the attempt on `147ae45` failed because of the locked session, not foob), and run the trimmed nested suite once, `python3 tests/nested_lifecycle.py build/foob` (8 scenarios, no recorded run since the trim).
+1. Maintainer at the desk, screen unlocked (each opens a window for a short time), on the current binary:
+   - the geometry probe: `python3 tests/benchmark/desktop_probe.py --binary build/foob --uri file://$PWD/tests/fixtures/viewport.html --label final --resize`;
+   - the trimmed nested suite: `python3 tests/nested_lifecycle.py build/foob` (8 scenarios); then correct its line in `measurements-m1-audit.md`;
+   - a short real session: type in a field, scroll, move focus away and back, maximize, close with the niri keybinding.
+2. Maintainer: back up the repository (no remote; `m0-m1` is not on `main`) and `docs/validation/runs/`, which git ignores.
+3. Maintainer: decide Gate A.
 
 **Rules for every agent (Claude, Codex, others)**
 - Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.
 - Work in the main checkout on the branch the maintainer names. No worktrees, clones or extra folders without asking. Check `git status` and `git branch --show-current`; another agent may be active.
 - Never merge, push or approve Gate A. Never add AI-attribution trailers.
-- Record every new finding, decision and idea in findings.md in the same commit as the change. A finding row stays only while it is open (findings.md says where it goes after); decisions and ideas are retired only on the maintainer's request.
+- Record every new finding, decision and idea in findings.md in the same commit as the change. findings.md says when a finding or idea row is removed; decisions are retired only on the maintainer's request.
+- After any C change, re-record the interleaved measurements and update the hashes (about 6 minutes).
 - Put a negative control behind each safety fix (a test that fails on the old behaviour) and say plainly what a test does not prove.
 - Keep scratch work in the session scratchpad, not in the repository tree.
 
-## Revision and reproducibility
+## Evidence index
 
-- Baseline: `cd93192`.
-- M0 implementation/evidence: `ed52f71`.
-- M1 implementation/evidence: `a92fbc358f10546f845301be1eb367f131ab29dd`.
-  Later checkpoints add paired diagnostic logs, clean-export evidence and a
-  collector geometry guard; C source and measured binary are unchanged. Resolve
-  current documentation head with `git rev-parse HEAD`.
-- Source SHA256: `6bf147f1390eef2881a8180f418236e5056373c336e081f71f20cb880995bce2`.
-- Measured binary SHA256: `9a9225d877defb9f6c574ea1929653fdbef5355ad8db5ab5dc99e4ee10283229`.
-- Guided interaction starts from `39f0e12cf1f3ab62492f2b0a75946209aa054b5d`.
-  Completed guided evidence: `6f6a3e95921cc93b70c0b47b4f07a749b49c6911`.
-  That commit adds a separate pointer-target fixture and a standard-library
-  interactive process monitor. Browser source/binary and benchmark fixture stay
-  unchanged; raw records include exact hashes. Resolve latest evidence revision
-  with `git log -1 --format='%H' -- docs/validation/interactive-2026-10-13.md`.
-- Blank-memory/GPU diagnosis starts from `2626b59`; browser source/binary remain
-  unchanged. See [blank-memory.md](blank-memory.md) and [results.json](results.json).
-  Generated raw `docs/validation/runs/` artifacts are ignored and kept locally;
-  curated results and reproduction scripts are committed.
+- [m0.md](m0.md): M0 environment and API linkage (baseline `cd93192`, M0 `ed52f71`).
+- [m1.md](m1.md): M1 acceptance (implementation `a92fbc3`), environment, sandbox and
+  Scholar observations.
+- [audit-m1.md](audit-m1.md): defects and their tests, static checks, size and memory
+  baselines, WebKit defaults.
+- [measurements-m1-audit.md](measurements-m1-audit.md): PSS method and results on the
+  evidence revision; compact records in [results-m1-audit.json](results-m1-audit.json)
+  (the pre-audit ones in [results.json](results.json)); raw `runs/` stay local.
+- [guided-checks-m1-audit.md](guided-checks-m1-audit.md): the 18 guided rows and the
+  pointer and geometry checks on the audit binaries.
+- [desktop-checklist.md](desktop-checklist.md) and
+  [interactive-2026-10-13.md](interactive-2026-10-13.md): typing, scrolling, focus and
+  maximize, checked on the pre-audit binary only.
+- [blank-memory.md](blank-memory.md): why blank exceeds 100 MiB, GPU evidence.
+- [minibrowser-comparison.md](minibrowser-comparison.md) (D-14) and
+  [font-follow-up.md](font-follow-up.md) (deferred, D-11).
 
-Read AGENTS.md, root architecture/roadmap, approved plan, and this handoff.
-Inspect Git status and existing evidence before resuming; do not repeat completed
-checks merely because this is a new context.
-
-## Completed implementation and validation
-
-- C23 Meson skeleton, public symbols linked; installed versions recorded.
-- `foob [URI]`: default blank, explicit native Wayland, one view, ephemeral
-  session, trusted startup target validation and optional redacted diagnostics.
-- Registered startup contract test passes (16 rejected / 7 accepted cases).
-- Fresh final configure/build/test passes, no compiler warnings; actual C23 flags
-  and independent strict-warning syntax check confirmed.
-- Clean Git export of committed M1 `a92fbc3` to `/tmp/foob-m1-clean.EBZFWg`:
-  fresh `meson setup build`, compile and registered test all pass with no
-  compiler warnings. The export has no ignored local build/profile/agent data.
-- Compositor close, SIGTERM, SIGINT: exit 0 and no tracked leftover processes.
-- Nine fresh-process PSS launches and one separate local warm-reload control:
-  all retained samples 950×1188/scale 1, full browser tree including helpers.
-  Final audit replaced one run with transient geometry; the collector rejects
-  geometry changes throughout settling, and all retained logs satisfy that check.
-- Automatic tile-width/fullscreen geometry and visual fixture inspection; simple
-  arithmetic JS and hand-written MathML visually pass.
-- Three additional blank attribution launches measure 168.304–171.092 MiB PSS,
-  mean 170.143 MiB. Web process dominates (~108.5 MiB), application ~32.7,
-  network ~27.5, sandbox helpers ~1.5. Mapping/kernel accounting identifies
-  engine/allocator and Mesa/LLVM startup costs; no optimization or source change.
-- Hardware GPU participation now confirmed for blank: each web process's amdgpu
-  render client has nonzero graphics/compute execution counters. Exact GL renderer
-  string and per-feature/every-frame acceleration remain unmeasured.
-- Guided user resize/height/focus/typing/click/counter/navigation/scroll/maximize-
-  column/fullscreen checks pass. Precise crosshair clicks after resize/scroll
-  land within ±10 CSS px of expected centers. Four user closes exit 0 without
-  tracked survivors. See [interactive evidence](interactive-2026-10-13.md).
-- Scholar guided search/result/scroll exploration reports no blocker or challenge.
-  A requested repeat exposed a small language-menu glyph issue, explicitly
-  deferred by the maintainer. Persistence/long-term reliability remain untested.
-- Fresh read-only reviewer found no source/ownership/API/C23 blocking defect;
-  tooling findings fixed, negative control tested, focused follow-up clears them.
-- Agent-generated transient test-window captures inspected and deleted. The
-  maintainer-supplied narrow language-menu image is retained with the deferred
-  font issue; the supplied linked-page image remains conversation evidence.
-  No input tools/packages installed or desktop/lid/power/idle settings changed.
-
-## Deferred work, review boundary and limitations
-
-- All required M1 P0 checks pass; [desktop checklist](desktop-checklist.md) is
-  complete. Gate A requires an explicit maintainer decision before any M2 work.
-- Graphics: hardware GPU participation confirmed for blank; exact GL renderer
-  and per-feature/every-frame acceleration not measured. Maintainer confirms no
-  second monitor; multi-monitor checks unavailable. Fractional scale untested.
-- Font-language menu glyphs: [P1 follow-up](font-follow-up.md) with supplied image;
-  no cause established or fix attempted, per the maintainer's request.
-- Observed Scholar exploration is not sustained compatibility; persistent-profile
-  and restart tests remain M2, and longer-term observations remain later work.
-- **M0-05 P1:** license decision deferred to maintainer; no license invented.
-- Accessibility warnings persist because the system a11y bus is masked. No
-  system configuration change attempted.
-- Under-100-MiB stretch target not met: mean PSS blank 174.318 MiB, fixture
-  202.412 MiB, Wikipedia 333.708 MiB. No custom-engine work or security weakening.
-  Additional blank attribution mean 170.143 MiB is a later diagnostic observation,
-  not a replacement baseline or evidence of a memory improvement.
-- Blank/Wikipedia warm reloads untested; local warm reload measured separately.
-- Full sandbox/TLS/resource-policy audit remains later-milestone scope. Observed
-  stock web process has seccomp/new namespaces; network/UI confinement differs.
-
-No unresolved blocking independent-review finding or known persistent process
-leak. The deferred font observation does not block Gate A. No M2 work started.
-
-## Next action
-
-Review the completed runtime, measurement, independent-review and interactive
-evidence for the maintainer's **Gate A** decision. Keep the font follow-up and
-explicit graphics/display/memory limits visible in that decision.
-Do not add M2 controls, profiles, IPC, converters or custom engine beforehand.
-
-The decision is whether to accept the measured stock-WPE prototype as a sound
-baseline and authorize M2, or require a specific M1 correction first. Evidence
-covers C23 build/API review, native rendering/input/window behavior, clean
-shutdown, three-workload process-tree PSS and exploratory Scholar behavior.
-The >100-MiB measurements, deferred font issue, limits of GPU verification and
-untested display-scale cases remain disclosed limitations, not pending repeats
-of the desktop checks already passed. A question about Gate A is not approval.
-
-Evidence index: [M0](m0.md), [M1](m1.md), [measurements](measurements.md),
-[independent review](c23-review.md), [curated results](results.json),
-[blank memory/GPU diagnosis](blank-memory.md), local ignored raw `runs/`,
-[guided interaction](interactive-2026-10-13.md), [font follow-up](font-follow-up.md),
-[approved implementation plan](../plans/m0-m1.md).
+Limits to keep visible at Gate A (with the rows above): blank is about 170 MiB against the under-100-MiB stretch
+target; GPU use is confirmed for blank, but the GL renderer and per-feature acceleration are
+unmeasured; multi-monitor and fractional scaling are untested; the font issue and the
+license are deferred; the Scholar observations are exploratory, not lasting compatibility.
