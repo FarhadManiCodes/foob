@@ -6,7 +6,7 @@ target is still not met.** This file supplements [measurements.md](measurements.
 it does not replace it. That file describes the original `m0-m1` binary, whose
 source and binary hashes no longer match this branch.
 
-Collected 2026-10-13 after the Codex fixes and both security reviews (F-30 to F-61, with the
+Collected 2026-10-13 after the Codex fixes and both security reviews (with the
 same-window script removed again, D-04); run start times are in the raw records. WPE
 Arch `2.54.1-2`; GCC `16.2.1+r23+gd564253eb6c8-1`; Meson 1.12.1 `debugoptimized`,
 `-std=c23 -O2 -g` plus the hardening flags in [audit-m1.md](audit-m1.md); kernel
@@ -54,8 +54,8 @@ maintainer was not using the desktop during this run.
 and control (audit blank, control blank, audit fixture, control fixture, audit
 Wikipedia, control Wikipedia, repeated four times), plus one warm-reload run for the
 audit binary, so that session drift hits both builds equally. All 25 runs passed. (The
-previous run on `9abb6fe` had one failed fixture launch for both builds, explained in
-F-36 of [findings.md](findings.md): the fixture reloaded itself, probably from input
+previous run on `9abb6fe` had one failed fixture launch for both builds, explained at the time:
+the fixture reloaded itself, probably from input
 to the new window.)
 
 ## Results: audit binary
@@ -141,7 +141,7 @@ range for the original binary.
   is the one scenario that reaches the handler: a trusted script submit of a `_blank` form does
   nothing, not what a real click does (guided rows 1, 3, 9, 15, 16 and 19, clicked by the
   maintainer after the D-04 update: all pass). The page reports `form-submitted` to the test server, so
-  the scenario cannot pass without the probe having run (Codex F-31). Since the D-04 update `decide_policy`
+  the scenario cannot pass without the probe having run (found in the Codex review). Since the D-04 update `decide_policy`
   ignores every new-window request; there is no gesture check and no remote-to-`file:` check on
   this path to test (`foob_navigation_allowed` is covered by its unit test only).
 - Repeated on revision `147ae45`: `gcc -fanalyzer` with `-Wall -Wextra -Wconversion

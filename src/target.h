@@ -23,7 +23,7 @@ bool foob_uri_is_local(const char *uri);
  * to_uri. The destination must pass the same allowlist as a startup target, and
  * remote content must never navigate to local content: an application-initiated
  * load bypasses WebKit's own remote-to-local check, so any such load has to call
- * this first. Nothing calls it today: since F-51 and D-04 foob makes no load on a
+ * this first. Nothing calls it today: since D-04 foob makes no load on a
  * page's behalf (new-window requests are ignored); kept for the M2-03 policy.
  */
 bool foob_navigation_allowed(const char *from_uri, const char *to_uri);

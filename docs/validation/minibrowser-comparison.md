@@ -62,7 +62,7 @@ small program (not committed) created `webkit_settings_new()` and an ephemeral
 | Setting | Default |
 |---|---|
 | WebGL | on |
-| media stream | on (a camera request fails here for lack of a device, F-34; geolocation and notification requests are denied, audit-m1) |
+| media stream | on (a camera request fails here for lack of a device, roadmap M3-05; geolocation and notification requests are denied, audit-m1) |
 | WebRTC | off |
 | encrypted media | off |
 | developer extras | off |

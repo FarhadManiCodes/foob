@@ -10,23 +10,23 @@ Updated 2026-10-15. **Branch `m0-m1`, in the main checkout.**
 The maintainer authorized merging `m1-audit` and deleting the local audit branch.
 The audit was fast-forwarded into `m0-m1` through `ced9c6c`; the local audit branch
 was deleted. The final review found no actionable regressions; all three registered
-Meson tests pass. After the merge, further Codex findings (F-35 to F-40) and a security
-review (`/code-review high`, F-41 to F-50) were handled on `m0-m1`; three of the latter
-changed C code (F-43 sanitizer, F-47 allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after the D-04 update and on `679fb9a` after the last review fixes and on `147ae45` after the final cleanup review.
-A second security review (Review-4, F-51 to F-57) found that foob's own reload of a page's
-`target=_blank` request escaped iframe sandboxes (F-51) and reported `Sec-Fetch-Site: none`
-(F-52). An injected script that let the page navigate itself fixed both, and two follow-up
+Meson tests pass. After the merge, further Codex findings and a security
+review (`/code-review high`) were handled on `m0-m1`; two of the latter
+changed C code (title sanitizer, startup allowlist), so the evidence was re-recorded on `89c1ecf`; it was re-recorded again on `0af4314` after the D-04 update and on `679fb9a` after the last review fixes and on `147ae45` after the final cleanup review.
+A second security review found that foob's own reload of a page's
+`target=_blank` request escaped iframe sandboxes and reported `Sec-Fetch-Site: none`. An injected script that let the page navigate itself fixed both, and two follow-up
 reviews found problems in the script. The maintainer then decided the script was
 not an M1 issue (D-04): it was removed, and foob ignores every new-window request, so a
-`target=_blank` link or form does nothing until M2-03. The low findings F-53 to F-57 (title
-sanitizer, benchmark tools) and F-61 (`summarize.py` guard) stay fixed.
+`target=_blank` link or form does nothing until M2-03. Its low findings (title
+sanitizer, benchmark tools) stay fixed.
 Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents, except two comments (2026-10-15: `src/target.h` decision number, `src/browser.c` why `_exit(3)` ignores a requested shutdown, line count kept): the stripped binary built from today's `src/` and from `147ae45` in the same directory is byte-identical, but the source SHA256 of `src/` is now `d2cf622c…`; any other C change invalidates these |
+| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)); later commits change only tests, fixtures and documents, except two comments (2026-10-15: `src/target.h` decision number, `src/browser.c` why `_exit(3)` ignores a requested shutdown, line count kept): the stripped binary built from today's `src/` and from `147ae45` in the same directory is byte-identical, but the source SHA256 of `src/` is now `ed80ae36…`; any other C change invalidates these |
 | After the final cleanup review | Re-recorded on `147ae45` (the review removed duplicate handlers and dead code: text 13,125 to 13,061 B): unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean, a clean archive build 3/3 with no warning, binary 22,520 B stripped. Interleaved memory (25 launches, all passed): blank 170.3 vs 170.0 MiB, fixture 194.0 vs 194.7, Wikipedia 329.8 vs 336.8 (one control launch at 357 MiB); one first-launch audit Wikipedia navigation took 1136 ms, the rest 530-545 ms. The geometry probe could not be re-run: it failed the same way (the browser did not close within 10 s after `close-window`) with the previous binary and the previous script, so it is the desktop session state (the earlier failure was a locked screen); repeat it with the session unlocked (I-07) |
 | Decision renumbering (docs and one comment) | 2026-10-15, maintainer: the new-window decisions (then D-05 and D-21) were merged into one, the agent rules (then D-11, D-16, D-18) moved to roadmap section 7 and `AGENTS.md`, and every gap was closed, so the decisions now run D-01 to D-14; every citation was updated. Old-to-new table: [findings.md](findings.md#decision-numbering). `AGENTS.md` lists the three interim defaults (downloads D-02, new windows D-04, inline PDFs D-12) in one place |
+| Findings cleanup, step 2 (2026-10-15) | The finding rows (F-01 to F-74), the retired-entries list and the carried-items table were removed: every finding was fixed, carried into the roadmap (which holds each carried item) or decided. findings.md now has decisions, open findings (none), ideas and the decision-numbering table; new findings start at F-75. Citations in other documents were rewritten in words, F-51 became D-04. Comment-only C change: stripped binary byte-identical to `147ae45` |
 | Findings cleanup, step 1 (2026-10-15) | The maintainer reviewed every finding; before any row is removed, the points still needed move to their homes: roadmap M4 trust row (`about:blank` origin), M3-03 (response-policy ignore), M2-03 notes 1 (committed versus pending URI) and 2 (title cut by code point), the `desktop_probe.py` usage text (fixture, not `about:blank`), a `src/browser.c` comment (`_exit(3)` during a requested shutdown is deliberate) and the D-04 reason (the security finding behind it). Comment-only C change: stripped binary byte-identical to `147ae45` |
 | Scholar load rule (docs only) | 2026-10-15: Google Scholar may be opened on purpose for a check that needs it (M2-08), at most once or twice a minute, never in automated tests, scripts, benchmarks or loops, so Google does not block the IP. The rule is in `AGENTS.md` (Testing Guidelines). No C change, evidence stays valid |
 | MiniBrowser comparison (docs only) | 2026-10-14: foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14): foob is ahead on crash, app-id, title, argument, downloads, new windows and permissions; six upstream items are parked as I-09 to I-14 with owners; engine defaults foob runs with were probed. New roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored via `.git/info/exclude`, may be absent; provenance in its `SOURCE.txt` and in [minibrowser-comparison.md](minibrowser-comparison.md)). No C change, evidence stays valid |
@@ -43,16 +43,15 @@ roadmap section 7 (triage rule).
 
 **Open right now**
 1. Maintainer: decide Gate A. Review and merge are complete. The 18 guided checks are done (all pass or recorded); `pointer.html` and the geometry probe were checked on `d9ea90d`.
-2. Codex review, handled one by one: **F-30** (POST `target=_blank` forms lose their body) and **F-31** (scripted-popup scenario was vacuous) are both fixed; the claims are re-verified and the evidence was re-recorded (now on `679fb9a`).
-3. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done on `147ae45`; due again after the next C change.
-4. Done: the real-click re-check after the D-04 update (rows 1, 3, 9, 15, 16, 19) passed on `4e9b6c2`; every `target=_blank` item does nothing and the sandboxed frame stays put ([record](guided-checks-m1-audit.md#re-check-after-the-d-04-update)).
-5. Review-4 and later findings: F-51 and F-52 are closed by D-04 (no script, no load on a page's behalf). F-53 holds by construction. F-54 (left-to-right mark before right-to-left remote titles) and F-55 (rest of the default-ignorable set) are in `window_title.c` with unit tests that abort on the old code. F-56, F-61, F-63 and F-64 (`summarize.py`: curated-file guard, run-record validation, dirty flag kept), F-57 and F-65 (`desktop_probe.py` private output directory; every benchmark record carries provenance) are in the benchmark tools. The final PR-style `/code-review high` (F-66 to F-68) led to three small fixes (test cleanup order, partial file read, cut-title trailing space); its other findings were not defects, duplicates or already carried and are retired (see the Retired entries in findings.md). The `target=_blank` policy is M2-03.
+2. After any C change: re-record the interleaved measurements and update the hashes (cost about 6 minutes). Done on `147ae45`; due again after the next C change.
+3. Done: the real-click re-check after the D-04 update (rows 1, 3, 9, 15, 16, 19) passed on `4e9b6c2`; every `target=_blank` item does nothing and the sandboxed frame stays put ([record](guided-checks-m1-audit.md#re-check-after-the-d-04-update)).
+4. Done: every finding from the reviews is fixed, carried into the roadmap or decided; the register lists none open (2026-10-15). The `target=_blank` policy is M2-03.
 
 **Rules for every agent (Claude, Codex, others)**
 - Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.
 - Work in the main checkout on the branch the maintainer names. No worktrees, clones or extra folders without asking. Check `git status` and `git branch --show-current`; another agent may be active.
 - Never merge, push or approve Gate A. Never add AI-attribution trailers.
-- Record every new finding, decision and idea in findings.md in the same commit as the change; add a row, never delete one.
+- Record every new finding, decision and idea in findings.md in the same commit as the change. A finding row stays only while it is open (findings.md says where it goes after); decisions and ideas are retired only on the maintainer's request.
 - Put a negative control behind each safety fix (a test that fails on the old behaviour) and say plainly what a test does not prove.
 - Keep scratch work in the session scratchpad, not in the repository tree.
 

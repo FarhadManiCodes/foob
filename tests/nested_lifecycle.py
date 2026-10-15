@@ -243,7 +243,7 @@ scenario('download-cancelled', 0, terminate,
          extra_env=download_env, after_load=transfer_stopped_without_files)
 
 # A trusted submit of a target=_blank form asks for a new window, which foob ignores: nothing
-# is loaded on the page's behalf (F-51). requestSubmit() fires a trusted submit event without a
+# is loaded on the page's behalf (D-04). requestSubmit() fires a trusted submit event without a
 # click. A sandboxed frame with allow-popups but without allow-top-navigation submits first and
 # must not reach the top. The control is the build that retargeted _blank forms to _top (script
 # in browser.c, 93bdf41 to f40e4b9): both forms reached /echo and the window showed "echo".

@@ -58,7 +58,7 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 
 ## Re-check after the D-04 update
 
-The second security review (F-51, F-52) showed that loading a page's `target=_blank`
+The second security review (see D-04) showed that loading a page's `target=_blank`
 request from foob drops the asking frame's sandbox and Fetch Metadata. An injected script
 that avoided this was tried and then removed (D-04): foob now ignores every new-window
 request, so a `target=_blank` link or form does nothing until M2-03. Scripted requests
@@ -105,4 +105,4 @@ to 700x1188 (one column), fullscreen 1920x1200 (fullscreen=1, two columns), rest
 is a zombie web process that was already reaped). The narrow and fullscreen
 screenshots were inspected (layout correct, title bar shows the CSS size) and deleted.
 The earlier failure on `9c81515` was swaylock being active on the host. The probe
-ran twice on `d9ea90d`; the second run's result is the one recorded. Since F-57 the probe writes its log, record and screenshots into a new private directory (printed at start; `--output-dir` names one that must not exist yet) instead of fixed `/tmp/foob-<label>*` paths.
+ran twice on `d9ea90d`; the second run's result is the one recorded. Since a security-review fix the probe writes its log, record and screenshots into a new private directory (printed at start; `--output-dir` names one that must not exist yet) instead of fixed `/tmp/foob-<label>*` paths.
