@@ -1,4 +1,5 @@
 project('foob', 'c',
+    license: 'BSD-2-Clause', license_files: 'LICENSE',
     meson_version: '>=1.12.0',
     default_options: ['c_std=c23', 'buildtype=debugoptimized', 'warning_level=3', 'b_pie=true'])
 

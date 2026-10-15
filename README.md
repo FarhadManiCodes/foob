@@ -23,8 +23,14 @@ Use four spaces, lowercase function names and explicit object ownership.
 GLib/GObject is the engine boundary; its convenience macros may use compiler
 extensions. The application does not claim an extension-free ISO C build.
 
-Project license: **deferred to the maintainer (M0-05 / P1)**. No license has
-been selected. WPE/WebKit and GLib retain their upstream licenses.
+## License
+
+foob is released under the [BSD 2-Clause License](LICENSE).
+
+## Acknowledgements
+
+foob is built on [WPE WebKit](https://wpewebkit.org/), developed by the WebKit project
+and Igalia. Its MiniBrowser served as the reference implementation.
 
 ## Run and validate
 

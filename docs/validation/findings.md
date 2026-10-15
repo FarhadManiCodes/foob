@@ -18,10 +18,11 @@ the maintainer read it with [handoff.md](handoff.md) before starting work, and u
 | D-08 | All local files (`file:`, `about:blank`) are trusted. **Not closed**: revisit in M4 (roadmap open-decisions table). |
 | D-09 | Feedback for blocked actions (download, popup, rejected link) is an M2 task (M2-12). |
 | D-10 | No test hook in product code: foob gets no switch that forces a user gesture (or anything else) only so a test can reach the policy handler; such checks use a scratch build or a guided check. |
-| D-11 | Deferred by the maintainer: the font-language-menu glyph issue and the project license (M0-05). |
+| D-11 | Deferred by the maintainer: the font-language-menu glyph issue. (Until 2026-10-15 it also deferred the project license, now D-15.) |
 | D-12 | PDFs open inline in the stock engine's PDF.js viewer; keep it as is for now (2026-10-13). The viewer's save button must still obey the M3-03 download rule. |
 | D-13 | Removing accessibility (`USE_ATK` off) from the custom engine is a requested evaluation, tracked as roadmap M5-11; the a11y-bus warnings stay until then (2026-10-13). |
 | D-14 | Maintainer, 2026-10-14, after comparing `src/` with upstream MiniBrowser's `main.cpp`: M2 and M3 each get a task that repeats the comparison (M2-13, M3-09) so foob stays more concise, accurate and safer than the engine team's own minimal browser, and the items it does that foob does not (key handling, mode indicator, path argument, background colour, `--version`) each get an owner. **No settings file:** upstream can read settings from a key file (`webkit_settings_apply_from_key_file()`, `wpe_settings_load_from_keyfile()`), but a single-user browser does not need one. Revisit only if a value must differ per user or machine, cannot be a constant, argument or environment variable, and must be read before the first page loads; then use that API rather than writing a parser. Baseline and method: [minibrowser-comparison.md](minibrowser-comparison.md). Cog is not a comparison target (a kiosk shell with its own Wayland layer, about 8,000 code lines). No code changed. |
+| D-15 | Maintainer, 2026-10-15: foob is licensed under **BSD-2-Clause** (`LICENSE`), the license of WebKit's new files and of MiniBrowser. Per-file `SPDX-License-Identifier` lines come with the next C change. Closes M0-05. |
 
 ## Findings
 

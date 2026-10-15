@@ -11,8 +11,7 @@ baseline taken at the end of M1 (2026-10-14, WPE WebKit 2.54.1).
 tarball (`https://wpewebkit.org/releases/wpewebkit-2.54.1.tar.xz`, file
 `Tools/MiniBrowser/wpe/main.cpp`, SHA256 of the file
 `1cb7d78673bcfe832f8a58d47a57a6b7f09fc5dc0ac91ed1e84a5c1364cd7dbf`), into a new empty
-directory, and never build or run it. Two-clause BSD license, copyright Igalia; it is
-reference reading, not foob code, and nothing is copied from it.
+directory, and never build or run it. Two-clause BSD license, copyright Igalia.
 
 ## Size (a signal, not a target; `AGENTS.md`)
 

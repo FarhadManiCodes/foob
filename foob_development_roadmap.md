@@ -74,7 +74,6 @@ These are intentional investigations, not permission to improvise beyond scope o
 
 | Decision | Timing / owner | Required outcome |
 |---|---|---|
-| Project license | M0-05, maintainer | Record the choice; do not invent one. This P1 decision does not block the prototype |
 | Local-file trust | M4, maintainer | **Not closed.** Today every local `file:` page and `about:blank` is trusted (`foob_uri_is_local()`, the single decision point) and the design assumes that. Revisit in M4 for files that arrived from the web (M3 downloads), for converted documents, for a remote iframe inside a local page (trust is judged by the main frame today), and for `about:blank`, whose document may inherit an origin from the page that opened it; no task until then |
 | Shortcut bindings and find-query interaction | M2-01/M2-09, implementing agent | Document tested bindings and input/focus behavior; retain no persistent chrome |
 | Navigation defaults and persistent-profile concurrency | M2-03/M2-04, implementing agent | Record allowed/denied schemes, window behavior and safe handling of concurrent launches; do not assume shared-profile locking works |
@@ -110,12 +109,12 @@ M1 is intentionally small. M2–M4 form the **usable browser MVP**, while M5 is 
 - [x] **M0-02 / P0:** Install Arch build tools and WPE using pacman **only if missing**. First inspect what is already installed and the package dependency changes.
 - [x] **M0-03 / P0:** Confirm `pkg-config --modversion wpe-webkit-2.0` and `pkg-config --modversion wpe-platform-2.0`; optionally check `wpe-platform-wayland-2.0` where exposed.
 - [x] **M0-04 / P0:** Initialize one small Meson/C23 project; verify the compiler supports `c_std=c23` and WPE symbols link successfully.
-- [ ] **M0-05 / P1:** Add `README.md`, `.gitignore`, basic license decision and concise `docs/` links to the architecture and this roadmap.
+- [x] **M0-05 / P1:** Add `README.md`, `.gitignore`, basic license decision (BSD-2-Clause, D-15) and concise `docs/` links to the architecture and this roadmap.
 
 ### Suggested first commands
 
 M0 P0 complete on 2026-10-12: [installed versions and C23/link evidence](docs/validation/m1.md#environment).
-M0-05 license remains a maintainer P1 deferral.
+M0 complete on 2026-10-15, when the license was chosen.
 
 ```bash
 pacman -Q wpewebkit meson ninja pkgconf gcc 2>/dev/null
@@ -300,6 +299,7 @@ Evidence to bring to the review:
 - [ ] **M5-03 / P0:** Build an **unmodified-config reference** from the selected upstream WPE source where feasible, then test a reduced-feature candidate using **public/supported** switches (`USE_GSTREAMER=OFF`, `ENABLE_VIDEO=OFF`, `ENABLE_WEB_AUDIO=OFF`, `ENABLE_SPEECH_SYNTHESIS=OFF`, `ENABLE_PDFJS=OFF`), with dependency-resolution checks. Retain JS, WASM, MathML, SVG, CSS, fonts, networking, Wayland GPU rendering and security protections. Do not turn private toggles into default supported tuning options.
 - [ ] **M5-04 / P0:** Preserve an easy fallback to Arch's stock WPE. Do not silently replace or overwrite the normal system libraries during exploratory builds.
 - [ ] **M5-05 / P0:** Record resulting binary/package versions, enabled CMake features, runtime libraries, dependency closure, security settings and test failures.
+- [ ] **M5-12 / P0:** Distribute the custom engine with the source and build recipe it was built from and the license texts of WebKit and its bundled components (D-15).
 
 **M5-B: reproducible A/B measurements**
 

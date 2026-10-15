@@ -20,6 +20,7 @@ nothing until M2-03. Gate A is **not approved**; no M2 work is authorized.
 | Not verified | Multi-monitor and fractional scaling (unavailable, M6-07). The negative controls for compositor loss, downloads, app-id and web-process death were run during the audit and are recorded in prose, not as logs. Page `window.close()` is untested (WebKit honours it only for script-opened windows) and shares its handler with the compositor close |
 | Known consequences of the interim defaults | Cancelled downloads (D-02), ignored new windows (D-04) and inline PDFs (D-12) are deliberate, but the Scholar and PDF flows of M2-08 and M3 will meet them: OAuth popups and `_blank` result links do nothing, and no PDF can be saved |
 | Documentation cleanup (2026-10-15, docs and two comments) | The maintainer reviewed the register: decisions renumbered D-01 to D-14 (table in [findings.md](findings.md#decision-numbering)), agent rules moved to `AGENTS.md` (with the three interim defaults), findings emptied (next F-75) and ideas cut to I-01 and I-02, with every point still needed moved to the roadmap, D-04 or D-14 first. The M1 records were cut to what later work needs: `c23-review.md` and `plans/m0-m1.md` deleted, `measurements.md` folded into `measurements-m1-audit.md`, `audit-m1.md` and `m1.md` shortened (`m0.md` folded into `m1.md`), this file's pre-audit sections replaced by the evidence index below. Git keeps the removed text |
+| License (2026-10-15) | BSD-2-Clause (D-15); M0 is complete. Per-file SPDX lines come with the next C change |
 | MiniBrowser comparison (2026-10-14, docs only) | foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14); new roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored, may be absent; provenance in [minibrowser-comparison.md](minibrowser-comparison.md)) |
 | Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); the other `m1-audit-*` sets are superseded; the pre-audit M1 runs sit beside them. All ignored by git and kept only on this disk |
 
@@ -63,5 +64,5 @@ index below, roadmap section 7 (triage rule).
 
 Limits to keep visible at Gate A (with the rows above): blank is about 170 MiB against the under-100-MiB stretch
 target; GPU use is confirmed for blank, but the GL renderer and per-feature acceleration are
-unmeasured; multi-monitor and fractional scaling are untested; the font issue and the
-license are deferred; the Scholar observations are exploratory, not lasting compatibility.
+unmeasured; multi-monitor and fractional scaling are untested; the font issue is
+deferred; the Scholar observations are exploratory, not lasting compatibility.
