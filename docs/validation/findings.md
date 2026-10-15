@@ -40,25 +40,18 @@ None open.
 
 ## Ideas parking lot (not tasks yet)
 
+An idea stays here only while no roadmap task or decision holds it; once one does, the row
+is removed.
+
 | ID | Idea | Notes |
 |---|---|---|
-| I-01 | Use the window title as a status channel (`Download blocked — foob`) | Chrome-free; belongs to M2-12 |
-| I-04 | `create` handler so `window.open` can navigate the same window | M2-11 / M3-01; decide with popup policy |
-| I-05 | Untrusted-site mode with JIT off | M5-10 |
-| I-06 | Hardening-vs-feature split of the +3.5 KB binary growth | measure by building without hardening flags |
-| I-08 | A benchmark-only fixture without the "Reload this fixture" button would stop a stray click from invalidating a run (one fixture launch failed that way, `measurements-m1-audit.md`) | changes the fixture hash recorded since M1, so only if it recurs |
-| I-09 | Key handling through `WPEView::event` returning TRUE, as MiniBrowser does | M2-01, M2-09; probe event consumption first |
-| I-10 | `webkit_settings_apply_from_key_file()` / `wpe_settings_load_from_keyfile()` as a configuration path (both in the installed headers, not tried) | **No owner; not planned (maintainer, 2026-10-14: a single-user browser needs no settings file).** Revisit only if a value must differ per user or machine, cannot be a constant, argument or environment variable, and must be read before the first page loads; then use this API before writing a parser |
-| I-11 | Show persistent versus ephemeral in the window title (`[Private]` upstream) | M2-04, M2-12 |
-| I-12 | Accept a plain path as the startup argument (`g_file_new_for_commandline_arg()` upstream) | M2-02; the allowlist stays the only gate |
-| I-13 | Check for a white flash before first paint; `webkit_web_view_set_background_color()` | M2-12 |
-| I-14 | `--version` (a rejected URI today, exit 2) | M2-02; weigh against binary size (`AGENTS.md`) |
-| I-15 | MiniBrowser opens a second view with `related-view` plus the first view's settings and user-content manager, which shares the web process | M2-11: decide sharing with the memory and isolation consequences first |
-| I-16 | `enable-developer-extras` (inspector) only when diagnostics are on, to debug compatibility problems and the M2-06 JavaScript-error log | M2-06; weigh the extra process and attack surface, never in a default launch |
-| I-17 | `wpe_display_headless_new()` (headers installed) would let tests that do not need a compositor (load, download, crash) run without a nested niri; and `webkit_settings_set_feature_enabled()` plus `webkit://gpu` allow runtime feature and GPU comparisons without a rebuild | M6 / M5-09; a headless switch in product code conflicts with D-10 and with building `WPEDisplayWayland` directly, so it needs a decision first |
-| I-07 | Run `desktop_probe.py` on the final binary | done on `d9ea90d` (pass, 2026-10-13); repeat after any C change |
+| I-01 | Give the memory benchmark its own copy of `tests/fixtures/viewport.html` without the "Reload this fixture" button. The benchmark measures that page in an open window, and a stray click on the button reloads it, so the launch is thrown away (this happened once in the M1 audit measurements). | Only if it happens again: each measurement since M1 records that page's hash, so measuring a different page breaks the comparison with all earlier runs |
+| I-02 | Run the tests that need no compositor (load, download, crash) on WPE's headless display (`wpe_display_headless_new()`, in the installed headers) instead of a nested niri, which would make them faster and let them run without a desktop | Needs a maintainer decision first: foob builds `WPEDisplayWayland` directly, and a headless switch in product code would be a test hook, which D-10 rules out; M6 |
 
-I-02 and I-03 were retired (already roadmap M2-03: the policy module, and trust decided once per committed load).
+Next number: **I-03**. Until 2026-10-15 the list ran to I-17; the maintainer reviewed it,
+the points still needed moved into the roadmap and D-14, and two ideas stayed: I-01 was
+I-08, I-02 was I-17. Older commits and notes that cite idea numbers refer to that earlier
+list (see its git history).
 
 ## Decision numbering
 

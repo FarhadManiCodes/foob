@@ -41,13 +41,13 @@ process-tree PSS) for any shell.
 | # | Item | What it does | Owner |
 |---|---|---|---|
 | 1 | Key handling | connects to `WPEView::event`, tests `WPE_EVENT_KEYBOARD_KEY_DOWN`, modifiers and keyval, returns TRUE to consume (Ctrl+Q, Ctrl+R, Alt+Left/Right, F11, Escape) | M2-01, M2-09 |
-| 2 | Settings from a key file | `webkit_settings_apply_from_key_file()` (`[websettings]` group) and `wpe_settings_load_from_keyfile()`; both are in the installed headers (not tried) | none: rejected for now (single user, I-10) |
+| 2 | Settings from a key file | `webkit_settings_apply_from_key_file()` (`[websettings]` group) and `wpe_settings_load_from_keyfile()`; both are in the installed headers (not tried) | none: rejected for now (single user, D-14) |
 | 3 | Mode indicator | window title prefixed `[Private]` or `[Automation]` | M2-04 (persistent profile next to ephemeral), M2-12 |
 | 4 | Plain path as argument | `g_file_new_for_commandline_arg()`: `minibrowser ./page.html` works; foob needs `file:///absolute/path` | M2-02 (local files are already trusted) |
 | 5 | Background colour | `webkit_web_view_set_background_color()`; whether foob flashes white before first paint is not checked | M2-12 |
 | 6 | `--version` | prints the engine version; foob treats it as a rejected URI (usage, exit 2) | M2-02 |
 
-Also seen, parked (I-15 to I-17): `related-view` for a second window (M2-11), developer extras only in a diagnostics mode (M2-06), a headless display for tests and runtime feature switches (M6, M5-09).
+Also seen: `related-view` for a second window (M2-11), developer extras only in a diagnostics mode (M2-06), runtime feature switches (M5-09) and a headless display for tests (idea I-02).
 
 Not to take: permission auto-grant, `--ignore-tls-errors`, proxy, cookie-file and
 content-filter options, automation, XR, headless mode, the legacy libwpe path (`AGENTS.md`).
