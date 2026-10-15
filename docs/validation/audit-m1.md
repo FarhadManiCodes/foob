@@ -66,15 +66,10 @@ Text per object: `diagnostics.c` 2,165, `browser.c` 2,061, `window_title.c` 1,40
 changes (titles, download cancel, the two exits, app-id) plus the hardening flags; none of
 it is dead code. Compare stripped files only; `-g` roughly triples the file.
 
-## Memory: what is ours and what is not
+## Memory levers tried
 
-Blank page ~170 MiB PSS: web process ~107-114, UI process ~33, network ~27, helpers
-~1.6; foob's own code is ~9 KB. The UI process's 33 MiB: ~12.7 MiB `libWPEWebKit`
-mappings (only ~3.6 MiB private relocation data; the library already uses `RELR` and
-`BIND_NOW`), ~11 MiB WebKit allocator heap, a 2 MiB JIT region, ~7 MiB other libraries
-(113 mapped, from the engine's dependencies). More: [blank-memory.md](blank-memory.md).
-
-Levers tried on the stock engine (3 launches each):
+Where the ~170 MiB of a blank page goes: [blank-memory.md](blank-memory.md). Levers tried
+on the stock engine (3 launches each):
 
 | Lever | Blank | Wikipedia | Cost | Verdict |
 |---|---|---|---|---|

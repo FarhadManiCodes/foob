@@ -123,7 +123,7 @@ The first baseline reports blank 174.3, fixture 202.4 and Wikipedia 333.7 MiB. I
 session of an earlier run (`89c1ecf`) the **control** (the old code) read 166.2, 194.5 and 327.4 MiB; in this one it reads 169.8, 194.8 and 329.4 MiB, so the lower
 numbers are session drift (system state, caches, library mapping sharing), not an
 improvement from this branch. Do not cite it as one. Compare builds only within one
-session, as above. The earlier [blank-memory diagnosis](blank-memory.md) saw the same 158-171 MiB
+session, as above. The earlier [blank-memory diagnosis](blank-memory.md) saw the same 168-171 MiB
 range for the original binary.
 
 ## Other evidence recorded with this run
