@@ -20,6 +20,7 @@ struct FoobBrowser {
     FoobDiagnostics *diagnostics;  /* nullptr unless diagnostics are enabled. */
     int exit_status;               /* Result of foob_browser_run(). */
     bool stopping;                 /* A shutdown was requested; keep its exit status. */
+    guint signal_sources[2];       /* SIGINT and SIGTERM; 0 once removed. */
 };
 
 /* Mirrors the page title into the compositor-visible window title. */
@@ -118,8 +119,17 @@ static gboolean unix_signal(gpointer user_data)
     FoobBrowser *browser = user_data;
     foob_diagnostics_log(browser->diagnostics, "shutdown signal");
     stop_loop(browser);
-    /* Keep IDs valid until foob_browser_run() removes both signal sources. */
+    /* Keep IDs valid until remove_signal_sources() removes both signal sources. */
     return G_SOURCE_CONTINUE;
+}
+
+static void remove_signal_sources(FoobBrowser *browser)
+{
+    for (size_t i = 0; i < G_N_ELEMENTS(browser->signal_sources); i++) {
+        if (browser->signal_sources[i])
+            g_source_remove(browser->signal_sources[i]);
+        browser->signal_sources[i] = 0;
+    }
 }
 
 /*
@@ -133,12 +143,20 @@ static constexpr char app_id[] = "dev.foob.Browser";
 FoobBrowser *foob_browser_new(bool diagnostics)
 {
     g_set_prgname(app_id);
-    g_autoptr(WPEDisplay) display = wpe_display_wayland_new();
-    if (!wpe_display_connect(display, nullptr))
-        return nullptr;
-    g_autoptr(WebKitNetworkSession) session = webkit_network_session_new_ephemeral();
+    /* Before the display and the engine exist, so a signal during their start-up still
+     * ends in an orderly exit: the sources are dispatched once the loop runs. */
     FoobBrowser *browser = g_new0(FoobBrowser, 1);
     browser->loop = g_main_loop_new(nullptr, FALSE);
+    browser->signal_sources[0] = g_unix_signal_add(SIGINT, unix_signal, browser);
+    browser->signal_sources[1] = g_unix_signal_add(SIGTERM, unix_signal, browser);
+    g_autoptr(WPEDisplay) display = wpe_display_wayland_new();
+    if (!wpe_display_connect(display, nullptr)) {
+        remove_signal_sources(browser);
+        g_main_loop_unref(browser->loop);
+        g_free(browser);
+        return nullptr;
+    }
+    g_autoptr(WebKitNetworkSession) session = webkit_network_session_new_ephemeral();
     browser->web_view = g_object_new(WEBKIT_TYPE_WEB_VIEW,
                                      "display", display,
                                      "network-session", session, nullptr);
@@ -163,14 +181,9 @@ FoobBrowser *foob_browser_new(bool diagnostics)
 
 int foob_browser_run(FoobBrowser *browser, const char *target)
 {
-    guint sources[] = {
-        g_unix_signal_add(SIGINT, unix_signal, browser),
-        g_unix_signal_add(SIGTERM, unix_signal, browser),
-    };
     webkit_web_view_load_uri(browser->web_view, target);
     g_main_loop_run(browser->loop);
-    for (size_t i = 0; i < G_N_ELEMENTS(sources); i++)
-        g_source_remove(sources[i]);
+    remove_signal_sources(browser);
     return browser->exit_status;
 }
 
@@ -178,6 +191,7 @@ void foob_browser_free(FoobBrowser *browser)
 {
     if (!browser)
         return;
+    remove_signal_sources(browser);  /* A no-op after foob_browser_run(). */
     foob_diagnostics_free(browser->diagnostics);
     browser->diagnostics = nullptr;
     g_signal_handlers_disconnect_by_data(webkit_web_view_get_wpe_view(browser->web_view), browser);
