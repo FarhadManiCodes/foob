@@ -68,6 +68,7 @@ def details(pid):
             if identity in seen and info.get('drm-client-id') is not None:
                 continue
             seen.add(identity)
+            info.pop('drm-pdev', None)  # PCI address: identifies the machine, not needed
             clients.append({'device': device, 'fd': descriptor.name, 'info': info})
         except OSError as error:
             clients.append({'fd': descriptor.name, 'inspection_error': type(error).__name__})
