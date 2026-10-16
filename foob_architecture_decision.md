@@ -15,6 +15,8 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 
 **Execution authority:** the root [development roadmap](foob_development_roadmap.md) defines task order, required acceptance evidence and maintainer review stops; this document defines technical boundaries and rationale. Its broader API/feature investigations apply when their milestone is reached, not as prerequisites to the M0/M1 skeleton. Gate A, the post-M2 Scholar decision and Gate B require maintainer decisions before progression. Technical success does not let an agent approve its own gate. Historical qvu documents do not add implementation scope.
 
+**Decisions since this document:** the maintainer's decisions (trust model, window title, app-id, exit codes, the interim defaults for downloads, new windows and PDFs, the license) are logged in [findings.md](docs/validation/findings.md), and `AGENTS.md` states the ones agents must apply. Where this document describes a target that a decision postpones, the decision holds until its roadmap task.
+
 ## Version and evidence ledger (upstream audit 2026-10-12; local validation 2026-10-13)
 
 | Term | Meaning | Evidence |
@@ -80,7 +82,7 @@ does not change the engine choice or establish long-term Scholar compatibility.
 
 - Servo integration or interchangeable engine adapters.
 - A full graphical browser interface or extension ecosystem.
-- Embedded PDF rendering, video/audio playback, WebRTC calls, microphone/camera, DRM streaming, gamepad support.
+- An embedded PDF renderer as the target (interim: the engine's PDF.js viewer, D-12), video/audio playback, WebRTC calls, microphone/camera, DRM streaming, gamepad support.
 - A source-level fork of WebKit or modifications to upstream engine internals.
 - Compiling the entire browser engine every time the application is rebuilt.
 - Guaranteeing full compatibility with all complex web applications.
@@ -93,7 +95,7 @@ WPE is an official WebKit port suited to embedded and toolkit-independent deploy
 
 **Deferred:** Servo. Its component-oriented architecture is interesting but its embedding API and modern-site compatibility are less mature. Reconsider only if WPE fails material compatibility/memory criteria or Servo's maturity changes significantly.
 
-**Not selected:** Forcing a fork of Cog (legacy integration and unnecessary downstream maintenance); WebKitGTK/webview wrapper (adds GTK dependency); CEF (Chromium-scale engine); litehtml/QTextBrowser (insufficient for modern interactive sites). Study Cog's application code as historical reference, not as a base to fork.
+**Not selected:** Forcing a fork of Cog (legacy integration and unnecessary downstream maintenance); WebKitGTK/webview wrapper (adds GTK dependency); CEF (Chromium-scale engine); litehtml/QTextBrowser (insufficient for modern interactive sites). The comparison reference is upstream MiniBrowser (D-14).
 
 ## System architecture
 
@@ -115,7 +117,9 @@ CLI / keyboard / optional IPC
 
 The **webpage occupies the whole browser window**. First implement one web view per window. Tabs, composited overlays, and multi-view management are deferred until actual requirements justify them; do not assume multi-view composition is trivial without another UI layer.
 
-Use one persistent browser profile for ordinary browsing storage and logins. M4 managed previews use a separate ephemeral network session; a user-facing private-browsing mode remains optional future work. Distinguish the WPE **engine version** (2.54.1), Arch **package revision** (2.54.1-2), and **API namespace** (`wpe-webkit-2.0` / `wpe-platform-2.0`) in code and build instructions. Handle downloads via WebKit's download/session APIs where needed so authenticated links remain functional. Use an external PDF viewer rather than a built-in PDF renderer.
+foob is Wayland-only for interactive use: it builds `WPEDisplayWayland` directly, so the `WPE_PLATFORM` environment variable has no effect. A headless display (idea I-02) needs a maintainer decision.
+
+Use one persistent browser profile for ordinary browsing storage and logins. M4 managed previews use a separate ephemeral network session; a user-facing private-browsing mode remains optional future work. Distinguish the WPE **engine version** (2.54.1), Arch **package revision** (2.54.1-2), and **API namespace** (`wpe-webkit-2.0` / `wpe-platform-2.0`) in code and build instructions. Handle downloads via WebKit's download/session APIs where needed so authenticated links remain functional. The target is an external PDF viewer rather than a built-in renderer (interim: the engine's PDF.js viewer, D-12; roadmap M3-04).
 
 ## Window lifecycle, resizing, and scaling (required from first prototype)
 
@@ -222,13 +226,13 @@ Keep configuration changes small and declarative. Verify names, compatibility, a
 | GStreamer | `USE_GSTREAMER=OFF` (**public** in `GStreamerDefinitions.cmake`) | Test multimedia-free dependencies |
 | HTML video / Web Audio | `ENABLE_VIDEO=OFF`, `ENABLE_WEB_AUDIO=OFF` (**public** in GStreamer definitions) | Primary supported media removals; verify their dependencies |
 | Speech synthesis | `ENABLE_SPEECH_SYNTHESIS=OFF` (**public** for WPE) | Avoid media/speech dependencies |
-| Embedded PDF.js | `ENABLE_PDFJS=OFF` (**public** for WPE) | Use external PDF viewer |
+| Embedded PDF.js | `ENABLE_PDFJS=OFF` (**public** for WPE) | Target: the external viewer; the stock viewer stays for now (D-12, M3-04) |
 | WebDriver | `ENABLE_WEBDRIVER` (**public** for WPE): decide based on test automation | Do not disable test support prematurely |
 | Documentation / introspection | `ENABLE_DOCUMENTATION`, `ENABLE_INTROSPECTION` (**public** for WPE): possible packaging choices | Verify development tooling does not require them |
 | Media stream / WebCodecs / WebRTC / media capture | **Private** engine features; prefer automatic dependency resolution and verify resulting feature manifest rather than setting unsupported private flags | Preserve upstream-supported configuration |
 | WebGL, MathML, JS/JIT, WebAssembly, GPU process | Treat as engine functionality to **preserve/test**, not a blanket list of public CMake toggles; many are private | Web and math compatibility; graphics and security |
 | Bubblewrap process sandbox | `ENABLE_BUBBLEWRAP_SANDBOX=ON` (**public** on Linux WPE; default ON) | Security must remain enabled and verified |
-| Accessibility and spellcheck | Keep initially; `ENABLE_SPELLCHECK` and `USE_ATK` are public WPE options | Preserve desktop usability |
+| Accessibility and spellcheck | Keep spellcheck (`ENABLE_SPELLCHECK`); removing accessibility (`USE_ATK`, both public WPE options) is under evaluation (D-13, roadmap M5-11) | Preserve desktop usability |
 
 Sources inspected: [`OptionsWPE.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/OptionsWPE.cmake), [`GStreamerDefinitions.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/GStreamerDefinitions.cmake), [`GStreamerDependencies.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/GStreamerDependencies.cmake) and [`WebKitFeatures.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/WebKitFeatures.cmake). `ENABLE_VIDEO`, `ENABLE_WEB_AUDIO`, `ENABLE_WEB_CODECS` and speech synthesis depend on `USE_GSTREAMER` according to the dependency rules; dependent features can be disabled automatically. **Do not blindly apply a copied CMake invocation:** inspect configuration output, CMake cache, link dependencies and real feature behavior. The exact candidate has **not** been built.
 
@@ -277,7 +281,7 @@ The browser is deliberately chrome-free and does not use a conventional GUI tool
 | P0 | **Keyboard shortcuts vs website input** | Intercept only explicitly reserved shortcuts via WPEPlatform input events; forward all other input. Avoid collisions with Ctrl+C/V, editing, web apps, and compositor shortcuts. | URL prompt, navigation, focus on an input, copy/paste, modifier behavior; test in niri. |
 | P0 | **Focus and keyboard/text input** | Rely on WPEPlatform's view/input-method integration where possible; don't assume key events alone are sufficient for text composition. | Compose/dead keys, Unicode, keyboard repeat, caret/selection, focused forms; investigate input-method protocols and IME behavior if needed. |
 | P0 | **Wayland clipboard and selection** | Use platform/WebKit clipboard mechanisms; support plain text and common content types, copy links and page selections. | Copy rendered text/MathML, paste into HTML text field, exchange with foot and other apps; verify MIME-type and image paste behavior. |
-| P0 | **Dialogs, dropdowns, and new windows** | Use WPE's built-in option popup implementation where available. Explicitly handle JS alert/confirm/prompt, `window.open`, target=_blank, context menus, and failed popup requests; no silent loss of website actions. | HTML test fixture with each dialog and select control; confirm placement, keyboard focus and dismissal. |
+| P0 | **Dialogs, dropdowns, and new windows** | Use WPE's built-in option popup implementation where available. Explicitly handle JS alert/confirm/prompt, `window.open`, target=_blank, context menus, and failed popup requests. Target: no silent loss of website actions (interim: every new-window request is ignored, D-04; feedback is M2-12). | HTML test fixture with each dialog and select control; confirm placement, keyboard focus and dismissal. |
 | P0 | **Profile and storage identity** | M2 persistent browsing session in XDG directories; M4 separate ephemeral managed-preview session. User-facing private mode remains deferred. Define ownership of cookies, cache, IndexedDB, localStorage, service workers and permissions. | Restart retains browsing state; preview cleanup preserves browsing data and leaves no persistent preview site state; test windows sharing the intended session. |
 | P0 | **TLS, permissions, sandbox, origin restrictions** | Fail closed on certificate errors; preserve WebKit process sandbox and site isolation as offered; default deny or explicitly prompt sensitive permissions. No broad local-file or localhost permissions by default. | Certificate error handling, cross-origin isolation tests, sandbox status, permission signals and logging. |
 | P0 | **Downloads and file uploads** | Use WebKit download/chooser APIs and XDG desktop portals (or a deliberately chosen alternative) without GTK. Enforce safe destination/name handling; authenticate downloads through WebKit session. | PDF download, download cancellation, collision handling, input type=file upload, multiple files, drag/drop if desired. |
@@ -288,13 +292,13 @@ The browser is deliberately chrome-free and does not use a conventional GUI tool
 | P1 | **Site compatibility and browser identity** | Test default user agent, feature detection, CSP/service workers, sign-in redirects, popup authentication, WebAuthn/passkeys where relevant. Do not change user-agent globally before observing failures. | Wikipedia, Scholar, Semantic Scholar, ChatGPT, Claude, Gemini representative flows. |
 | P1 | **Appearance, zoom, font and text rendering** | Distinguish CSS/device scale, page zoom, reader magnification and browser UI absence; support keyboard zoom and default font preferences. Follow system dark-mode/contrast/reduced-motion settings where supported. | Small math labels, ligatures, non-Latin text, system theme changes, 125–200% scale, resize after zoom. |
 | P0 | **Basic reading controls (M2-09)** | Provide keyboard page zoom in/out/reset and find-in-page with query entry, next/previous match and dismiss. Investigate WPE event dispatch and public find/zoom APIs before selecting a transient query interaction; reuse controls for local previews in M4. | Unicode/no-match/repeated-match searches, focus restoration, form/IME input preservation, zoom reset and math legibility. |
-| P1 | **Webprocess crashes and application recovery** | Log crashed web/network subprocesses, show or load a minimal recovery page and support reload. Never assume a page crash equals application exit. | Deliberately terminate a web process; check browser remains controllable and recoverable. |
+| P1 | **Webprocess crashes and application recovery** | Target: log crashed subprocesses, show or load a minimal recovery page and support reload, so a page crash does not end the application (interim: foob exits with code 4, D-06; roadmap M3-07). | Deliberately terminate a web process; check browser remains controllable and recoverable. |
 | P1 | **Single-instance behavior and IPC security** | Initially permit multiple independent windows/processes; choose later whether URL commands go to an existing instance. IPC endpoint, if implemented, should be per-user, local, permission-restricted. | Launch second URL; check no unexpected shared locks/data corruption; reject other-user IPC. |
 | P1 | **Startup, termination and subprocess cleanup** | Handle SIGTERM/interrupt cleanly, orderly WebKit shutdown and download cancellation/continuation policy; no leaked child processes. | Quit during page load and download, inspect process tree and persistent state. |
 | P1 | **Desktop integration without toolkit** | Determine whether an XDG portal or external command supplies file chooser, open-with and notifications. Do not assume portals are always present under niri. | File upload and external PDF opening in actual niri session, including missing-portal fallback. |
 | P1 | **Resource control beyond media flags** | Track memory per web/network/GPU process, caching and background pages; establish GPU memory observability and process limits without weakening security. | Blank/Wikipedia/math benchmarks, cold/warm startup, idle after navigation, leaks after repeated opens/closes. |
 | P2 | **Multiple tabs/web views** | Remain one web view per window first; revisit shared profile, process model and keyboard window switching after prototype. | Validate whether tab semantics are needed beyond niri's own windows. |
-| P2 | **Accessibility and automation** | Retain upstream accessibility capability and use WebDriver/headless builds for regression tests if justified. | Keyboard-only access, accessibility-tree exposure, repeatable tests. |
+| P2 | **Accessibility and automation** | Removing accessibility from the custom engine is under evaluation (D-13, M5-11); use WebDriver or headless builds for regression tests if justified. | Keyboard-only access, accessibility-tree exposure, repeatable tests. |
 | P2 | **Browser conveniences** | History/bookmarks, printing, saved pages, devtools, reader mode, ad/tracker blocking, password-manager integration, extensions. | Prioritize based on real workflows; do not treat these as included by default. |
 
 ### Implementation implications
@@ -321,7 +325,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 - WPEPlatform 2.54 stable API includes `WPEView` input events and platform facilities for input methods, keymaps, clipboard, gestures and accessibility. WPE's example shows applications consuming keyboard events at the `WPEView` `event` signal: https://wpewebkit.org/blog/2026-10-06-wpe-platform.html .
 - WPE 2.53.90 added a built-in HTML select/option popup implementation when applications don't handle the corresponding `show-option-menu` signal: https://wpewebkit.org/release/wpewebkit-2.53.90.html .
 - WPE 2.54.1 contains Wayland compatibility, paste-from-clipboard and IME fixes; target at least that maintenance level for initial tests: https://wpewebkit.org/release/wpewebkit-2.54.1.html .
-- Upstream WPE MiniBrowser is useful API-reference code for profile storage, cookie policy and proxy configuration (not a UI design to copy): https://github.com/WebKit/WebKit/blob/main/Tools/MiniBrowser/wpe/main.cpp .
+- Upstream WPE MiniBrowser is useful API-reference code for profile storage, cookie policy and proxy configuration; the comparison baseline is [minibrowser-comparison.md](docs/validation/minibrowser-comparison.md): https://github.com/WebKit/WebKit/blob/main/Tools/MiniBrowser/wpe/main.cpp .
 
 ## P0 API investigation — WPE WebKit 2.54.1 / WPEPlatform 2.0 (2026-10-12)
 
@@ -412,7 +416,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 ### Strict resource policy
 
-1. Treat *remote pages* and *local user documents* as untrusted. A remote website must never be able to use `foob:` as a bridge to arbitrary filesystem paths or browser-native operations.
+1. Treat remote pages as untrusted; local user documents are trusted today (D-08) and M4 revisits that. A remote website must never be able to use `foob:` as a bridge to arbitrary filesystem paths or browser-native operations.
 2. Maintain a per-document allowlist (e.g. document ID -> approved root/assets) and resolve requested assets against it. Canonicalize paths; reject `..` traversal, percent-encoded traversal, disallowed symlinks and access outside the approved roots. Prefer pre-opened handles where feasible. Do not concatenate raw URI path strings into filesystem paths.
 3. Use explicit MIME types and charset, especially `text/html; charset=utf-8`, `text/css`, `text/javascript`, `image/svg+xml`, font types and PDF downloads. Consider CSP restricting script and network access for local previews, with an explicit policy if KaTeX loads local JS.
 4. Avoid permissive global security switches: no blanket `allow-universal-access-from-file-urls`, no disabled CORS, no general 'local page can fetch every file', no `http://localhost` fallback unless separately justified.
