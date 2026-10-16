@@ -28,7 +28,7 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 | **`wpe-platform-2.0`** | WPEPlatform API and pkg-config name, same namespace |
 | **`wpe-platform-wayland-2.0`** | Optional Wayland-specific pkg-config module |
 
-Keep the three apart in code, build instructions and evidence.
+Keep the engine release, the Arch package revision and the API namespace apart in code, build instructions and evidence.
 
 What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU: [blank-memory.md](docs/validation/blank-memory.md).
 
@@ -156,7 +156,7 @@ Keep configuration changes small and declarative. Verify names, compatibility, a
 | Media stream / WebCodecs / WebRTC / media capture | **Private** engine features; prefer automatic dependency resolution and verify resulting feature manifest rather than setting unsupported private flags | Preserve upstream-supported configuration |
 | WebGL, MathML, JS/JIT, WebAssembly, GPU process | Treat as engine functionality to **preserve/test**, not a blanket list of public CMake toggles; many are private | Web and math compatibility; graphics and security |
 | Bubblewrap process sandbox | `ENABLE_BUBBLEWRAP_SANDBOX=ON` (**public** on Linux WPE; default ON) | Security must remain enabled and verified |
-| Accessibility and spellcheck | Keep spellcheck (`ENABLE_SPELLCHECK`); removing accessibility (`USE_ATK`, both public WPE options) is under evaluation (D-13, roadmap M5-11) | Preserve desktop usability |
+| Accessibility and spellcheck | Keep spellcheck; removing accessibility is under evaluation (D-13, roadmap M5-11). `ENABLE_SPELLCHECK` and `USE_ATK` are both public WPE options | Preserve desktop usability |
 
 Sources inspected: [`OptionsWPE.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/OptionsWPE.cmake), [`GStreamerDefinitions.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/GStreamerDefinitions.cmake), [`GStreamerDependencies.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/GStreamerDependencies.cmake) and [`WebKitFeatures.cmake`](https://raw.githubusercontent.com/WebKit/WebKit/wpewebkit-2.54.1/Source/cmake/WebKitFeatures.cmake). `ENABLE_VIDEO`, `ENABLE_WEB_AUDIO`, `ENABLE_WEB_CODECS` and speech synthesis depend on `USE_GSTREAMER` according to the dependency rules; dependent features can be disabled automatically. **Do not blindly apply a copied CMake invocation:** inspect configuration output, CMake cache, link dependencies and real feature behavior. The exact candidate has **not** been built.
 
@@ -402,11 +402,11 @@ Acceptance tests: M4-04 (MathML controls and converter output), M4-05 (offline K
 
 ### Language decision: C23, with an explicit revisit criterion
 
-**Accepted for initial implementation:** C23, GLib/GObject, Meson. The supported WPE WebKit 2.54+ and WPEPlatform APIs are C/GObject; writing the embedder in C makes the callbacks and library interfaces direct. `g_autoptr` and GLib cleanup facilities can help with resource ownership, but require clearly documented transfer/borrow semantics. GLib `g_autoptr` relies on compiler-specific cleanup attributes even with `-std=c23`; this is not a fully extension-free application. Avoid undocumented assumptions about callback lifetime. C++20/23 is technically viable and does not inherently cost more runtime memory; its RAII and stronger abstractions may be useful if state management becomes substantially more complex. Do not mix languages without a concrete dependency or complexity benefit. Test the installed compiler's `c_std=c23` support as part of Meson configuration.
+**Accepted for initial implementation:** C23, GLib/GObject, Meson. The supported WPE WebKit 2.54+ and WPEPlatform APIs are C/GObject; writing the embedder in C makes the callbacks and library interfaces direct. `g_autoptr` and GLib cleanup facilities can help with resource ownership, but require clearly documented transfer/borrow semantics. Avoid undocumented assumptions about callback lifetime. C++20/23 is technically viable and does not inherently cost more runtime memory; its RAII and stronger abstractions may be useful if state management becomes substantially more complex. Do not mix languages without a concrete dependency or complexity benefit. Test the installed compiler's `c_std=c23` support as part of Meson configuration.
 
 ### Five architecture decisions to resolve at the relevant milestone
 
-Resolve lifecycle for M1, navigation and persistent-profile concurrency for M2/M3, local trust for M4, and custom-engine reproducibility for M5. IPC remains deferred. Each decision needs a documented policy and repeatable acceptance check before the affected feature handles untrusted input; the full list does not block the first trusted-page prototype.
+Lifecycle was resolved in M1; resolve navigation and persistent-profile concurrency for M2/M3, local trust for M4, and custom-engine reproducibility for M5. IPC remains deferred. Each decision needs a documented policy and repeatable acceptance check before the affected feature handles untrusted input; the full list does not block the first trusted-page prototype.
 
 1. **Object and process lifetime (P0, resolved in M1: `AGENTS.md`, `browser.[ch]`):** Define ownership of `WebKitWebView`, WPE view/toplevel, network session, profile, outstanding asynchronous requests, and GLib signal handlers. Identify shutdown semantics, cancellation, process-crash signals and how to distinguish a page crash from a UI-process failure. Verify clean exit after compositor-initiated close and no persistent orphaned processes.
 2. **Navigation and window-creation policy (P0):** Define same-window vs new-window requests, `target=_blank`, popups, external protocols (`mailto:`, etc.), redirects, downloads, and forbidden schemes. Design explicit policy defaults before handling untrusted web content. Do not silently pass untrusted strings to a shell.

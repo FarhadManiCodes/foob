@@ -45,7 +45,7 @@ process-tree PSS) for any shell.
 Also seen: `related-view` for a second window (M2-11), developer extras only in a diagnostics mode (M2-06), runtime feature switches (M5-09) and a headless display for tests (idea I-02).
 
 Not to take: permission auto-grant, `--ignore-tls-errors`, proxy, cookie-file and
-content-filter options, automation, XR, headless mode, the legacy libwpe path (`AGENTS.md`).
+content-filter options, automation, XR, the legacy libwpe path (`AGENTS.md`).
 
 ## Engine defaults foob runs with (measured 2026-10-14)
 
