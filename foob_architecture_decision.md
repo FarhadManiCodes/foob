@@ -270,10 +270,6 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 ### P0-C. Popups, JavaScript dialogs and permissions
 
-**Requested versus current URL (M2-06):** retain the user-requested navigation target separately from the committed URL so redirects cannot erase the intended search. Update it on deliberate navigation, use it for explicit recovery or future handoff, and redact sensitive queries in routine diagnostics. The [qvu investigation](docs/research/qvu/findings/scholar-readonly-investigation.md) motivates this distinction; it does not introduce browsing history or external-browser integration.
-
-**Diagnostic sequence (M2-06):** distinguish initial site rejection, challenge loading/interaction failure and later loss of clearance. In bounded diagnostics, record navigation/redirects, response status where available, resource failures and subsequent JavaScript errors in order, using verified WPE hooks and disclosing observation gaps. The [qvu navigation findings](docs/research/qvu/findings/scholar-navigation-and-dooble.md) recorded rejection before challenge-page errors; error presence alone does not establish cause. Exclude sensitive URLs, cookies and request bodies from routine logs.
-
 - **WebKitWebView signals:** `script-dialog`, `create` (new-window request), `close`, `ready-to-show`, `show-option-menu`, `permission-request`, `authenticate`, `decide-policy`, and potentially `context-menu` / `run-as-modal`.
 - **Upstream handles:** `<select>` option menus have a built-in default implementation since the 2.53.90 cycle. This does **not** establish that JS `alert()`/`confirm()`/`prompt()`, `window.open()`, permission UI or HTTP authentication are handled satisfactorily with no shell UI.
 - **Application policy:** Treat JS dialogs, HTTP-auth challenges and user-permission requests as distinct types. Provide a minimal asynchronous prompt/response policy, initially deny unrequested sensitive permissions; never silently grant. Decide whether popups open a separate window or are blocked with an explicit way to allow them. Do not conflate `WebKitWebView::create` with `WebKitWebView::script-dialog`.

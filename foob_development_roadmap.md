@@ -156,7 +156,7 @@ Evidence to bring to the review:
 
   Track the user-requested URL separately from the current committed URL; update it on deliberate navigation, not redirects. Test that a Scholar challenge redirect preserves the original search for explicit recovery or future handoff. Redact sensitive queries in routine logs; this does not add browsing history or external-browser integration.
 
-  In bounded diagnostics, record navigation/redirects, response status where available, resource failures and subsequent JavaScript errors in sequence. Distinguish initial site rejection, challenge-page loading/interaction failure, and loss of clearance after successful manual completion. Verify available WPE diagnostic hooks; disclose missing observations and do not infer causation from console errors alone. Keep sensitive URLs, cookies and request bodies out of routine logs.
+  In bounded diagnostics, record navigation/redirects, response status where available, resource failures and subsequent JavaScript errors in sequence. Distinguish initial site rejection, challenge-page loading/interaction failure, and loss of clearance after successful manual completion. Verify available WPE diagnostic hooks; disclose missing observations and do not infer causation from console errors alone. Keep sensitive URLs, cookies and request bodies out of routine logs. Motivated by the qvu [read-only investigation](docs/research/qvu/findings/scholar-readonly-investigation.md) and [navigation findings](docs/research/qvu/findings/scholar-navigation-and-dooble.md), where rejection came before the challenge page's errors.
 
 
 - [ ] **M2-07 / P2:** Evaluate a transient URL launcher/prompt; **do not** choose an overlay, toolbar, tabs or IPC before an actual use case requires them.
