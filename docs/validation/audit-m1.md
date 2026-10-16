@@ -40,8 +40,17 @@ split (a manifest of every `src/*.[ch]` now, `main.c` only before) cannot be com
   (an earlier run with broken ones reported nothing useful and was discarded).
 - Hardening (`meson.build`, checked with `readelf`): PIE, full RELRO with `BIND_NOW`,
   non-executable stack, stack protector, stack-clash protection, CET markers,
-  `_FORTIFY_SOURCE=3` (no effect visible, foob imports no `*_chk` function). No
-  measurable cost.
+  `_FORTIFY_SOURCE=3` (no effect visible, foob imports no `*_chk` function), zero
+  initialization of locals (`-ftrivial-auto-var-init=zero`) and `-Werror=format-security`
+  (both added after the audit; every section that is loaded is byte-identical, since foob
+  initializes all its locals and no format string is non-literal; only the build ID and
+  debug info differ).
+- Cost of the hardening, measured against a copy of the tree without any hardening flag
+  (and without PIE): stripped 22,520 B against 23,272 B, so no growth. Startup, process
+  start to `load-finished`, 20 interleaved launches each: median 229.3 ms hardened against
+  232.6 ms without, standard deviation 6 to 13 ms, so no difference above the noise. The
+  engine is Arch's package and is hardened the same way (`BIND_NOW`, RELRO, stack protector,
+  fortify imports).
 - All of this was repeated on the evidence revision `147ae45` with the same result.
 
 ## Compiler flags

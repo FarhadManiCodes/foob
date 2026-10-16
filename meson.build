@@ -18,6 +18,7 @@ endif
 add_project_arguments(cc.get_supported_arguments(
     '-Wshadow', '-Wformat=2', '-Wnull-dereference', '-Wstrict-prototypes',
     '-Wmissing-prototypes', '-Wundef', '-Wcast-align', '-Wwrite-strings',
+    '-Werror=format-security', '-ftrivial-auto-var-init=zero',
     '-fstack-protector-strong', '-fstack-clash-protection', '-fcf-protection=full',
     '-fno-plt'), language: 'c')
 # Fortify needs optimization, and a caller may already choose a level (makepkg via
