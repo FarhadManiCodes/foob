@@ -80,8 +80,15 @@ with log.open('w') as stream:
             time.sleep(0.1)
         else:
             raise RuntimeError('load timeout')
-        windows = json.loads(subprocess.check_output(['niri', 'msg', '-j', 'windows'], text=True))
-        matches = [item for item in windows if item.get('pid') == process.pid]
+        # A fast load ends before niri lists the window (F-75): wait for it.
+        deadline = time.monotonic() + 10
+        while True:
+            windows = json.loads(subprocess.check_output(['niri', 'msg', '-j', 'windows'], text=True))
+            matches = [item for item in windows if item.get('pid') == process.pid]
+            if matches or time.monotonic() >= deadline:
+                break
+            health()
+            time.sleep(0.1)
         if len(matches) != 1:
             raise RuntimeError('exactly one browser window required')
         window = matches[0]
