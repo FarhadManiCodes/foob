@@ -10,8 +10,7 @@
 
 **Develop the browser against Arch Linux's packaged WPE WebKit first, then build a custom reduced-feature WPE separately and compare them using the same browser source revision, tests and workloads.** The executable may require rebuilding/relinking against each engine installation; do not assume a custom prefix can be swapped safely at runtime.
 
-- Initial engine: Arch `extra/wpewebkit`, **2.54.1-2 as checked on 2026-10-12** (upstream version **2.54.1**, Arch package revision **-2**; confirm locally, as packages change).
-- Interface: **WPE WebKit 2.0 API** (`wpe-webkit-2.0`) and **WPEPlatform 2.0 API** (`wpe-platform-2.0`), native Wayland. **2.0 is the API version, not the WPE engine release**; avoid the deprecated `libwpe` backend.
+- Engine: Arch `wpewebkit` 2.54.1-2 with the WPE WebKit and WPEPlatform 2.0 APIs, native Wayland; not the deprecated libwpe backend ([versions](foob_architecture_decision.md#versions)).
 - Application: **C23**, Meson, GLib/GObject; one web view/window; no GTK/Qt or permanent browser chrome.
 - Machine: x86_64 laptop, integrated AMD GPU (`amdgpu`); Arch Wayland with **niri**.
 - Custom engine: use **unmodified, pinned upstream WPE source** with a maintained feature configuration/Arch packaging; **no WebKit fork or git submodule** just for build options.
@@ -19,19 +18,6 @@
 - Primary principle: **make it run → make it correct → measure it → customize it → decide based on results**.
 
 This is an execution roadmap, not a commitment that the custom build will outperform the distribution build in runtime memory. The under-100-MiB **total PSS** goal for a lightweight page is a stretch target to measure, not a release-blocking promise.
-
-### Exact version conventions (audit 2026-10-12)
-
-| Token | Meaning |
-|---|---|
-| `2.54.0` | Upstream WPE WebKit engine release that stabilized WPEPlatform (2026-09-16) |
-| `2.54.1` | Current verified upstream stable WPE WebKit engine release (2026-10-06) |
-| `2.54.1-2` | Current verified **Arch package** release of that engine; the suffix is Arch packaging revision |
-| `wpe-webkit-2.0` | pkg-config **API/ABI namespace**, not the installed engine version |
-| `wpe-platform-2.0` | WPEPlatform pkg-config **API/ABI namespace**, not an alternative engine release |
-| `wpe-platform-wayland-2.0` | Optional Wayland-specific platform API; check availability with pkg-config |
-
-These are **repository/upstream values, not measured local installation results**. M0 records the machine's actual versions. The stock and custom engines need not have identical package revisions but should use comparable upstream engine sources and reproducible build settings when attributing performance differences.
 
 ## Workflow and milestone rules
 

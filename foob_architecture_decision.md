@@ -17,16 +17,18 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 
 **Decisions since this document:** the maintainer's decisions (trust model, window title, app-id, exit codes, the interim defaults for downloads, new windows and PDFs, the license) are logged in [findings.md](docs/validation/findings.md), and `AGENTS.md` states the ones agents must apply. Where this document describes a target that a decision postpones, the decision holds until its roadmap task.
 
-## Version and evidence ledger (upstream audit 2026-10-12; local validation 2026-10-13)
+## Versions
 
-| Term | Meaning | Evidence |
-|---|---|---|
-| WPE WebKit **2.54.0** | Upstream engine release that made WPEPlatform stable/default | 2026-09-16 |
-| WPE WebKit **2.54.1** | Upstream stable bug-fix engine version used for the baseline | 2026-10-06 |
-| Arch **`wpewebkit 2.54.1-2`** | Package version; Arch's `-2` is a **packaging revision** | Installed version verified in M0 and rechecked during guided M1 validation |
-| **`wpe-webkit-2.0`** | WPE WebKit **API/pkg-config** name | Installed module reports 2.54.1; C23 compile/link passes |
-| **`wpe-platform-2.0`** | WPEPlatform **API/pkg-config** name | Installed module reports 2.54.1; C23 compile/link passes |
-| **`wpe-platform-wayland-2.0`** | Optional backend-specific pkg-config module | Installed module reports 2.54.1; explicit Wayland display tested |
+| Term | Meaning |
+|---|---|
+| WPE WebKit **2.54.0** | Upstream engine release that made WPEPlatform stable and the default (2026-09-16) |
+| WPE WebKit **2.54.1** | Upstream stable bug-fix release used as the baseline (2026-10-06) |
+| Arch **`wpewebkit 2.54.1-2`** | Arch package of 2.54.1; `-2` is Arch's packaging revision, not an upstream release |
+| **`wpe-webkit-2.0`** | WPE WebKit API and pkg-config name; `2.0` is the API namespace, not the engine release |
+| **`wpe-platform-2.0`** | WPEPlatform API and pkg-config name, same namespace |
+| **`wpe-platform-wayland-2.0`** | Optional Wayland-specific pkg-config module |
+
+Keep the three apart in code, build instructions and evidence.
 
 What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU: [blank-memory.md](docs/validation/blank-memory.md).
 
@@ -59,7 +61,7 @@ What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU
 
 ## Engine choice and rationale
 
-**Selected:** WPE WebKit **2.54.1** as the October 12, 2026 upstream baseline, using the modern WPEPlatform Wayland backend (**stable by default from engine version 2.54.0**). The supported shared-library/pkg-config API uses the **2.0** suffix; it is not the engine release number. Arch currently packages upstream 2.54.1 as **`wpewebkit 2.54.1-2`**, where `-2` is the Arch packaging revision, not a second upstream patch release. Recheck versions locally when development starts.
+**Selected:** WPE WebKit **2.54.1** as the upstream baseline, with the WPEPlatform Wayland backend (stable by default since 2.54.0).
 
 WPE is an official WebKit port suited to embedded and toolkit-independent deployments. It preserves a mature browser engine while avoiding the need to base the application on a conventional GTK/Qt frontend. "Embedded" does **not** mean the engine is fundamentally simpler than WebKit: the modern JS, DOM, CSS, networking and multiprocess core remains substantial. Its platform focus nonetheless aligns with this browser's constraints.
 
@@ -89,7 +91,7 @@ The **webpage occupies the whole browser window**. First implement one web view 
 
 foob is Wayland-only for interactive use: it builds `WPEDisplayWayland` directly, so the `WPE_PLATFORM` environment variable has no effect. A headless display (idea I-02) needs a maintainer decision.
 
-Use one persistent browser profile for ordinary browsing storage and logins. M4 managed previews use a separate ephemeral network session; a user-facing private-browsing mode remains optional future work. Distinguish the WPE **engine version** (2.54.1), Arch **package revision** (2.54.1-2), and **API namespace** (`wpe-webkit-2.0` / `wpe-platform-2.0`) in code and build instructions. Handle downloads via WebKit's download/session APIs where needed so authenticated links remain functional. The target is an external PDF viewer rather than a built-in renderer (interim: the engine's PDF.js viewer, D-12; roadmap M3-04).
+Use one persistent browser profile for ordinary browsing storage and logins. M4 managed previews use a separate ephemeral network session; a user-facing private-browsing mode remains optional future work. Handle downloads via WebKit's download/session APIs where needed so authenticated links remain functional. The target is an external PDF viewer rather than a built-in renderer (interim: the engine's PDF.js viewer, D-12; roadmap M3-04).
 
 ## Window lifecycle, resizing, and scaling (required from first prototype)
 
@@ -276,7 +278,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 ## P0 API investigation — WPE WebKit 2.54.1 / WPEPlatform 2.0 (2026-10-12)
 
-**Evidence level:** The inventory comes from the upstream **2.54.1** headers, CMake definitions and release notes; each API still needs its milestone's test. The supported WPE WebKit API is `wpe-webkit-2.0`; WPEPlatform uses `wpe-platform-2.0`. Here **2.0 is the API namespace**, not an indication that WPEPlatform was first released in 2.0. For a Wayland-specific compile check, use `wpe-platform-wayland-2.0`. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
+**Evidence level:** The inventory comes from the upstream **2.54.1** headers, CMake definitions and release notes; each API still needs its milestone's test. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
 
 ### P0-A. Keyboard, focus and browser shortcuts
 
