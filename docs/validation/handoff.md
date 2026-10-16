@@ -62,4 +62,4 @@ index below, the roadmap's triage rule (under *Scope control*).
 Limits to keep visible at Gate A (with the rows above): blank is about 170 MiB against the under-100-MiB stretch
 target; GPU use is confirmed for blank, but the GL renderer and per-feature acceleration are
 unmeasured; multi-monitor and fractional scaling are untested; missing glyphs are
-deferred to M3-10; the Scholar observations are exploratory, not lasting compatibility.
+deferred to M3-10; the Scholar observations are exploratory, not lasting compatibility; the camera and microphone permission default is unobserved (the web process sees no capture device even with the microphones present; roadmap M3-05).
