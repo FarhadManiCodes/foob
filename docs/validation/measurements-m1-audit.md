@@ -10,7 +10,8 @@ before the audit on binary `9a9225d8…`, read blank 174.3, local fixture 202.4 
 Collected 2026-10-14, 07:24-07:29 UTC, on WPE `2.54.1-2`, GCC `16.2.1`, Meson `1.12.1`
 `debugoptimized` with the hardening flags of `meson.build`; environment in [m1.md](m1.md).
 Every run's values: [results-m1-audit.json](results-m1-audit.json); raw records stay local
-(`docs/validation/runs/m1-audit-147ae45/`).
+(`docs/validation/runs/m1-audit-2b47978/`; the folder name and the raw records carry the
+revision's hash from before the 2026-10-16 history rewrite).
 
 ## Inputs
 

@@ -22,7 +22,7 @@ nothing until M2-03. Gate A is **not approved**; no M2 work is authorized.
 | Documentation pass (2026-10-15/16; docs, two comments, license metadata) | Register: decisions D-01 to D-15 (old numbers in [findings.md](findings.md#decision-numbering)), findings empty (next F-75), ideas I-01 and I-02; agent rules and the three interim defaults in `AGENTS.md`. M1 records cut to what later work needs: `c23-review.md` and `plans/m0-m1.md` deleted, `m0.md` folded into `m1.md`, `measurements.md` into `measurements-m1-audit.md`, `font-follow-up.md` replaced by roadmap M3-10; this file's pre-audit sections replaced by the evidence index. Architecture and roadmap: decisions cited where they postpone a target, status and history removed, each topic kept in one place (the architecture holds the design, the roadmap the tasks and acceptance tests), roadmap sections unnumbered; machine model and home paths removed before publishing. Git keeps the removed text |
 | License (2026-10-15) | BSD-2-Clause (D-15); M0 is complete. Per-file SPDX lines come with the next C change |
 | MiniBrowser comparison (2026-10-14, docs only) | foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14); new roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored, may be absent; provenance in [minibrowser-comparison.md](minibrowser-comparison.md)) |
-| Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); the other `m1-audit-*` sets are superseded; the pre-audit M1 runs sit beside them. All ignored by git and kept only on this disk |
+| Raw runs | `docs/validation/runs/m1-audit-2b47978/` (this evidence; local folders keep the hashes from before the history rewrite); the other `m1-audit-*` sets are superseded; the pre-audit M1 runs sit beside them. All ignored by git and kept only on this disk |
 
 **Where to look:** [findings.md](findings.md) (decisions, findings, ideas), the evidence
 index below, the roadmap's triage rule (under *Scope control*).
@@ -33,7 +33,7 @@ index below, the roadmap's triage rule (under *Scope control*).
    - the trimmed nested suite: `python3 tests/nested_lifecycle.py build/foob` (8 scenarios); then record the result here;
    - a short real session: type in a field, scroll, move focus away and back, maximize, close with the niri keybinding;
    - optional: click guided row 4 again and record its result.
-2. Maintainer: repository backed up (2026-10-16). It goes to GitHub after a history rewrite that removes the machine details and the raw runs; `docs/validation/runs/` stays local and backed up, since git ignores it.
+2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default, `m0-m1` not merged). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the cited ones were remapped (evidence revision `2b47978` is now `147ae45`). The old history is kept privately in a bundle; `docs/validation/runs/` stays local and backed up, since git ignores it.
 3. Maintainer: decide Gate A.
 
 **Rules for every agent (Claude, Codex, others)**
