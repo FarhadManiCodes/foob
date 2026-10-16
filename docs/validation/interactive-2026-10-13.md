@@ -72,8 +72,8 @@ Requested repeat: `runs/user-scholar-20261013-repeat.json` and paired `.log`,
 a separate fresh ephemeral launch. The agent does not automate any searches.
 The maintainer reports “seems ok” and identifies a small font issue to document
 for later work. The supplied screenshot shows square missing-glyph placeholders
-in the language list; [font-follow-up.md](font-follow-up.md) preserves the image,
-observed limits and a deferred investigation. No challenge or other blocker was
+in the language list ([image](images/scholar-language-glyphs.png)); the work is
+roadmap M3-10. No challenge or other blocker was
 reported. Repeat window closed through niri: exit 0 and no tracked survivors.
 All four guided launches have clean lifecycle records. No C source changes,
 font changes, input automation or M2 implementation were made during this session.

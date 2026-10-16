@@ -14,8 +14,8 @@ audited, with the [audit](validation/audit-m1.md), the [M0/M1 acceptance record]
 [measurements](validation/measurements-m1-audit.md) and
 [guided checks](validation/guided-checks-m1-audit.md). Gate A is ready for
 maintainer review, not approved. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-14) is the baseline
-for roadmap tasks M2-13 and M3-09. A [font issue](validation/font-follow-up.md)
-reported during guided Scholar testing is explicitly deferred.
+for roadmap tasks M2-13 and M3-09. Missing glyphs seen during guided
+Scholar testing are deferred to roadmap M3-10.
 
 [Blank-memory/GPU diagnosis](validation/blank-memory.md) identifies engine,
 allocation and graphics startup costs behind the >100-MiB footprint; actual GPU

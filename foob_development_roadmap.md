@@ -155,9 +155,8 @@ Checkpoint 2026-10-13: [M1 acceptance record](docs/validation/m1.md),
 [desktop checklist](docs/validation/desktop-checklist.md), with
 [guided session evidence](docs/validation/interactive-2026-10-13.md), including
 precise pointer targets after resize/scroll and user-initiated close/cleanup.
-Scholar search/result/scroll exploration reports no blocker; a language-menu
-[font issue is deferred](docs/validation/font-follow-up.md) at the maintainer's
-request. M1 P0 checks pass. Gate A is ready for review, **not approved**; no M2
+Scholar search/result/scroll exploration reports no blocker; missing glyphs in a
+language menu are deferred to M3-10 at the maintainer's request. M1 P0 checks pass. Gate A is ready for review, **not approved**; no M2
 work is authorized by this checkpoint. Subsequent
 [blank-memory diagnosis](docs/validation/blank-memory.md) identifies engine and
 graphics startup costs and confirms hardware GPU participation using the web
@@ -242,6 +241,22 @@ Evidence to bring to the review:
 
   **Reliability checks for M3-08:** Retest in later sessions, including after any observed clearance expires naturally; do not extend expiry or generate background requests to preserve access. Record elapsed time since clearance, challenge recurrence, and whether manual completion restores usable search/result navigation. Review and agree on an acceptable challenge frequency before declaring the workflow reliable. If no expiry or recurrence was observed during testing, report the observation period and leave behavior beyond it unverified. The [qvu post-expiry comparison](docs/research/qvu/findings/scholar-post-expiry.md) showed that a successful restart could precede renewed blocking even with a complete profile; it did not prove expiry was the sole cause. Validate the ordinary dedicated persistent session first. Any later selective-cookie/storage minimization requires a separate comparison against that working baseline.
 - [ ] **M3-09 / P1:** Repeat the MiniBrowser comparison (M2-13, [minibrowser-comparison.md](docs/validation/minibrowser-comparison.md), D-14) for the M3 features: permissions, downloads, popups and `window.open`, dialogs, crash handling, file input. Upstream grants every permission and handles no download, new window or crash; foob must show a tested, explicit decision for each, and report its code size for them next to upstream's as a signal (`AGENTS.md`), not as a target.
+- [ ] **M3-10 / P1:** Text in the maintainer's languages renders correctly.
+
+  **Story:** As the maintainer, I read English, Farsi, German, Italian, Portuguese and Arabic on any site (Wikipedia, Google Scholar, others) and see every character in a readable font, and I type English, German, Italian and Portuguese.
+
+  **Observed (M1, 2026-10-13):** Scholar's language menu showed missing-glyph boxes ([screenshot](docs/validation/images/scholar-language-glyphs.png)); the maintainer sees the same on Wikipedia and other sites. Cause unknown (missing fonts, fallback, site styling or the engine). foob sets no fonts, so WebKit's generic `sans-serif` goes to fontconfig: Noto Sans for the four Latin-script languages, while Farsi and Arabic fall back to Noto Kufi Arabic, a display style; Noto Sans Arabic and Noto Naskh Arabic are installed but not picked first. No installed font covers both Latin and Arabic script, and no Chinese, Japanese or Korean font is installed.
+
+  **Constraints:** fonts installed on the system, none bundled; one general default (WebKit's default font families set as constants in foob, or one fontconfig rule), not a font per language; no settings file (D-14). The maintainer picks the font from screenshots.
+
+  **Acceptance criteria:**
+  1. A local fixture with a heading, a paragraph, a form field and a list in each of the six languages shows no missing-glyph boxes, at scale 1 and with page zoom (M2-09).
+  2. Farsi and Arabic: letters joined, right-to-left order correct, mixed Latin and number runs in the right order, a readable text style (not a decorative one); the Farsi letters پ چ ژ گ ک ی and Persian digits render.
+  3. The same holds on live pages: a Wikipedia article in each language and Scholar's language menu (Scholar opened on purpose, `AGENTS.md`).
+  4. Typing English, German, Italian and Portuguese, including ä ö ü ß à è ì ò ù ã õ ç, into a form field with the real keyboard shows the right characters (guided check).
+  5. Text that rendered before (Latin pages, local MathML) looks the same (screenshot comparison).
+  6. Languages outside the six may show boxes; they are recorded, not fixed.
+  7. Evidence: the font actually used per language (not only the CSS declaration), the screenshots and the maintainer's choice.
 
 **Exit:** all M3 P0 checks pass with recorded fixtures: dialogs/selects and allowed/blocked popup behavior, single/multiple uploads and cancellation, completed/failed/cancelled downloads **with no file created before explicit user action**, filename collisions, PDF handoff, invalid-certificate rejection and runtime sandbox evidence. The M3-09 comparison is recorded; M3-08 includes the maintainer's challenge-frequency decision and the observation period; unobserved future expiry behavior is a documented limitation, not a claim of reliability.
 

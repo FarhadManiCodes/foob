@@ -57,8 +57,7 @@ cancelled on shutdown. Engine/system warnings can still appear with diagnostics
 disabled.
 
 The [desktop checklist](docs/validation/desktop-checklist.md) passes; the
-[validation/handoff](docs/validation/handoff.md) records Gate A readiness and
-the [deferred font observation](docs/validation/font-follow-up.md).
+[validation/handoff](docs/validation/handoff.md) records Gate A readiness.
 The standard-library Python scripts under `tests/benchmark/` need desktop access
 and readable process PSS. Run `python3 tests/benchmark/suite.py` for serial fresh
 launches and a separate local warm-reload control; each suite run writes a new

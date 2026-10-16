@@ -52,8 +52,8 @@ now passes and Gate A is ready for maintainer review, not approved. The M1 sessi
 explicitly ephemeral; M2's ordinary persistent profile remains planned.
 
 Guided Scholar testing reported no blocker for the observed search/result/scroll
-flow, with a small [font-coverage/fallback observation](docs/validation/font-follow-up.md)
-explicitly deferred by the maintainer. The cause has not been investigated; this
+flow, with missing glyphs in a language menu deferred by the maintainer to roadmap
+M3-10. The cause has not been investigated; this
 does not change the engine choice or establish long-term Scholar compatibility.
 
 ## Target machine and language/runtime decision

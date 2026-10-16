@@ -43,5 +43,5 @@ until M2. See the M1 record for the initial exploration outcome.
 
 Guided Scholar check on 2026-10-13: user reports the search/result/scroll flow
 seems OK with no blocker. Requested manual rerun exposed a small language-menu
-glyph issue, [explicitly deferred](font-follow-up.md). No challenge was reported;
+glyph issue, deferred to roadmap M3-10. No challenge was reported;
 no persistence or long-term reliability claim. See guided session evidence.
