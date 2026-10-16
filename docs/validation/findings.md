@@ -32,15 +32,16 @@ into that roadmap task (the roadmap's triage rule, under *Scope control*); when 
 choice, it becomes a decision. Record who found it (`Maintainer`, `Claude`, `Codex` or the
 review) and how it was checked.
 
-Next number: **F-75**. F-01 to F-74 were used until 2026-10-15, when the maintainer
+Next number: **F-76**. F-01 to F-74 were used until 2026-10-15, when the maintainer
 reviewed every finding: what was still needed moved to the roadmap, the code, D-04 and
 `AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
 refer to that earlier register (see its git history).
 
-None open. A new finding is a row in this table:
+One open. A new finding is a row in this table:
 
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
+| F-75 | `tests/benchmark/desktop_probe.py` looks up the browser's niri window once, right after `load-finished`. A fast load (32 ms, cached fixture) ends before niri lists the window, so the probe fails with "exactly one browser window required". It is a defect in the test tool, not in foob: no run left a survivor. Fix: poll for the window for a few seconds. The earlier "did not close within 10 s of `close-window`" failures on `147ae45` have a different symptom and stay unexplained | Claude (review before Gate A) | Five consecutive runs on `4f2163a` (binary `f1c00899…`), 2026-10-16: 2 passed, 3 failed with that error; the failed logs show `active=0 focus=0` at load-finished. The run outputs were not kept | Open |
 
 ## Ideas parking lot (not tasks yet)
 
