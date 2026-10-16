@@ -4,7 +4,7 @@
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-15. **Branch `m0-m1`, in the main checkout.** The
+Updated 2026-10-16. **Branch `m0-m1`, in the main checkout.** The
 M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
 security reviews, a final cleanup review) were handled here, and the evidence was
 re-recorded after each C change, last on `147ae45`. The second security review led to
@@ -13,25 +13,26 @@ nothing until M2-03. Gate A is **not approved**; no M2 work is authorized.
 
 | | |
 |---|---|
-| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)). Later commits change only tests, fixtures and documents, except two comments (2026-10-15, `src/target.h` and `src/browser.c`, line count kept): the stripped binary built from today's `src/` and from `147ae45` in the same directory is byte-identical, but the source SHA256 is now `ed80ae36…`. Any other C change invalidates these |
+| Evidence revision | `147ae452…` (full hash in the records): source SHA256 `a7c70db4…`, audit binary `f1c00899…`, control `3369eead…` ([measurements-m1-audit.md](measurements-m1-audit.md)). Later commits change only tests, fixtures and documents, except two comments (2026-10-15, `src/target.h` and `src/browser.c`, line count kept) and the license metadata in `meson.build`: rebuilt in one directory on 2026-10-16, today's tree and `147ae45` give a byte-identical stripped binary, but the source SHA256 is now `ed80ae36…`. Any other C change invalidates these |
 | Verified on `147ae45` | Unit tests 3/3, nested suite 12/12, ASan+UBSan 3/3 and 12/12 with no report, analyzer clean, a clean archive build 3/3 with no warning, binary 22,520 B stripped (text 13,061 B). Interleaved memory (25 launches, all passed): blank 170.3 vs 170.0 MiB, fixture 194.0 vs 194.7, Wikipedia 329.8 vs 336.8 (one control launch at 357 MiB): no regression; the under-100-MiB stretch target is not met |
 | Test trim (after `147ae45`, binary unchanged) | Reviewed test by test with mutation checks; redundant cases cut. `check_cli.py` 23 launches to 4 (exit codes 1 and 2; the validity rules are unit-tested), `/target/navigation` 17 cases to 8, nested suite 12 scenarios to 8. Removed scenarios: `policy-fixture-remote` and `policy-fixture-local` (only checked that pages load), `sigterm` (four scenarios end with SIGTERM), `scripted-new-window-requests-do-not-navigate` (WebKit's popup blocker stops scripted requests before foob's handler, so it could not fail from foob code; guided rows 5, 6 and 17 cover it). `title-follows-page` became `title-local-unsanitized`. Accepted: the `window_title.c` character table is sampled, not pinned entry by entry. **The trimmed suite has no recorded run yet** (open item 1) |
-| Maintainer checks done | All 18 guided rows (rows 1, 3, 9, 15, 16 and 19 re-clicked after the D-04 update on `4e9b6c2`), the `pointer.html` click check (within 10 CSS px) and the geometry probe on `d9ea90d` ([guided-checks-m1-audit.md](guided-checks-m1-audit.md)). Typing, scrolling, focus and maximize were checked on the pre-audit binary only ([interactive-2026-10-13.md](interactive-2026-10-13.md)). The probe attempt on `147ae45` failed (the browser did not close within 10 s of `close-window`) and failed the same way on the previous binary; the screen was probably locked, as in an earlier failure, but no log shows the cause |
+| Maintainer checks done | All 19 guided rows: 18 clicked by the maintainer (rows 1, 3, 9, 15, 16 and 19 again after the D-04 update on `4e9b6c2`; row 4 recorded only its page log), row 18 read by Claude, the `pointer.html` click check (within 10 CSS px) and the geometry probe on `d9ea90d` ([guided-checks-m1-audit.md](guided-checks-m1-audit.md)). Typing, scrolling, focus and maximize were checked on the pre-audit binary only ([interactive-2026-10-13.md](interactive-2026-10-13.md)). The probe attempt on `147ae45` failed (the browser did not close within 10 s of `close-window`) and failed the same way on the previous binary; the screen was probably locked, as in an earlier failure, but no log shows the cause |
 | Not verified | Multi-monitor and fractional scaling (unavailable, M6-07). The negative controls for compositor loss, downloads, app-id and web-process death were run during the audit and are recorded in prose, not as logs. Page `window.close()` is untested (WebKit honours it only for script-opened windows) and shares its handler with the compositor close |
 | Known consequences of the interim defaults | Cancelled downloads (D-02), ignored new windows (D-04) and inline PDFs (D-12) are deliberate, but the Scholar and PDF flows of M2-08 and M3 will meet them: OAuth popups and `_blank` result links do nothing, and no PDF can be saved |
-| Documentation cleanup (2026-10-15, docs and two comments) | The maintainer reviewed the register: decisions renumbered D-01 to D-14 (table in [findings.md](findings.md#decision-numbering)), agent rules moved to `AGENTS.md` (with the three interim defaults), findings emptied (next F-75) and ideas cut to I-01 and I-02, with every point still needed moved to the roadmap, D-04 or D-14 first. The M1 records were cut to what later work needs: `c23-review.md` and `plans/m0-m1.md` deleted, `measurements.md` folded into `measurements-m1-audit.md`, `audit-m1.md`, `m1.md` and `blank-memory.md` shortened (`m0.md` folded into `m1.md`, `font-follow-up.md` replaced by roadmap M3-10, the memory attribution gathered in `blank-memory.md`), this file's pre-audit sections replaced by the evidence index below. Git keeps the removed text |
+| Documentation pass (2026-10-15/16; docs, two comments, license metadata) | Register: decisions D-01 to D-15 (old numbers in [findings.md](findings.md#decision-numbering)), findings empty (next F-75), ideas I-01 and I-02; agent rules and the three interim defaults in `AGENTS.md`. M1 records cut to what later work needs: `c23-review.md` and `plans/m0-m1.md` deleted, `m0.md` folded into `m1.md`, `measurements.md` into `measurements-m1-audit.md`, `font-follow-up.md` replaced by roadmap M3-10; this file's pre-audit sections replaced by the evidence index. Architecture and roadmap: decisions cited where they postpone a target, status and history removed, each topic kept in one place (the architecture holds the design, the roadmap the tasks and acceptance tests), roadmap sections unnumbered. Git keeps the removed text |
 | License (2026-10-15) | BSD-2-Clause (D-15); M0 is complete. Per-file SPDX lines come with the next C change |
 | MiniBrowser comparison (2026-10-14, docs only) | foob `src/` compared with upstream MiniBrowser `main.cpp` (D-14); new roadmap tasks M2-13 and M3-09 repeat it. Local copy in `reference-minibrowser/` (git-ignored, may be absent; provenance in [minibrowser-comparison.md](minibrowser-comparison.md)) |
 | Raw runs | `docs/validation/runs/m1-audit-147ae45/` (this evidence); the other `m1-audit-*` sets are superseded; the pre-audit M1 runs sit beside them. All ignored by git and kept only on this disk |
 
 **Where to look:** [findings.md](findings.md) (decisions, findings, ideas), the evidence
-index below, roadmap section 7 (triage rule).
+index below, the roadmap's triage rule (under *Scope control*).
 
 **Open right now**
 1. Maintainer at the desk, screen unlocked (each opens a window for a short time), on the current binary:
    - the geometry probe: `python3 tests/benchmark/desktop_probe.py --binary build/foob --uri file://$PWD/tests/fixtures/viewport.html --label final --resize`;
    - the trimmed nested suite: `python3 tests/nested_lifecycle.py build/foob` (8 scenarios); then record the result here;
-   - a short real session: type in a field, scroll, move focus away and back, maximize, close with the niri keybinding.
+   - a short real session: type in a field, scroll, move focus away and back, maximize, close with the niri keybinding;
+   - optional: click guided row 4 again and record its result.
 2. Maintainer: back up the repository (no remote; `m0-m1` is not on `main`) and `docs/validation/runs/`, which git ignores.
 3. Maintainer: decide Gate A.
 
@@ -53,7 +54,7 @@ index below, roadmap section 7 (triage rule).
 - [measurements-m1-audit.md](measurements-m1-audit.md): PSS method and results on the
   evidence revision; compact records in [results-m1-audit.json](results-m1-audit.json)
   (the pre-audit ones in [results.json](results.json)); raw `runs/` stay local.
-- [guided-checks-m1-audit.md](guided-checks-m1-audit.md): the 18 guided rows and the
+- [guided-checks-m1-audit.md](guided-checks-m1-audit.md): the 19 guided rows and the
   pointer and geometry checks on the audit binaries.
 - [desktop-checklist.md](desktop-checklist.md) and
   [interactive-2026-10-13.md](interactive-2026-10-13.md): typing, scrolling, focus and
