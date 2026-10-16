@@ -182,7 +182,7 @@ For **both stock and custom WPE**, use the same browser **source revision** and 
 
 Measure **total proportional set size (PSS)** of the full application process tree after a defined idle period. Also record startup time, CPU, installed dependency closure, compressed/uncompressed package sizes, and any GPU allocations PSS doesn't capture. The **100 MiB total-PSS target applies to lightweight single-page workloads only**; rich web applications will generally exceed it.
 
-**Preview benchmark scope (M4-07):** report browser process-tree PSS after rendering separately from conversion time, converter memory and total source-to-usable-preview time. Identify helpers that exit versus remain running and disclose measurement limitations. The [qvu math comparison](docs/research/qvu/findings/math-renderer-comparison.md) excluded conversion from browser totals; do not interpret browser savings alone as reduced workflow cost. The under-100-MiB stretch target remains browser PSS, with conversion costs reported alongside it.
+**Preview workloads (M4-07):** browser PSS is reported apart from conversion time and converter memory, so browser savings cannot hide work moved into converters.
 
 ## Maintenance and security policy
 
