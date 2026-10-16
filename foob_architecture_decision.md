@@ -388,36 +388,16 @@ Acceptance tests live in the roadmap: M4-01 to M4-03, M4-05, M4-08, M4-09, and t
 2. **KaTeX-rendered Markdown/LaTeX:** Convert Markdown to HTML, render inline/display TeX with locally bundled KaTeX JavaScript/CSS/fonts (or prerender HTML outside the browser). **Offline operation** must work with no CDN and no local HTTP service. Check glyphs/font loading and mathematical accuracy. Compare client-side KaTeX with preprocessing: prerendering may save JS startup work, but its size/runtime benefit must be measured.
 3. **Typst:** The browser is not a native Typst layout engine. Investigate supported export/conversion formats for the **specific Typst version** used. Render an HTML/MathML result only if a supported export path actually produces it with acceptable fidelity. For authoritative pagination/visual fidelity, use the existing external PDF viewer. Avoid writing "Typst HTML export works" as a verified capability before testing it.
 
-### API and security checks
+### Resource and security rules
 
-**Typst evidence provenance:** the [qvu rendering findings](docs/research/qvu/findings/rendering-findings.md) demonstrated pagination and editor synchronization using tinymist's live preview frontend under Qt, not exported HTML/MathML. They do not validate M4-06's serverless export route or current WPE compatibility. A prior WebKit canvas failure mentioned in the [historical adapter notes](docs/research/qvu/design/qt6_minimalist_research_viewer_blueprint.md) is a lead for a future live-preview investigation, not proof that current WPE or exported HTML fails. Keep M4-06 focused on supported export and external PDF viewing. Any later live tinymist integration needs a separate scope/compatibility investigation covering pagination, incremental updates, fonts and bidirectional editor synchronization.
-
-- Test `file://`, `webkit_web_view_load_html()`, and a registered `foob:` handler for HTML + relative stylesheet, scripts, WOFF/WOFF2 fonts and images. A custom URI scheme is a resource-serving mechanism, **not** evidence of correct math rendering or safe same-origin semantics.
+- A custom URI scheme is a resource-serving mechanism, **not** evidence of correct math rendering or safe same-origin semantics.
 - Establish whether locally bundled KaTeX assets and relative links load under the chosen custom-scheme classifications. Retain same-origin protections; never enable unrestricted filesystem access or broad cross-origin privileges to get fonts working.
 - Prefer document-specific identifiers and an allowlist for adjacent figures/fonts. Test content containing untrusted HTML, TeX macros, SVG and links; define an HTML sanitization/CSP policy before allowing arbitrary downloaded Markdown or generated HTML.
-- Evaluate mathematical font fallback and HarfBuzz/FreeType/WOFF2 behavior on this machine, including scaling and selection/copy into other applications.
 - Preserve `MathML`, JavaScript, CSS, SVG, Canvas and web-font support in the custom WPE configuration unless a controlled test proves a feature unnecessary. Disabling video/audio must not disable these text/math requirements.
 
-### Acceptance fixtures
+### Tests
 
-Maintain separate hand-written MathML controls and converter-generated fixtures. The [qvu renderer comparison](docs/research/qvu/findings/math-renderer-comparison.md) found that generated `aligned` markup failed while a hand-written `mtable` rendered correctly; zero reported errors did not establish correct layout. Inspect markup, visible output and row/delimiter geometry, and compare equivalent controls before blaming WPE. Record converter versions and the selected/actual math font where measurable. The [Temml comparison](docs/research/qvu/findings/temml-katex-comparison.md) showed that font selection affected delimiter sizing; a declared CSS family alone is insufficient evidence of the font used. Keep these historical findings distinct from WPE results. Only mathematically correct paths qualify as alternatives in performance comparisons; KaTeX remains the preview candidate pending validated evidence.
-
-| Fixture | Pass criterion |
-|---|---|
-| Offline Markdown with inline/display KaTeX | Six qvu formula cases render correctly; required local assets/fonts load; fresh load and reload work with networking unavailable; zero HTTP requests attempted; missing assets and invalid TeX produce useful diagnostics |
-| Mixed Markdown and math | Tables and checked/unchecked tasks retain formatting; dollar signs in inline/fenced code and literal currency remain text; only intended inline/display equations render under documented delimiter rules |
-| Hand-written MathML controls | Fractions, radicals, matrices, aligned rows, cases, limits and stretched operators render properly with recorded fonts |
-| Converter-generated MathML | Intended structure and visible layout match equivalent controls; converter defects are distinguished from engine/font failures |
-| Math-heavy Wikipedia page | Equations, font fallback, zoom and resize render correctly |
-| Typst sample and external PDF | Determine supported export route; compare visual fidelity; PDF handoff works |
-| Hostile local content | Cannot read unapproved files or silently fetch remote content |
-| Stock vs custom WPE | Same visual results, with measured load time and **total process-tree PSS** |
-
-**Status:** Planned validation, not completed. The MathML/KaTeX/Typst results and exact custom-scheme origin policy must be confirmed by prototype tests; do not make production-compatibility claims beforehand.
-
-Document the supported Markdown dialect and math-delimiter rules when selecting the converter. M4-05 includes a mixed Markdown fixture to check ordinary formatting and math together, following the cases identified in the [historical adapter plan](docs/research/qvu/design/qt6_minimalist_research_viewer_blueprint.md). Test tables, checked/unchecked task items, inline/fenced code with dollar signs, literal currency amounts and intended equations; math recognition must respect code boundaries and the documented escaping rules. This fixture evaluates converter suitability without requiring Neovim renderer reuse and belongs in both stock and custom WPE regression checks.
-
-The [qvu local KaTeX experiment](docs/research/qvu/findings/katex-local-assets.md) supplies a candidate six-formula baseline, not WPE validation. Recreate or explicitly import its fixtures; their generator remains in qvu. Pin and record the chosen KaTeX version, bundle JavaScript/CSS/fonts with the stylesheet's relative font paths intact, and validate on stock WPE through `file://` and the managed `foob:` transport when available. Prerendered math may omit browser-side KaTeX JavaScript but still needs its required CSS/fonts. Verify visible output and font loading separately from resource logs: an empty `file://` resource-timing list does not prove successful loading. The historical test kept networking connected and did not test reload, missing assets or invalid TeX; M4 must cover those gaps, and M5 must repeat the fixtures on the custom engine.
+Acceptance tests: M4-04 (MathML controls and converter output), M4-05 (offline KaTeX and mixed Markdown), M4-06 (Typst), M4-07 (rendering-path benchmarks), M5-08 (custom engine).
 
 ## Language and remaining architecture decisions (2026-10-12)
 
