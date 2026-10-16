@@ -30,7 +30,7 @@ index below, roadmap section 7 (triage rule).
 **Open right now**
 1. Maintainer at the desk, screen unlocked (each opens a window for a short time), on the current binary:
    - the geometry probe: `python3 tests/benchmark/desktop_probe.py --binary build/foob --uri file://$PWD/tests/fixtures/viewport.html --label final --resize`;
-   - the trimmed nested suite: `python3 tests/nested_lifecycle.py build/foob` (8 scenarios); then correct its line in `measurements-m1-audit.md`;
+   - the trimmed nested suite: `python3 tests/nested_lifecycle.py build/foob` (8 scenarios); then record the result here;
    - a short real session: type in a field, scroll, move focus away and back, maximize, close with the niri keybinding.
 2. Maintainer: back up the repository (no remote; `m0-m1` is not on `main`) and `docs/validation/runs/`, which git ignores.
 3. Maintainer: decide Gate A.
