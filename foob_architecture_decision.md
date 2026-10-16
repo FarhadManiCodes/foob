@@ -1,6 +1,6 @@
 # Architecture Decision: Minimal Wayland Browser
 
-**Status:** Architecture direction accepted; M0/M1 P0 verified; Gate A ready for maintainer review, not approved
+**Status:** Architecture direction accepted. Project state: [handoff](docs/validation/handoff.md).
 **Date:** 2026-10-12  
 **Working name:** `foob` (not final)  
 **Decision owner:** Project maintainer
@@ -28,44 +28,14 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 | **`wpe-platform-2.0`** | WPEPlatform **API/pkg-config** name | Installed module reports 2.54.1; C23 compile/link passes |
 | **`wpe-platform-wayland-2.0`** | Optional backend-specific pkg-config module | Installed module reports 2.54.1; explicit Wayland display tested |
 
-**Evidence levels:** installed packages/C23 compilation, native Wayland operation,
-guided input/window behavior, simple hand-written MathML/JS and total process-tree
-PSS are now verified under `docs/validation/`. Stock web-process confinement was
-observed; full security auditing remains later work. Exact renderer identity/per-feature acceleration,
-custom WPE compilation and broader local-math pipelines remain unverified or
-untested. This ledger distinguishes upstream release, package revision and API suffix.
-
-**Further M1 diagnosis (2026-10-13):** [blank-memory attribution](docs/validation/blank-memory.md)
-measures 168–171 MiB in three later fresh blank launches and identifies engine,
-allocator and Mesa/LLVM startup costs. The browser's own amdgpu graphics/compute
-execution counters confirm hardware GPU participation for blank. Exact GL renderer
-string/per-feature acceleration remain unmeasured. The maintainer confirms no
-second monitor; multi-monitor checks are unavailable. Raw generated runs are now
-ignored/local; [curated results](docs/validation/results.json) remain committed.
-
-**Implementation checkpoint (2026-10-13):** the ledger combines the original
-upstream audit with installed/runtime evidence. The [M0/M1 acceptance record](docs/validation/m1.md) records the
-installed packages/C23 linkage, native
-Wayland loading/cleanup, simple math/JS, web-process confinement and
-[stock process-tree PSS](docs/validation/measurements-m1-audit.md). Hardware GPU participation
-for blank is now confirmed within the limits above;
-[guided interactive acceptance](docs/validation/interactive-2026-10-13.md)
-now passes and Gate A is ready for maintainer review, not approved. The M1 session is
-explicitly ephemeral; M2's ordinary persistent profile remains planned.
-
-Guided Scholar testing reported no blocker for the observed search/result/scroll
-flow, with missing glyphs in a language menu deferred by the maintainer to roadmap
-M3-10. The cause has not been investigated; this
-does not change the engine choice or establish long-term Scholar compatibility.
+What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU: [blank-memory.md](docs/validation/blank-memory.md).
 
 ## Target machine and language/runtime decision
 
-- **Hardware:** x86_64 laptop with an integrated AMD GPU.
-- **Kernel driver:** `amdgpu` (confirmed by `lspci -nnk`); the active Mesa userspace renderer is **not yet verified**.
-- **Operating environment:** Arch Linux, native Wayland session under **niri**, `WAYLAND_DISPLAY=wayland-1`; actual WPE rendering/input/window behavior verified. Mesa EGL/render-device evidence collected; hardware GPU work for blank confirmed by amdgpu counters; exact GL renderer/per-feature acceleration remain unmeasured.
-- **Application standard:** **C23** (`c_std=c23` in Meson), installed compiler/Meson support verified by clean builds and independent review. Prefer standard C23 language features where practical; GLib convenience macros such as `g_autoptr` themselves depend on compiler-specific cleanup attributes, so do not imply a strictly extension-free ISO C build. C23 is an application compilation choice, independent of WPE's C ABI.
+- **Hardware:** x86_64 laptop with an integrated AMD GPU (`amdgpu` driver).
+- **Operating environment:** Arch Linux, native Wayland session under **niri**.
+- **Application standard:** **C23** (`c_std=c23` in Meson). Prefer standard C23 language features where practical; GLib convenience macros such as `g_autoptr` themselves depend on compiler-specific cleanup attributes, so do not imply a strictly extension-free ISO C build. C23 is an application compilation choice, independent of WPE's C ABI.
 - **Event loop and object integration:** **GLib/GObject** because WPE's supported C API exposes GObject types, signals and GLib asynchronous/event-loop integration. GLib is **not** GTK and does not add a visible GUI toolkit. Prefer ordinary C for application-owned data and business logic, using GLib/GObject at the WPE integration boundary.
-- **Hardware validation:** Stock-WPE operation passes M1's rendering/resize/input/lifecycle checks; amdgpu execution counters now confirm hardware GPU work for blank. Exact GL renderer and per-feature acceleration remain unmeasured. The initial probe lacked `glxinfo`/`eglinfo`; no diagnostic packages were installed.
 
 ## Goals
 
@@ -141,29 +111,6 @@ Use one persistent browser profile for ordinary browsing storage and logins. M4 
 6. Record the actual **logical viewport size and output scale** alongside every memory/graphics benchmark. Fixed dimensions are necessary for fair stock-vs-custom engine comparisons.
 
 **API evidence:** WPEPlatform 2.54 documentation says the Wayland `WPEToplevel` supports resizing, maximize, fullscreen, and state signals; its built-in Wayland view source already observes toplevel-size changes and forwards them to the view. The browser must exercise and validate these behaviors rather than reimplementing the backend. See https://wpewebkit.org/blog/2026-10-06-wpe-platform.html and https://github.com/WebKit/WebKit/blob/main/Source/WebKit/WPEPlatform/wpe/wayland/WPEViewWayland.cpp .
-
-## Machine verification (read-only)
-
-**Hardware identification completed on 2026-10-12:** x86_64 laptop with an integrated AMD GPU, kernel `amdgpu`, niri Wayland session (`wayland-1`). The `pcilib` warning about reading the unrelated `00:08.3/label` sysfs entry is non-fatal: the GPU and active driver were identified successfully. `glxinfo` and `eglinfo` were unavailable; this is **not** evidence of software rendering. The actual WPE Wayland view has now passed M1 validation; hardware GPU participation for blank is now confirmed; exact GL renderer/per-feature confirmation remains outstanding. The original read-only probe below is retained for reproducibility.
-
-```bash
-printf '\n== Model ==\n'
-cat /sys/class/dmi/id/product_name 2>/dev/null
-cat /sys/class/dmi/id/product_version 2>/dev/null
-printf '\n== CPU ==\n'
-lscpu | grep -E 'Model name:|Architecture:'
-printf '\n== GPU and driver ==\n'
-lspci -nnk | grep -A 5 -E 'VGA compatible controller|3D controller|Display controller'
-printf '\n== Session ==\n'
-printf 'XDG_SESSION_TYPE=%s\nXDG_CURRENT_DESKTOP=%s\nWAYLAND_DISPLAY=%s\n' \
-  "$XDG_SESSION_TYPE" "$XDG_CURRENT_DESKTOP" "$WAYLAND_DISPLAY"
-printf '\n== Mesa OpenGL (optional) ==\n'
-if command -v glxinfo >/dev/null; then glxinfo -B; else echo 'glxinfo not installed'; fi
-printf '\n== Wayland EGL (optional) ==\n'
-if command -v eglinfo >/dev/null; then eglinfo --display wayland -B; else echo 'eglinfo not installed'; fi
-```
-
-Check for `Kernel driver in use: amdgpu`, the specific integrated Radeon GPU, Mesa (rather than software `llvmpipe`) and a working Wayland EGL display. `glxinfo` may use XWayland and is secondary to `eglinfo` for Wayland; neither alone proves WPE compatibility.
 
 ## Repository and packaging strategy
 
@@ -329,7 +276,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 ## P0 API investigation — WPE WebKit 2.54.1 / WPEPlatform 2.0 (2026-10-12)
 
-**Evidence level:** This inventory originated with public upstream **2.54.1** headers, CMake definitions and release notes. The M0/M1 public-API subset is now compiled, linked, independently reviewed and run on the target machine; later dialog/profile/policy APIs still require their own milestone tests. The supported WPE WebKit API is `wpe-webkit-2.0`; WPEPlatform uses `wpe-platform-2.0`. Here **2.0 is the API namespace**, not an indication that WPEPlatform was first released in 2.0. For a Wayland-specific compile check, use `wpe-platform-wayland-2.0`. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
+**Evidence level:** The inventory comes from the upstream **2.54.1** headers, CMake definitions and release notes; each API still needs its milestone's test. The supported WPE WebKit API is `wpe-webkit-2.0`; WPEPlatform uses `wpe-platform-2.0`. Here **2.0 is the API namespace**, not an indication that WPEPlatform was first released in 2.0. For a Wayland-specific compile check, use `wpe-platform-wayland-2.0`. Prefer the new `g_object_new(WEBKIT_TYPE_WEB_VIEW, ...)` construction path, not the legacy `webkit_web_view_new()` or libwpe backend dispatch.
 
 ### P0-A. Keyboard, focus and browser shortcuts
 
@@ -385,7 +332,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 ### P0 findings and implementation order
 
 1. **Use WPEPlatform's native Wayland input and clipboard**, not manually injected libwpe events; intercept shortcuts on `WPEView::event`.
-2. **In M2, create the explicit persistent browsing `WebKitNetworkSession` before constructing browsing views**; use its download signal when adding M3 downloads. M1 may use an exploratory session with its configuration recorded.
+2. **In M2, create the explicit persistent browsing `WebKitNetworkSession` before constructing browsing views**; use its download signal when adding M3 downloads.
 3. **In M3, prototype `<select>`, JS dialogs and file upload before expanding compatibility work**: those are the likely toolkit-free UX integration gaps.
 4. **Do not claim default dialogs or XDG portal integration work without a niri runtime test.** The API hooks are confirmed; the shell UX implementation is not.
 5. **Verify sandbox, TLS and subprocess behavior on the actual custom build** before trusting it with logged-in accounts.
@@ -521,7 +468,7 @@ Document the supported Markdown dialect and math-delimiter rules when selecting 
 
 The [qvu local KaTeX experiment](docs/research/qvu/findings/katex-local-assets.md) supplies a candidate six-formula baseline, not WPE validation. Recreate or explicitly import its fixtures; their generator remains in qvu. Pin and record the chosen KaTeX version, bundle JavaScript/CSS/fonts with the stylesheet's relative font paths intact, and validate on stock WPE through `file://` and the managed `foob:` transport when available. Prerendered math may omit browser-side KaTeX JavaScript but still needs its required CSS/fonts. Verify visible output and font loading separately from resource logs: an empty `file://` resource-timing list does not prove successful loading. The historical test kept networking connected and did not test reload, missing assets or invalid TeX; M4 must cover those gaps, and M5 must repeat the fixtures on the custom engine.
 
-## Pre-implementation architecture gate: language and remaining decisions (2026-10-12)
+## Language and remaining architecture decisions (2026-10-12)
 
 ### Language decision: C23, with an explicit revisit criterion
 
@@ -531,7 +478,7 @@ The [qvu local KaTeX experiment](docs/research/qvu/findings/katex-local-assets.m
 
 Resolve lifecycle for M1, navigation and persistent-profile concurrency for M2/M3, local trust for M4, and custom-engine reproducibility for M5. IPC remains deferred. Each decision needs a documented policy and repeatable acceptance check before the affected feature handles untrusted input; the full list does not block the first trusted-page prototype.
 
-1. **Object and process lifetime (P0):** Define ownership of `WebKitWebView`, WPE view/toplevel, network session, profile, outstanding asynchronous requests, and GLib signal handlers. Identify shutdown semantics, cancellation, process-crash signals and how to distinguish a page crash from a UI-process failure. Verify clean exit after compositor-initiated close and no persistent orphaned processes.
+1. **Object and process lifetime (P0, resolved in M1: `AGENTS.md`, `browser.[ch]`):** Define ownership of `WebKitWebView`, WPE view/toplevel, network session, profile, outstanding asynchronous requests, and GLib signal handlers. Identify shutdown semantics, cancellation, process-crash signals and how to distinguish a page crash from a UI-process failure. Verify clean exit after compositor-initiated close and no persistent orphaned processes.
 2. **Navigation and window-creation policy (P0):** Define same-window vs new-window requests, target=`_blank`, popups, external protocols (`mailto:`, etc.), redirects, downloads, and forbidden schemes. Design explicit policy defaults before handling untrusted web content. Do not silently pass untrusted strings to a shell.
 3. **Local-document origin and filesystem trust (P0):** Document `file:` vs in-memory HTML vs managed custom scheme, and choose how managed previews identify individual documents. Do not give a generic custom URI handler access to arbitrary host paths. Define symlink/path traversal policy, resource allowlists, per-document isolation and which script/network capabilities previews need. Verify WebKit origin/CORS behavior experimentally; avoid relaxing universal-file-access settings. Bundle KaTeX locally and benchmark native MathML separately.
 4. **Single instance, window/process topology and IPC (P1):** Prefer one browser UI process with one view per window initially; let WPE manage its own subprocesses. Decide whether a second `foob URL` invocation opens a new instance or sends a request to an existing instance. A private Unix-domain socket or other authenticated local mechanism may be considered later; do not expose unauthenticated browser control over TCP. Document startup URI and profile locking before supporting concurrent launches.
@@ -541,29 +488,18 @@ Resolve lifecycle for M1, navigation and persistent-profile concurrency for M2/M
 
 - **Text input and editing:** compose/dead keys, Unicode, selection, clipboard, cursor positioning, focus transitions, text input on complex editor apps, niri keyboard shortcuts and IME behavior.
 - **Portal and desktop integration:** file chooser under niri, downloads, opening external PDF viewer, notifications (if needed), and XDG environment; determine which capabilities work without GTK/Qt rather than assuming them.
-- **GPU/display correctness:** `amdgpu` is confirmed; EGL/Mesa renderer still needs a real rendering check. Verify tile resize, fractional scaling, suspend/resume, GPU process failure and software-rendering fallback.
+- **GPU/display correctness:** renderer identity (M5-10), fractional scaling (M6-07), suspend/resume, GPU-process failure and software fallback.
 - **Web app compatibility:** login/SSO, third-party cookie policy, `window.open`, file uploads, clipboard, service workers, local storage and heavy single-page apps. Disabling media APIs may have indirect website effects; record failures rather than assuming all sites work.
 - **Benchmark reproducibility:** capture warm/cold startup, total PSS by process, idle and post-navigation values, viewport geometry, JS heap behavior where measurable, and cached vs uncached runs.
-
-**Gate to start coding:** Do not wait to settle every feature. Start with a stock-WPE one-window smoke test with a trusted hard-coded/default HTTPS page, lifecycle/close handling, and no untrusted local-scheme resolver yet. Specify navigation/local-origin security policies before adding support for arbitrary URLs or local documents. Treat the remainder as acceptance criteria; build the custom WPE package after a working baseline.
 
 **Sources:** https://wpewebkit.org/blog/2026-10-06-wpe-platform.html ; https://wpewebkit.org/blog/2026-09-16-wpewebkit-2.54.html ; https://wpewebkit.org/blog/06-integrating-wpe.html .
 
 ## Open questions / deferred decisions
 
-- **Completed:** identify laptop model, generation, CPU, GPU PCI ID, kernel driver, compositor and Wayland session; launch/validate native WPE rendering/input/window behavior. **Outstanding:** exact renderer identity/end-to-end acceleration; different-output/fractional-scale tests when hardware is available.
-
-- **Completed:** installed WPE `2.54.1-2` and all three pkg-config modules verified. Custom-engine feature flags remain M5 investigation.
-- Verify a no-GStreamer build and its dependency closure; test Wayland graphics and downloads.
-- **Completed for M1:** basic input, link navigation, tiling/focus/scroll/fullscreen at scale 1. Browser shortcuts, scheme/new-window policy, profile persistence and advanced input remain assigned to later milestones.
 - Choose a final project name (`foob` is provisional).
-- Decide on URL prompt strategy (keyboard-only built-in prompt versus external launcher such as fuzzel).
-- Decide whether a single-window, multi-tab model is needed at all.
-- Evaluate the engine's per-site compatibility before relying on it as a Firefox replacement.
-
-## Audit note (2026-10-12)
-
-This document was cross-checked with `foob_development_roadmap.md`. Version numbers distinguish the WPE WebKit engine (2.54.1), Arch package revision (2.54.1-2), and C API/pkg-config namespace (2.0). The custom build is an **experiment subject to Gate B**, not a predetermined deployment requirement. Public CMake switches were separated from private/unsupported internal features. **P0 is scoped to its assigned milestone**, not an instruction to implement M2–M4 before M1. API/header and build-configuration checks are **not runtime tests**. The previously referenced `foob_document_audit_2026-10-12.md` is absent from this checkout; the repository therefore does not supply that separate evidence record. New acceptance/handoff evidence belongs in `docs/validation/`.
+- Decide on URL prompt strategy (keyboard-only built-in prompt versus external launcher such as fuzzel; M2-07).
+- Decide whether a single-window, multi-tab model is needed at all (M2-11, M6-06).
+- Evaluate the engine's per-site compatibility before relying on it as a Firefox replacement (M3-06).
 
 ## References
 

@@ -28,7 +28,7 @@ the maintainer read it with [handoff.md](handoff.md) before starting work, and u
 
 A finding stays here only while it is open. When it is fixed, the row is removed (the
 commit and the git history keep the record); when it belongs to a later milestone, it moves
-into that roadmap task (triage rule, roadmap section 7); when it becomes a maintainer
+into that roadmap task (the roadmap's triage rule, under *Scope control*); when it becomes a maintainer
 choice, it becomes a decision. Record who found it (`Maintainer`, `Claude`, `Codex` or the
 review) and how it was checked.
 
@@ -68,7 +68,7 @@ closed every gap. Commits up to `7da4b4a` use the first numbering; `0806db2` use
 | D-04 same-window `_blank` (already retired) | retired | retired: superseded by the new-window decision (D-04) |
 | D-05 `window.open` | D-05 (merged with old D-21) | D-04 |
 | D-06 to D-10 | same | D-05 to D-09 |
-| D-11 triage rule | D-11 | retired: roadmap section 7 |
+| D-11 triage rule | D-11 | retired: the roadmap's triage rule |
 | D-12 no gesture hook | D-12 | D-10 |
 | D-13, D-14, D-15 working rules (already retired) | retired | retired: `AGENTS.md`, `CLAUDE.md`, the handoff rules |
 | D-16 TLS, diagnostics, input, Scholar | D-16 | retired: `AGENTS.md` (Architecture & Security Boundaries, Testing Guidelines) |

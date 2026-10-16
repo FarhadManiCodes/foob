@@ -1,12 +1,12 @@
 # foob — Staged Development Roadmap
 
 **Document type:** Execution plan / agile-style milestones  
-**Status:** M0/M1 P0 complete; Gate A ready for maintainer review, not approved; subsequent stages provisional
+**Status:** Project state: [handoff](docs/validation/handoff.md); stages after Gate A are provisional.
 **Created:** 2026-10-12  
 **Working project name:** `foob`  
 **Companion document:** [`foob_architecture_decision.md`](./foob_architecture_decision.md) — technical decisions, API investigation, security boundaries and research notes.
 
-## 1. Guiding decision
+## Guiding decision
 
 **Develop the browser against Arch Linux's packaged WPE WebKit first, then build a custom reduced-feature WPE separately and compare them using the same browser source revision, tests and workloads.** The executable may require rebuilding/relinking against each engine installation; do not assume a custom prefix can be swapped safely at runtime.
 
@@ -33,9 +33,9 @@ This is an execution roadmap, not a commitment that the custom build will outper
 
 These are **repository/upstream values, not measured local installation results**. M0 records the machine's actual versions. The stock and custom engines need not have identical package revisions but should use comparable upstream engine sources and reproducible build settings when attributing performance differences.
 
-## 2. Workflow and milestone rules
+## Workflow and milestone rules
 
-Use a lightweight **Kanban / agile** board, not arbitrary calendar-length sprints. Work in small, reviewable increments. Suggested columns: **Backlog → Ready → In progress → Validate → Done**, with **Blocked** as an optional status. Work-in-progress limit: **one major issue at a time** until Milestone 1 passes.
+Work in small, reviewable increments, not calendar sprints. The roadmap checkboxes, [findings.md](docs/validation/findings.md) and the [handoff](docs/validation/handoff.md) are the board.
 
 Each issue should have:
 
@@ -53,7 +53,7 @@ Each issue should have:
 
 Read `AGENTS.md` and both root planning documents before implementation. This roadmap controls task order, milestone acceptance and review stops; the architecture controls technical boundaries. Historical `docs/research/qvu/` material supplies evidence, not additional scope. If these documents still conflict materially, report the conflict before implementing the affected behavior.
 
-Unless the maintainer assigns a different stage, begin with incomplete M0/M1 work and stop at Gate A. A technical pass makes a gate ready for review; it does not authorize the agent to approve its own progression. Continue routine fixes within the authorized stage. Do not change engine, language, security boundaries or accepted scope without a maintainer decision.
+Work only in the stage the maintainer authorizes, and stop at every gate. A technical pass makes a gate ready for review; it does not authorize the agent to approve its own progression. Continue routine fixes within the authorized stage. Do not change engine, language, security boundaries or accepted scope without a maintainer decision.
 
 | Boundary | Required evidence / action | Continuation |
 |---|---|---|
@@ -70,7 +70,7 @@ Before each task, turn its acceptance text into a short checklist with fixture/i
 
 ### Open decisions and when to resolve them
 
-These are intentional investigations, not permission to improvise beyond scope or reasons to delay unrelated M0/M1 work.
+These are intentional investigations, not permission to improvise beyond scope or reasons to delay unrelated work.
 
 | Decision | Timing / owner | Required outcome |
 |---|---|---|
@@ -83,7 +83,7 @@ These are intentional investigations, not permission to improvise beyond scope o
 | Typst export feasibility | M4-06, implementing agent | Report supported/unsupported output and fidelity; live tinymist integration remains deferred |
 | Custom-engine deployment value | Gate B, maintainer | Choose stock/custom from measured results and maintenance costs |
 
-## 3. Milestone overview
+## Milestone overview
 
 | Stage | Name | Deliverable | Exit / review point |
 |---|---|---|---|
@@ -111,21 +111,7 @@ M1 is intentionally small. M2–M4 form the **usable browser MVP**, while M5 is 
 - [x] **M0-04 / P0:** Initialize one small Meson/C23 project; verify the compiler supports `c_std=c23` and WPE symbols link successfully.
 - [x] **M0-05 / P1:** Add `README.md`, `.gitignore`, basic license decision (BSD-2-Clause, D-15) and concise `docs/` links to the architecture and this roadmap.
 
-### Suggested first commands
-
-M0 P0 complete on 2026-10-12: [installed versions and C23/link evidence](docs/validation/m1.md#environment).
-M0 complete on 2026-10-15, when the license was chosen.
-
-```bash
-pacman -Q wpewebkit meson ninja pkgconf gcc 2>/dev/null
-pkg-config --modversion wpe-webkit-2.0
-pkg-config --modversion wpe-platform-2.0
-pkg-config --modversion wpe-platform-wayland-2.0
-meson --version
-cc --version | head -n 1
-```
-
-If needed, inspect package details with `pacman -Si wpewebkit`; install missing components deliberately (e.g. `sudo pacman -S --needed wpewebkit meson ninja pkgconf gcc`). Don't install deprecated WPEBackend-FDO/Cog as a prerequisite for a modern WPEPlatform launcher.
+Done 2026-10-12 ([versions](docs/validation/m1.md#environment)); license chosen 2026-10-15 (D-15).
 
 **Exit:** all M0 P0 checks pass: a clean Meson/C23 build links to packaged WPE and WPEPlatform; toolchain and package versions are recorded. If C23 is unsupported, investigate the toolchain and report options; changing the accepted language standard requires a maintainer decision.
 
@@ -147,23 +133,12 @@ If needed, inspect package details with `pacman -Si wpewebkit`; install missing 
 
 ### Gate A — stop, review and decide next implementation tasks
 
-Checkpoint 2026-10-13: [M1 acceptance record](docs/validation/m1.md),
-[audit](docs/validation/audit-m1.md),
+Evidence: [M0/M1 acceptance record](docs/validation/m1.md), [audit](docs/validation/audit-m1.md),
 [PSS measurements](docs/validation/measurements-m1-audit.md),
-[guided checks](docs/validation/guided-checks-m1-audit.md), and
-[handoff](docs/validation/handoff.md). The maintainer completed the
-[desktop checklist](docs/validation/desktop-checklist.md), with
-[guided session evidence](docs/validation/interactive-2026-10-13.md), including
-precise pointer targets after resize/scroll and user-initiated close/cleanup.
-Scholar search/result/scroll exploration reports no blocker; missing glyphs in a
-language menu are deferred to M3-10 at the maintainer's request. M1 P0 checks pass. Gate A is ready for review, **not approved**; no M2
-work is authorized by this checkpoint. Subsequent
-[blank-memory diagnosis](docs/validation/blank-memory.md) identifies engine and
-graphics startup costs and confirms hardware GPU participation using the web
-process's amdgpu execution counters. Exact GL renderer/per-feature acceleration
-remain unmeasured. The maintainer has no second monitor; multi-monitor checks are
-unavailable and fractional scaling remains untested. Curated results are tracked;
-generated raw `docs/validation/runs/` artifacts are ignored and kept locally.
+[guided checks](docs/validation/guided-checks-m1-audit.md),
+[memory and GPU baseline](docs/validation/blank-memory.md) and the
+[handoff](docs/validation/handoff.md) (open items and limits). Gate A is ready for review,
+**not approved**.
 
 Evidence to bring to the review:
 
@@ -353,7 +328,7 @@ No fixed percentage improvement is presumed in advance. Record repeated measurem
 
 ---
 
-## 4. Suggested repository layout
+## Suggested repository layout
 
 ```text
 foob/
@@ -382,21 +357,7 @@ foob/
 
 **Do not create all source modules on day one.** Initially `meson.build`, `src/main.c`, a `.gitignore`, and a small README are enough. Split files when responsibilities actually emerge. A custom-WPE `PKGBUILD` can live in a **separate packaging repository** or clearly isolated directory, but should not be a source submodule and should not share the application's build cycle.
 
-## 5. Starting backlog: the next concrete sequence
-
-These are the *only* actions needed to start development before Gate A:
-
-1. **Check installed package/toolchain versions** (`M0-01`–`M0-03`).
-2. **Create the C23/Meson skeleton** and link against `wpe-webkit-2.0` (`M0-04`).
-3. **Show one Wayland web window** from a CLI URL (`M1-01`–`M1-02`).
-4. **Make window close exit cleanly** (`M1-03`).
-5. **Test niri resize, focus, scrolling and text input** (`M1-04`–`M1-05`).
-6. **Collect reproducible total-PSS baseline**, warnings and optional MathML/Scholar observations (`M1-06`–`M1-09`); record P1 deferrals explicitly.
-7. **Hold Gate A review using evidence**, then prioritize M2 rather than speculating about later optimization.
-
-**No custom-engine build, Servo investigation, browser tabs, IPC framework, overlay UI, or complex mathematical converter pipeline before Gate A.** Arbitrary external URI schemes and untrusted local-file access are not part of the M1 trusted-page smoke test.
-
-## 6. Test and measurement record template
+## Test and measurement record template
 
 Create one record per fixture/engine build, ideally committed as a small Markdown or machine-readable log:
 
@@ -420,7 +381,7 @@ Notes / reproducibility commands:
 
 For PSS, account for **all WPE child processes**, not just the top-level `foob` process; avoid double-counting shared pages. Record the collection method and use the same procedure in stock/custom comparisons. The 100 MiB stretch target concerns lightweight single-page scenarios, not rich AI apps or an arbitrary worst-case memory ceiling.
 
-## 7. Scope control and change rules
+## Scope control and change rules
 
 - **Promote tasks only to solve observed problems** or unlock an explicit accepted goal; record why.
 - **Triage of findings (decided 2026-10-13).** A problem is not automatically a bug for the current milestone.
@@ -435,22 +396,7 @@ For PSS, account for **all WPE child processes**, not just the top-level `foob` 
 - **Update this roadmap** when a milestone is closed; keep the longer architecture document for deeper rationale.
 - **Keep the root planning files authoritative:** link to them from `docs/` rather than creating independently edited copies.
 
-## 8. Audit and unresolved implementation validation
-
-Originally audited with the architecture decision on 2026-10-12; current
-M0/M1 evidence updated 2026-10-13. Installed packages/C23 build/link, native
-Wayland rendering/input/window behavior, process cleanup and PSS are recorded
-under `docs/validation/`, with the required guided checks now passing. Gate A
-is ready for maintainer review and not approved. Custom-engine builds, dialogs
-and later milestone features remain unimplemented/untested.
-
-WPE **engine**, Arch **package revision** and **2.0 API names** are distinct;
-custom WPE is conditional on **Gate B**. P0 blocks its assigned stage, not every
-stage at once. Separate binaries/prefixes may be used for future A/B comparisons.
-The referenced `foob_document_audit_2026-10-12.md` is absent from this checkout;
-use the actual validation records instead.
-
-## 9. Authoritative references (checked 2026-10-12)
+## Authoritative references (checked 2026-10-12)
 
 - Arch package: https://archlinux.org/packages/extra/x86_64/wpewebkit/ — `wpewebkit` 2.54.1-2 on 2026-10-12 (**upstream 2.54.1**, **Arch revision -2**; verify locally).
 - WPEPlatform native integration guide: https://wpewebkit.org/blog/2026-10-06-wpe-platform.html
