@@ -1,10 +1,8 @@
 # Comparison with upstream MiniBrowser (WPE)
 
-Why: MiniBrowser (`Tools/MiniBrowser/wpe/main.cpp` in the WPE WebKit release) is the
-engine team's own minimal browser on the same API (D-14). foob should be more concise,
-more accurate and safer than it for what foob does, and learn from what it does that
-foob has not yet needed. M2-13 and M3-09 repeat this comparison; this page is the
-baseline taken at the end of M1 (2026-10-14, WPE WebKit 2.54.1).
+The baseline for roadmap tasks M2-13 and M3-09 (D-14): foob next to MiniBrowser
+(`Tools/MiniBrowser/wpe/main.cpp`), the engine team's own minimal browser on the same API,
+taken at the end of M1 (2026-10-14, WPE WebKit 2.54.1).
 
 **Where the source is.** A local copy is in `reference-minibrowser/` (git-ignored through
 `.git/info/exclude`, so it may be absent). Fetch it again from the 2.54.1 release
@@ -15,12 +13,10 @@ directory, and never build or run it. Two-clause BSD license, copyright Igalia.
 
 ## Size (a signal, not a target; `AGENTS.md`)
 
-Non-blank, non-comment-start lines, crude filter. foob `src/`: 432 code lines (C, six
+Non-blank, non-comment-start lines, crude filter. foob `src/`: 432 code lines (C, five
 headers included), 22,520 B stripped. MiniBrowser `main.cpp`: 690 code lines (838
 raw), which holds two backends (libwpe and WPEPlatform) and needs
-`Tools/WPEToolingBackends` for the legacy one (not counted); 26,896 B stripped. Cog 0.18.5
-(about 8,000 code lines for a Wayland build) is a kiosk shell with its own Wayland platform
-layer and is not a comparison target. The engine dominates memory (about 170 MiB blank
+`Tools/WPEToolingBackends` for the legacy one (not counted); 26,896 B stripped. The engine dominates memory (about 170 MiB blank
 process-tree PSS) for any shell.
 
 ## Where foob is ahead at M1
@@ -76,12 +72,3 @@ small program (not committed) created `webkit_settings_new()` and an ephemeral
 
 Owners: media stream, ITP and autoplay are decided under M3-05 (permission defaults), the
 feature list under M5-09. Nothing was changed.
-
-## How M2-13 and M3-09 judge "better"
-
-For each feature foob adds that MiniBrowser also has (keys, navigation, reload, title,
-fullscreen, permissions, downloads, new windows, profile), record: its approach, foob's
-approach, foob lines for it, and evidence (test or guided row). foob passes when it
-(a) needs no more code for the same behaviour, or says why more is justified,
-(b) has a test where MiniBrowser has none, (c) grants nothing without a decision. Report
-a miss as a finding, not a failure to hide.
