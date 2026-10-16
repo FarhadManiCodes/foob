@@ -365,19 +365,9 @@ Managed previews use their own ephemeral network session; ordinary browsing keep
 
 Each generated preview output has an explicit owner and a known set of required assets (HTML, CSS, scripts, fonts, images). A complete output is published atomically, so a failed conversion never replaces a working output with partial content. Outputs and assets stay available while reload, linked-document or Back navigation can still use them, and shared assets are reference-tracked. A converter handoff states who keeps and releases the output; no temporary path is assumed to outlive the converter. Cleanup removes only application-owned generated data, never source documents, external assets or outputs an open preview still uses. Live updates, if added later, first need a current-owner identity and stale-update rejection. The ownership concern comes from the [historical blueprint](docs/research/qvu/design/qt6_minimalist_research_viewer_blueprint.md), not its IPC design. Tests: M4-09.
 
-### Test matrix before calling this production-ready
+### Tests
 
-**Fresh-process policy and offline controls:** configure resource restrictions and scheme classifications before first navigation. Run cold resource-policy cases in fresh browser processes with isolated empty test data/cache directories, preserving the normal browsing profile. For offline math, make networking unavailable before launch and load only local assets; verify visible output/font loading and record attempted HTTP(S) requests, the network-isolation method and diagnostic limitations. Test warm reload separately under unchanged restrictions. Missing-asset tests also need fresh process/cache state so cached resources cannot hide failures. Use allowed/denied resource controls to distinguish policy enforcement from general loading defects. The [qvu asset-access investigation](docs/research/qvu/findings/katex-investigation.md) observed success after restoring restrictions and reloading but failure in a fresh process; the mechanism was not isolated. Repeat these controls on stock/custom engines in M5. These empty-state controls apply to local-resource tests, not Scholar restart-continuity tests that intentionally retain a profile.
-
-- Open stand-alone local `.html` with relative CSS/images; confirm its canonical `file://` URL and MIME detection (`shared-mime-info` may be required on minimal installations).
-- Render generated Markdown math, KaTeX fonts/scripts, MathML, local images, and special-character filenames without an HTTP server.
-- Follow source-relative sibling/parent Markdown links with fragments; test spaces, encoded filenames, missing targets, duplicate headings and Back navigation. Authorized targets must be converted, while links outside approved roots must not silently grant access.
-- Follow user-activated HTTP(S) links, including `target=_blank`, into separate browsing windows; verify preview document/scroll/zoom preservation and that remote destinations cannot inherit document-resource access. Automatic remote requests remain blocked by default.
-- Verify generated-output lifetime and cleanup: reload after converter exit, retain a working generation after failed publication, preserve Back-navigation resources, close one of two previews sharing assets, and recover owned temporary data after a crash without deleting source/external files.
-- Navigate from a remote page to a crafted `foob:` path and try to read an unapproved path; must be denied. Test `../`, `%2e%2e`, symlink traversal, absolute paths and malformed encodings.
-- Open two unrelated local documents and verify they cannot fetch each other's unapproved resources; verify remote requests are blocked by default.
-- Test behavior of CORS, relative URLs, cookies/storage, history/back, origin and CSP on custom-scheme pages before adopting any scheme classification.
-- Confirm memory/performance differences between `file://`, load-bytes and streaming scheme handlers, and test sandboxed sub-processes remain functional.
+Acceptance tests live in the roadmap: M4-01 to M4-03, M4-05, M4-08, M4-09, and the stock/custom repeat in M5-08.
 
 **Status:** WPE's public custom URI integration mechanism is verified in upstream documentation. The particular `foob:` scheme design, origin isolation rules and production-safe file resolver are **design proposals requiring implementation and security tests**.
 
