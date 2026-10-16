@@ -4,7 +4,7 @@
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-16. **Branch `m0-m1`, in the main checkout.** The
+Updated 2026-10-17. **Branch `m0-m1`, in the main checkout.** The
 M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
 security reviews, a final cleanup review) were handled here, and the evidence was
 re-recorded after each C change, last on `147ae45`. The second security review led to
