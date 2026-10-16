@@ -1,9 +1,7 @@
 # M1 interactive desktop checklist — passed
 
 The maintainer completed the required checks on 2026-10-13 (local time), after
-the initial deferral. See [guided session evidence](interactive-2026-10-13.md)
-and paired raw logs/process records; repeated on the audit binary on 2026-10-16
-([interactive-2026-10-16.md](interactive-2026-10-16.md)). M1 P0 checks pass; Gate A is ready for
+the initial deferral. Rerun on the audit binary, all steps pass: [interactive-m1-audit.md](interactive-m1-audit.md). M1 P0 checks pass; Gate A is ready for
 review and has not been approved. No input-automation tools were installed.
 
 ```sh
