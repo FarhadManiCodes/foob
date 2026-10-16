@@ -314,35 +314,6 @@ No fixed percentage improvement is presumed in advance. Record repeated measurem
 
 ---
 
-## Suggested repository layout
-
-```text
-foob/
-├── meson.build
-├── src/
-│   ├── main.c                 # M1: startup and view lifetime
-│   ├── browser.c              # M2+: app state and navigation
-│   ├── browser.h
-│   ├── input.c                # M2+: shortcuts and focus
-│   ├── downloads.c            # M3+: download policy
-│   └── local_documents.c      # M4+: guarded local scheme
-├── tests/
-│   ├── fixtures/
-│   │   ├── viewport.html
-│   │   ├── input.html
-│   │   ├── mathml.html
-│   │   └── dialogs.html
-│   └── benchmark/             # reproducible measurement scripts
-├── docs/
-│   ├── README.md              # links to the root planning documents
-│   └── validation/            # task evidence and current handoff record
-├── packaging/
-│   └── arch/                  # eventual foob application package
-└── README.md
-```
-
-**Do not create all source modules on day one.** Initially `meson.build`, `src/main.c`, a `.gitignore`, and a small README are enough. Split files when responsibilities actually emerge. A custom-WPE `PKGBUILD` can live in a **separate packaging repository** or clearly isolated directory, but should not be a source submodule and should not share the application's build cycle.
-
 ## Test and measurement record template
 
 Create one record per fixture/engine build, ideally committed as a small Markdown or machine-readable log:

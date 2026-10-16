@@ -118,36 +118,11 @@ Use one persistent browser profile for ordinary browsing storage and logins. M4 
 
 **Application repository:** only the application's source, tests, fixtures, configuration, and packaging/build *recipes*. No vendored WebKit source.
 
-Suggested layout:
-
-```text
-foob/                       # working directory name only
-├── README.md
-├── meson.build
-├── meson_options.txt
-├── src/
-│   ├── main.c
-│   ├── browser.c
-│   ├── window.c       # toplevel lifecycle, state, resize tests
-│   ├── navigation.c
-│   ├── downloads.c
-│   └── profile.c
-├── tests/
-│   └── fixtures/
-│       ├── katex.html
-│       └── mathml.html
-├── packaging/
-│   └── arch/
-│       ├── browser/       # browser PKGBUILD when needed
-│       └── wpe-minimal/   # independent WPE build recipe
-└── docs/
-    ├── README.md              # links to authoritative root plans
-    └── validation/            # acceptance evidence and handoff record
-```
+The current modules are listed in `AGENTS.md`. The custom WPE build recipe lives in `packaging/arch/wpe-minimal`.
 
 If the custom WPE packaging becomes complex, move `packaging/arch/wpe-minimal` to a **separate repository**. This is a build recipe, *not* a WebKit submodule or source fork.
 
-The layout is illustrative: do not create every module initially or duplicate the root architecture/roadmap as independently edited documents under `docs/`.
+Do not duplicate the root architecture or roadmap as independently edited documents under `docs/`.
 
 **Development workflow:**
 
