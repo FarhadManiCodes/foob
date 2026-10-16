@@ -37,7 +37,7 @@ reviewed every finding: what was still needed moved to the roadmap, the code, D-
 `AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
 refer to that earlier register (see its git history).
 
-None open (F-75, a probe race, was fixed 2026-10-16). A new finding is a row in this table:
+None open. A new finding is a row in this table:
 
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
