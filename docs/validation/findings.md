@@ -32,15 +32,16 @@ into that roadmap task (the roadmap's triage rule, under *Scope control*); when 
 choice, it becomes a decision. Record who found it (`Maintainer`, `Claude`, `Codex` or the
 review) and how it was checked.
 
-Next number: **F-76**. F-01 to F-74 were used until 2026-10-15, when the maintainer
+Next number: **F-77**. F-01 to F-74 were used until 2026-10-15, when the maintainer
 reviewed every finding: what was still needed moved to the roadmap, the code, D-04 and
 `AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
 refer to that earlier register (see its git history).
 
-None open. A new finding is a row in this table:
+One open. A new finding is a row in this table:
 
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
+| F-76 | `foob_window_title()` copies and scans the whole page title on every title change before cutting it to 120 or 240 characters. A remote page can set a title of many megabytes, repeatedly, and stall the UI process, which also serves input, the compositor connection and signals. Fix: bound the input read (for example the first 16 KiB, cut at a character boundary) before `normalize()`, with a unit test for a long invisible prefix | Code review before Gate A | Timed the function in isolation, `-O2`: 31 ms per call for a 1 MiB title (untrusted), 85 ms for 4 MiB, 331 ms for 16 MiB; trusted titles about two thirds of that. The engine's own handling of such a title is not included | Open |
 
 ## Ideas parking lot (not tasks yet)
 

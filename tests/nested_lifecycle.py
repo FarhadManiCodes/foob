@@ -101,6 +101,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         return
     compositor, display, socket = start_compositor()
     errors = scratch / f'{name}.err'
+    browser = None
     try:
         browser = subprocess.Popen([binary, uri], stderr=errors.open('w'),
                                    env={**os.environ, 'WAYLAND_DISPLAY': display,
@@ -125,8 +126,9 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         print(f'PASS {name}: exit {code}, no survivors')
     finally:
         try:
-            os.killpg(browser.pid, signal.SIGKILL)  # first: a stuck compositor must not skip it
-        except (ProcessLookupError, NameError):
+            if browser:  # the group outlives a reaped leader while a helper survives
+                os.killpg(browser.pid, signal.SIGKILL)  # first: a stuck compositor must not skip it
+        except ProcessLookupError:
             pass
         if compositor.poll() is None:
             stop_compositor(compositor)
@@ -274,7 +276,7 @@ scenario('blank-form-does-not-navigate', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
 scenario('compositor-close', 0, close_window)
-scenario('sigint', 0, lambda c, s, w, b: b.send_signal(signal.SIGINT))
+scenario('sigint', 0, lambda c, s, w, b: os.killpg(b.pid, signal.SIGINT))  # like a terminal's Ctrl-C
 scenario('compositor-lost', 3, lambda c, s, w, b: c.kill())
 
 

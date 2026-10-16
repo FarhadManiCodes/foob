@@ -80,8 +80,11 @@ build, same method, all 24 runs passed (raw records: `runs/m1-signal-a4b8e38/`, 
 
 Same packages as in October 14; the whole session reads about 19 MiB higher than that one
 (blank 189 against 170), for both builds, so compare only within the session. The new build
-is 0.6 (blank), 2.0 (fixture, ranges do not overlap) and 1.4 MiB (Wikipedia) higher: at most
-0.9%, and no code path touched by the change runs on a page. Not explained further.
+is 0.6 (blank), 2.0 (fixture, ranges do not overlap) and 1.4 MiB (Wikipedia) higher, at most
+0.94%. Per process the WPEWebProcess and WPENetworkProcess readings are identical; the whole
+difference sits in the foob process (audit 32.1-33.6 MiB, varying with the workload, against
+34.0-34.1 for the new one). The cause is not found, so this is a small unexplained increase in
+the UI process, not a clean pass.
 
 ## Why these numbers differ from the first baseline
 

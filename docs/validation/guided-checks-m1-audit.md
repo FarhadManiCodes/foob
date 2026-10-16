@@ -35,7 +35,7 @@ shows the title and app-id. There is no reload key: close the window and start a
 | 11 | Camera and microphone request | record whether a prompt appears | No prompt; log `OverconstrainedError`: no capture device here, so the permission default is untested (M3-05) |
 | 12 | PDF link | record what is shown | Shown inline in PDF.js (D-12, M3-04) |
 | 13 | Right-click on the page | record whether a menu appears | No context menu (M3-01) |
-| 14 | Window title | `Policy fixture (remote) — foob`, app-id `dev.foob.Browser` | **PASS** (also asserted by the nested suite) |
+| 14 | Window title | `Policy fixture (remote) — foob`, app-id `dev.foob.Browser` | **PASS** |
 | 19 | Link inside the sandboxed frame | the frame says `click registered`; the window stays on the fixture | **PASS** on `4e9b6c2` |
 
 ## Local page (trusted)
@@ -50,7 +50,7 @@ python3 tests/benchmark/interactive.py --binary build/foob \
 | 15 | New-window link to another local file | nothing happens (D-04) | **PASS** on `4e9b6c2` |
 | 16 | New-window link to a remote page | nothing happens (D-04) | **PASS** on `4e9b6c2` |
 | 17 | `window.open()` to https://example.org/ from a click | nothing happens; log says `returned null` | **PASS** |
-| 18 | Window title | `Policy fixture (local) — foob` | **PASS** (read by Claude from `niri msg -j windows`, with app-id `dev.foob.Browser`; also asserted by the nested suite) |
+| 18 | Window title | `Policy fixture (local) — foob` | **PASS** (read by Claude from `niri msg -j windows`, with app-id `dev.foob.Browser`) |
 
 The `4e9b6c2` run (clean tree, binary `6e650bf4…`): both windows exited 0 with no surviving
 process. The server log shows one `GET /second.html` (row 2, the control), no `POST /echo`,
@@ -77,7 +77,7 @@ python3 tests/benchmark/desktop_probe.py --binary build/foob \
 ```
 
 It writes its log, record and screenshots into a new private directory, printed at start
-(`--output-dir` names one that must not exist yet). **Last pass: `d9ea90d`, 2026-10-13**:
+(`--output-dir` names one that must not exist yet). **Last passes: `d9ea90d`, 2026-10-13, then on the audit binary 10 of 10 after the probe learned to wait for the window (a fast load ended before niri listed it)**:
 950x1188 at scale 1.0, narrowed to 700x1188 (one column), fullscreen 1920x1200 (two
 columns), restored to 700x1188; exit 0 and no surviving process; the screenshots were
 inspected and deleted. A locked screen makes it fail.
