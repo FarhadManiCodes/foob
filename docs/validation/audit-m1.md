@@ -8,7 +8,7 @@ in existing behaviour and recorded the baselines below; final measurements and h
 
 ## Defects found and fixed
 
-Each fix has a test that fails on the unfixed build (negative control), except defect 3.
+Each fix has a test that fails on the unfixed build (negative control), except defects 3 and 8.
 
 | # | Defect | Fix | Guarded by |
 |---|---|---|---|
@@ -19,6 +19,7 @@ Each fix has a test that fails on the unfixed build (negative control), except d
 | 5 | `target=_blank` links did nothing, `window.open()` returned `null` | Kept, now decided: every new-window request is ignored (D-04, which records the two earlier attempts and why they were removed) | `blank-form-does-not-navigate`; real clicks: guided rows 1, 3, 9, 15, 16, 19 |
 | 6 | A dead web process left a blank or frozen window | Exit 4 through the normal teardown (D-06); recovery is M3-07 | `web-process-crash` (SIGKILLs the exact `WPEWebProcess`) |
 | 7 | Unstable app-id: niri saw `org.webkit.app-<SHA256 of the binary's path>`, so window rules broke when the binary moved | `g_set_prgname("dev.foob.Browser")` before the view exists (D-07); a name without a dot is ignored | Every nested scenario asserts the app-id |
+| 8 | (Found in the pre-Gate-A code review, 2026-10-17.) SIGINT/SIGTERM were handled only once `foob_browser_run()` started, so a signal during display and engine start-up killed foob by signal instead of exiting 0 | The two signal sources are installed first in `foob_browser_new` and removed in `foob_browser_run()` or `foob_browser_free()`. About 40 ms of the window remain, in the dynamic loader before `main()`: SIGTERM within 5-40 ms of spawn still kills (16 of 39 tries, 21 before the fix) | **No deterministic test:** the window is a few milliseconds, so a timing probe is only a spot check |
 
 The split into modules is described in `AGENTS.md`; source hashes recorded before the
 split (a manifest of every `src/*.[ch]` now, `main.c` only before) cannot be compared with later ones.

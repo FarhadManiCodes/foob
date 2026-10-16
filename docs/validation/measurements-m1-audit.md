@@ -65,6 +65,24 @@ in every session, which is why launches are interleaved and repeated. Navigation
 against 485-541 ms, except the session's first audit Wikipedia launch (1136 ms, same memory).
 Warm reload of the fixture: 198.2 MiB, reload 4.9 ms.
 
+## Re-check after the signal change (`a4b8e38`, 2026-10-17)
+
+`foob_browser_new` now installs the SIGINT and SIGTERM sources before the display and engine
+start (`src/browser.c`). The audit binary (`f1c00899…`) and the new one (`ab59b029…`, source
+SHA256 `5f6b8159…`, tree clean) were measured alternating, four launches per workload and
+build, same method, all 24 runs passed (raw records: `runs/m1-signal-a4b8e38/`, local):
+
+| Workload | Audit binary (MiB) | New binary (MiB) |
+|---|---|---|
+| Blank | 189.3 (187.3-191.0) | 189.9 (187.0-192.5) |
+| Local fixture | 213.5 (213.3-213.8) | 215.5 (215.4-215.6) |
+| Wikipedia | 349.8 (347.2-350.9) | 351.2 (349.4-353.7) |
+
+Same packages as in October 14; the whole session reads about 19 MiB higher than that one
+(blank 189 against 170), for both builds, so compare only within the session. The new build
+is 0.6 (blank), 2.0 (fixture, ranges do not overlap) and 1.4 MiB (Wikipedia) higher: at most
+0.9%, and no code path touched by the change runs on a page. Not explained further.
+
 ## Why these numbers differ from the first baseline
 
 The first baseline (174.3, 202.4, 333.7 MiB) is higher because of session drift (system
