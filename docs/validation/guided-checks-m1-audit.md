@@ -57,6 +57,8 @@ process. The server log shows one `GET /second.html` (row 2, the control), no `P
 and the requests of rows 7, 8 and 12, clicked again (downloads stayed cancelled). Raw
 records stay local.
 
+**Rerun 2026-10-16 on `4f2163a` (same binary `f1c00899…`):** the maintainer reports the remote page rows and the click-position check pass; rows were not itemized.
+
 ## Click position
 
 `tests/fixtures/pointer.html` shows how far each click lands from four crosshair centres.
