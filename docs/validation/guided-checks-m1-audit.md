@@ -25,7 +25,7 @@ shows the title and app-id. There is no reload key: close the window and start a
 | 1 | New-window link to a remote page | nothing happens; no `GET /second.html` (D-04) | **PASS** on `4e9b6c2` |
 | 2 | Ordinary link to a remote page | opens in the same window | **PASS** |
 | 3 | New-window link to a local file | nothing happens | **PASS** on `4e9b6c2` |
-| 4 | Ordinary link to a local file | nothing happens | Page log "click registered on item 4" (no result beyond that was recorded) |
+| 4 | Ordinary link to a local file | nothing happens | **PASS** (page log "click registered on item 4"; the maintainer confirmed on the rerun on `4f2163a`, binary `f1c00899…`, that nothing happened after the click) |
 | 5 | `window.open()` from a click | nothing happens; log says `returned null` | **PASS** |
 | 6 | `window.open()` 5 s after a click | nothing happens; log says `returned null` | **PASS** |
 | 7 | Attachment link | nothing happens; no file in `~/Downloads` (D-02) | **PASS**: server printed `GET /attachment.bin 200`, no file (listing checked) |
