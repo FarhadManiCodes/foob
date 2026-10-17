@@ -15,7 +15,8 @@
  * left to right and "foob" stays at its end. Titles of local content
  * (trusted = true, see foob_uri_is_local()) keep their text apart from what the
  * Wayland protocol requires: valid UTF-8, no control characters, at most 240
- * characters.
+ * characters. Only the first 16 KiB of a title is read, so a huge title costs no more
+ * than a long one.
  * Returns a newly allocated string; free with g_free(). Depends only on GLib.
  */
 char *foob_window_title(const char *page_title, bool trusted);

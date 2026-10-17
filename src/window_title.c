@@ -5,6 +5,9 @@
 /* Keeps one Wayland string argument far below the protocol's message size limit. */
 static constexpr glong untrusted_max_chars = 120;
 static constexpr glong trusted_max_chars = 240;
+/* A page controls its title and may set one of many megabytes on every change; only this
+ * much of it is read, so the work per change stays bounded (F-76). */
+static constexpr size_t max_input_bytes = 16 * 1024;
 
 /* Format characters (Unicode category Cf) that render as visible glyphs, mostly Arabic
  * and Syriac prefixed number signs, and the joiners U+200C and U+200D, which emoji
@@ -50,7 +53,12 @@ static bool may_be_right_to_left(gunichar c)
  * whitespace runs collapsed. */
 static char *normalize(const char *page_title, bool trusted)
 {
-    g_autofree char *valid = g_utf8_make_valid(page_title, -1);
+    const char *end = memchr(page_title, '\0', max_input_bytes);
+    size_t length = end ? (size_t)(end - page_title) : max_input_bytes;
+    /* A cut inside a multi-byte character would become a visible U+FFFD; stop before it. */
+    while (!end && length > 0 && ((unsigned char)page_title[length] & 0xc0) == 0x80)
+        length--;
+    g_autofree char *valid = g_utf8_make_valid(page_title, (gssize)length);
     GString *out = g_string_sized_new(strlen(valid));
     bool previous_space = false;
     for (const char *p = valid; *p; p = g_utf8_next_char(p)) {

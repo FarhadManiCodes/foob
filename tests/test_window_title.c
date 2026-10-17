@@ -134,6 +134,16 @@ static void test_long_title(void)
     g_assert_cmpuint(strlen(local), >, strlen(remote));
     g_assert_cmpuint(strlen(local), <, 300);
 
+    /* Only the first 16 KiB are read: text after a longer invisible prefix is never seen. This
+     * bounds the work per title change; without the bound the title would be "visible — foob". */
+    GString *prefixed = g_string_new(nullptr);
+    for (int i = 0; i < 8000; i++)
+        g_string_append(prefixed, "\u200b");  /* 24,000 bytes */
+    g_string_append(prefixed, "visible");
+    g_autofree char *capped = foob_window_title(prefixed->str, false);
+    g_assert_cmpstr(capped, ==, "foob");
+    g_string_free(prefixed, TRUE);
+
     /* A cut right after a space drops the space instead of leaving one before the ellipsis. */
     g_autofree char *head_a = g_strnfill(119, 'a');
     g_autofree char *tail_b = g_strnfill(50, 'b');
