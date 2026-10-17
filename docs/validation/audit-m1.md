@@ -55,7 +55,10 @@ split (a manifest of every `src/*.[ch]` now, `main.c` only before) cannot be com
   fortify imports).
 - Ctrl-C reaches the whole process group: SIGINT sent to foob's process group (all 8 processes
   share it) five times, and SIGTERM once, each exited 0 with no survivor.
-- All of this was repeated on the evidence revision `147ae45` with the same result.
+- All of this was repeated on the evidence revision `147ae45` with the same result, and the
+  sanitizer runs, the analyzer and the size on `bc556ac` (2026-10-17, after the signal and
+  title changes): ASan + UBSan 3/3 unit tests and 8/8 nested scenarios with no report,
+  `gcc -fanalyzer` clean on all five files, clean archive builds without a warning.
 
 ## Compiler flags
 
@@ -74,7 +77,11 @@ The next milestone explains growth over about 10% against these figures (`AGENTS
 | `size` text / data / bss | 8,632 / 1,000 / 16 | 13,061 / 1,160 / 16 | 20,933 / 2,792 / 304 |
 | Direct libraries | glib, gobject, WPEWebKit, libc | same | adds gio and gstreamer |
 
-Text per object: `diagnostics.c` 2,165, `browser.c` 2,061, `window_title.c` 1,402,
+After the signal and title changes of 2026-10-17 (`bc556ac`): 22,520 B stripped, text 13,457,
+data 1,176, bss 16. Text grew 3.0% (396 B: the signal-source helper and the title bound), under
+the 10% that needs an explanation.
+
+Text per object (`147ae45`): `diagnostics.c` 2,165, `browser.c` 2,061, `window_title.c` 1,402,
 `target.c` 1,143, `main.c` 499 bytes. The growth since `m0-m1` is the audit's behaviour
 changes (titles, download cancel, the two exits, app-id) plus the hardening flags; none of
 it is dead code except `foob_navigation_allowed()` (part of `target.c`), which no code calls
