@@ -77,8 +77,8 @@ The next milestone explains growth over about 10% against these figures (`AGENTS
 | `size` text / data / bss | 8,632 / 1,000 / 16 | 13,061 / 1,160 / 16 | 20,933 / 2,792 / 304 |
 | Direct libraries | glib, gobject, WPEWebKit, libc | same | adds gio and gstreamer |
 
-After the signal and title changes of 2026-10-17 (`bc556ac`): 22,520 B stripped, text 13,457,
-data 1,176, bss 16. Text grew 3.0% (396 B: the signal-source helper and the title bound), under
+After the signal and title changes of 2026-10-17 (`d31969a`): 22,520 B stripped, text 13,473,
+data 1,176, bss 16. Text grew 3.2% (412 B: the signal-source helper and the title bound), under
 the 10% that needs an explanation.
 
 Text per object (`147ae45`): `diagnostics.c` 2,165, `browser.c` 2,061, `window_title.c` 1,402,

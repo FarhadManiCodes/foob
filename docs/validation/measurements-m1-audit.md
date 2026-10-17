@@ -105,6 +105,24 @@ The foob process reads 33.1-34.0 MiB in both, so the gap seen in the previous re
 session reads lower than the previous re-check (blank 163 against 189) and the October 14
 record (170): compare only within a session.
 
+## Re-check after the title back-off limit (`d31969a`, 2026-10-17)
+
+The title's character-boundary back-off now stops after three bytes (audit defect 9). The
+previous revision (`f3d9f0e`, built in a scratch directory) and the new one (`a3ba0ca2…`,
+source SHA256 `bf479e39…`, tree clean) were measured alternating, four launches per workload
+and build, same method; all 24 runs passed (raw records `runs/m1-backoff-d31969a/`, local):
+
+| Workload | Previous (MiB) | New (MiB) |
+|---|---|---|
+| Blank | 198.7 (198.4-199.6) | 198.8 (197.6-200.4) |
+| Local fixture | 226.2 (226.0-226.2) | 226.2 (226.1-226.3) |
+| Wikipedia | 360.2 (358.6-361.7) | 361.7 (360.6-363.2) |
+
+No difference between the builds (0.1, 0.0 and 1.5 MiB). The whole session reads about 35 MiB
+higher than the previous re-check (blank 199 against 163) and 29 higher than the October 14
+record, for both builds, with the same packages: absolute values move by session, so only a
+comparison inside one session means anything.
+
 ## Why these numbers differ from the first baseline
 
 The first baseline (174.3, 202.4, 333.7 MiB) is higher because of session drift (system
