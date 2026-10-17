@@ -29,7 +29,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 
 **Open right now**
 1. All done 2026-10-16 on `4f2163a` (binary `f1c00899…`): geometry probe, trimmed nested suite, the real session (typing, scrolling, focus, maximize, close), the remote-page guided rows and the `pointer.html` click check: the maintainer confirms all pass.
-2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default, `m0-m1` not merged). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history is kept privately in a bundle; `docs/validation/runs/` stays local and backed up, since git ignores it.
+2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default, `m0-m1` not merged). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
 3. Maintainer: decide Gate A.
 
 **Rules for every agent (Claude, Codex, others)**
