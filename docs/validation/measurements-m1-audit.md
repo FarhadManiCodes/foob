@@ -86,6 +86,25 @@ difference sits in the foob process (audit 32.1-33.6 MiB, varying with the workl
 34.0-34.1 for the new one). The cause is not found, so this is a small unexplained increase in
 the UI process, not a clean pass.
 
+## Re-check after the title bound (`bc556ac`, 2026-10-17)
+
+`foob_window_title()` reads at most 16 KiB of a title (audit defect 9). The previous revision
+(`a4b8e38`, built in a scratch directory, so its hash `00d443c0…` differs from the tree's
+build) and the new one (`ebe3d2a7…`, source SHA256 `5ff4e92d…`, tree clean) were measured
+alternating, four launches per workload and build, same method; all 24 runs passed (raw
+records `runs/m1-title-bc556ac/`, local):
+
+| Workload | Previous (MiB) | New (MiB) |
+|---|---|---|
+| Blank | 163.0 (162.8-163.2) | 163.6 (161.9-166.0) |
+| Local fixture | 189.3 (187.0-195.2) | 188.8 (187.5-190.4) |
+| Wikipedia | 327.3 (321.8-330.9) | 323.8 (320.7-328.4) |
+
+The foob process reads 33.1-34.0 MiB in both, so the gap seen in the previous re-check
+(which compared against the audit binary) did not appear between these two builds. The
+session reads lower than the previous re-check (blank 163 against 189) and the October 14
+record (170): compare only within a session.
+
 ## Why these numbers differ from the first baseline
 
 The first baseline (174.3, 202.4, 333.7 MiB) is higher because of session drift (system
