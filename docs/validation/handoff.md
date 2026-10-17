@@ -30,7 +30,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 **Open right now**
 1. All done 2026-10-16 on `4f2163a` (binary `f1c00899…`): geometry probe, trimmed nested suite, the real session (typing, scrolling, focus, maximize, close), the remote-page guided rows and the `pointer.html` click check: the maintainer confirms all pass.
 2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default; `m0-m1` was not merged there at the time). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
-3. Maintainer, once no new issue is open: rerun the guided checks and the desktop checklist on the final binary (the last full run was on the audit binary, before the signal and title changes), and in the same session run a scratch build without the `decide-policy` handler on the `target=_blank` rows to learn whether the handler matters (the nested scenario does not guard it, audit defect 5).
+3. Maintainer, once no new issue is open: rerun the guided checks and the desktop checklist on the final binary (the last full run was on the audit binary, before the signal and title changes). The no-handler check of the `target=_blank` rows was done on 2026-10-18: WebKit's default ignores them too, so the handler is a second guard (audit defect 5, D-04).
 4. Maintainer: decide Gate A.
 
 **Rules for every agent (Claude, Codex, others)**
