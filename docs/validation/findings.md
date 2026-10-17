@@ -32,13 +32,10 @@ into that roadmap task (the roadmap's triage rule, under *Scope control*); when 
 choice, it becomes a decision. Record who found it (`Maintainer`, `Claude`, `Codex` or the
 review) and how it was checked.
 
-Next number: **F-77**. F-01 to F-76 have been used. F-01 to F-74 were used until 2026-10-15,
-when the maintainer reviewed every finding: what was still needed moved to the roadmap, the
-code, D-04 and `AGENTS.md`, and the rows were removed. Two more were found and fixed on
-2026-10-16 and 17, and their rows removed: F-75 (the geometry probe looked for the niri window
-once and missed it after a fast load) and F-76 (a huge page title stalled the UI process; now
-only the first 16 KiB is read, audit defect 9). Older commits and notes that cite these
-numbers refer to those findings (see the git history).
+Next number: **F-77**. F-01 to F-74 were used until 2026-10-15, when the maintainer
+reviewed every finding: what was still needed moved to the roadmap, the code, D-04 and
+`AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
+refer to that earlier register (see its git history).
 
 None open. A new finding is a row in this table:
 
