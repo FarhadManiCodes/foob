@@ -55,8 +55,9 @@ static char *normalize(const char *page_title, bool trusted)
 {
     const char *end = memchr(page_title, '\0', max_input_bytes);
     size_t length = end ? (size_t)(end - page_title) : max_input_bytes;
-    /* A cut inside a multi-byte character would become a visible U+FFFD; stop before it. */
-    while (!end && length > 0 && ((unsigned char)page_title[length] & 0xc0) == 0x80)
+    /* A cut inside a multi-byte character would become a visible U+FFFD; stop before it.
+     * A character has at most three continuation bytes, so back up at most three. */
+    for (int back = 0; !end && back < 3 && length > 0 && ((unsigned char)page_title[length] & 0xc0) == 0x80; back++)
         length--;
     g_autofree char *valid = g_utf8_make_valid(page_title, (gssize)length);
     GString *out = g_string_sized_new(strlen(valid));

@@ -144,6 +144,28 @@ static void test_long_title(void)
     g_assert_cmpstr(capped, ==, "foob");
     g_string_free(prefixed, TRUE);
 
+    /* The 16 KiB cut must not split a character into a visible U+FFFD, whatever its width or
+     * offset: 3-byte U+200B and 4-byte U+E0001 (a tag character), each after 0 to 3 spaces. */
+    const char *invisible[] = { "\u200b", "\U000e0001" };
+    for (size_t kind = 0; kind < G_N_ELEMENTS(invisible); kind++) {
+        for (int spaces = 0; spaces < 4; spaces++) {
+            GString *run = g_string_new(nullptr);
+            for (int i = 0; i < spaces; i++)
+                g_string_append_c(run, ' ');
+            while (run->len < 20000)
+                g_string_append(run, invisible[kind]);
+            g_autofree char *cut = foob_window_title(run->str, false);
+            g_assert_cmpstr(cut, ==, "foob");
+            g_string_free(run, TRUE);
+        }
+    }
+    /* A run of stray continuation bytes stays bounded and valid instead of vanishing. */
+    g_autofree char *stray = g_strnfill(20000, (char)0x80);
+    g_autofree char *repaired = foob_window_title(stray, false);
+    g_assert_true(g_utf8_validate(repaired, -1, nullptr));
+    g_assert_true(g_str_has_prefix(repaired, "\uFFFD"));
+    g_assert_cmpuint(strlen(repaired), <, 500);
+
     /* A cut right after a space drops the space instead of leaving one before the ellipsis. */
     g_autofree char *head_a = g_strnfill(119, 'a');
     g_autofree char *tail_b = g_strnfill(50, 'b');
