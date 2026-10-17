@@ -4,7 +4,7 @@
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-17. **Branch `m0-m1`, in the main checkout.** The
+Updated 2026-10-17. **Branch `main`, in the main checkout** (`m0-m1` was fast-forwarded into `main` at `16bc00a` on 2026-10-17; `origin/main` not yet pushed). The
 M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
 security reviews, a final cleanup review) were handled here, and the evidence was
 re-recorded after each C change, last on `147ae45`. The second security review led to
@@ -29,7 +29,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 
 **Open right now**
 1. All done 2026-10-16 on `4f2163a` (binary `f1c00899…`): geometry probe, trimmed nested suite, the real session (typing, scrolling, focus, maximize, close), the remote-page guided rows and the `pointer.html` click check: the maintainer confirms all pass.
-2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default, `m0-m1` not merged). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
+2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default; `m0-m1` was not merged there at the time). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
 3. Maintainer, once no new issue is open: rerun the guided checks and the desktop checklist on the final binary (the last full run was on the audit binary, before the signal and title changes), and in the same session run a scratch build without the `decide-policy` handler on the `target=_blank` rows to learn whether the handler matters (the nested scenario does not guard it, audit defect 5).
 4. Maintainer: decide Gate A.
 
