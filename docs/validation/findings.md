@@ -42,6 +42,17 @@ None open. A new finding is a row in this table:
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
 
+## Suspected issues (not reproduced)
+
+A bug that is possible by reading the code but unlikely, which a test could not reproduce.
+It stays here so that a later crash or odd behaviour can be checked against it. An entry
+leaves when someone reproduces it (it becomes a finding) or a change makes it impossible.
+Next number: **S-02**.
+
+| ID | Suspicion | Raised by | How tested | If it shows up |
+|---|---|---|---|---|
+| S-01 | A SIGTERM or SIGINT that arrives after the signal sources exist but before the main loop runs (during display and view creation, about 10 to 15 ms) is handled only once the loop starts, and `foob_browser_run()` calls `webkit_web_view_load_uri()` first. In theory a page request could start for a user who already asked to quit | Code review before Gate A, 2026-10-17 | 36 launches against a local server, SIGTERM at 5 to 100 ms after spawn: no request reached the server. Up to 30 ms the signal killed foob in the dynamic loader, before its handler existed. Not conclusive: the window is a few milliseconds and the test cannot aim at it | Dispatch the pending sources before the load, or load from an idle callback that is cancelled on the teardown path |
+
 ## Ideas parking lot (not tasks yet)
 
 An idea stays here only while no roadmap task or decision holds it; once one does, the row
