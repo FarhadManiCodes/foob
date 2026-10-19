@@ -265,8 +265,8 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 ### P0-B. Clipboard and text input
 
 - **Upstream handles:** WPEPlatform Wayland clipboard integration and web selection/paste; WebKit 2.54.1 specifically fixes pasting in-memory image data and several input-method issues.
-- **Application policy:** Do not write a second clipboard subsystem for ordinary page copy/paste. Use the platform implementation; add an explicit browser command to copy the current URL only if needed. Clipboard transfers (plain text, HTML, image) and primary selection are distinct features—verify what works instead of assuming equivalence.
-- **Acceptance:** Copy/paste with native Wayland apps; text, Unicode/compose, image paste into supporting web apps; focus changes between input and webpage; verify primary selection separately. Test niri/Wayland clipboard persistence after source application exits.
+- **Application policy:** Do not write a second clipboard subsystem for ordinary page copy/paste. Use the platform implementation; add an explicit browser command to copy the current URL only if needed (decided in D-32: `Ctrl+Shift+C` through WPEPlatform's public clipboard, marked sensitive in private mode). Clipboard transfers (plain text, HTML, image) and primary selection are distinct features—verify what works instead of assuming equivalence.
+- **Acceptance:** Copy/paste with native Wayland apps; text, Unicode/compose, image paste into supporting web apps; focus changes between input and webpage; verify primary selection separately (not required: the maintainer does not use it, D-32). Test niri/Wayland clipboard persistence after source application exits.
 - **References:** https://wpewebkit.org/release/wpewebkit-2.54.1.html and https://wpewebkit.org/reference/stable/wpe-platform-2.0/
 
 ### P0-C. Popups, JavaScript dialogs and permissions
