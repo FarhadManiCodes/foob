@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <glib.h>
 #include "target.h"
@@ -157,10 +159,16 @@ char *foob_target_canonical(const char *uri)
 
 char *foob_target_from_argument(const char *argument)
 {
-    if (!g_str_has_prefix(argument, "/") && !g_str_has_prefix(argument, "./") &&
-        !g_str_has_prefix(argument, "../"))
+    bool absolute = g_str_has_prefix(argument, "/");
+    if (!absolute && !g_str_has_prefix(argument, "./") && !g_str_has_prefix(argument, "../"))
         return foob_target_canonical(argument);
-    g_autofree char *path = g_canonicalize_filename(argument, nullptr);
+    /* The kernel's current directory, as ls and tab completion see it (D-44); GLib's
+     * g_get_current_dir() would prefer $PWD and fall back to "/" when it is gone. */
+    char *cwd = absolute ? nullptr : getcwd(nullptr, 0);
+    if (!absolute && !cwd)
+        return nullptr;
+    g_autofree char *path = g_canonicalize_filename(argument, cwd);
+    free(cwd);
     g_autofree char *uri = g_filename_to_uri(path, nullptr, nullptr);
     return foob_target_canonical(uri);
 }

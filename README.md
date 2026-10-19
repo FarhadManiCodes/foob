@@ -43,8 +43,8 @@ meson test -C build --print-errorlogs
 ```
 
 `foob [URI | PATH]` accepts one explicit HTTP(S) URI, a local absolute `file:` URI,
-`about:blank`, or a path starting with `/`, `./` or `../` (made absolute and turned
-into a `file:` URI; `foob example.com` and `foob notes.html` stay rejected). HTTP credentials and non-local file hosts are rejected.
+`about:blank`, or a path starting with `/`, `./` or `../` (made absolute against the
+real current directory and turned into a `file:` URI; `foob example.com` and `foob notes.html` stay rejected). HTTP credentials and non-local file hosts are rejected.
 foob loads the address in a canonical form that WebKit's parser leaves as it is:
 non-ASCII text in the path, query and fragment is percent-encoded, a host must be
 ASCII (punycode for international names), and a file name must be valid UTF-8.

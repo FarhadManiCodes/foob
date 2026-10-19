@@ -15,10 +15,11 @@ char *foob_target_canonical(const char *uri);
 
 /*
  * The canonical form for a command-line argument (D-32): one starting with "/",
- * "./" or "../" is a path, made absolute (without resolving symbolic links) and
- * turned into a file: URI; anything else must be a URI. Either way the result
- * passes foob_target_canonical(). Only for the command line: an address from a
- * page is never a path.
+ * "./" or "../" is a path, made absolute against the kernel's current directory
+ * (D-44; ".." inside the argument is removed as text) and turned into a file:
+ * URI; anything else must be a URI. Either way the result passes
+ * foob_target_canonical(). Only for the command line: an address from a page is
+ * never a path.
  */
 char *foob_target_from_argument(const char *argument);
 

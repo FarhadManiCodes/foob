@@ -323,7 +323,8 @@ core was stored; the helpers left metadata-only journal entries.
   - `/tmp/a b#?.html` gives `file:///tmp/a%20b%23%3F.html`.
   - Dot segments are resolved, and a UTF-8 name is encoded.
   - `./x.html` and `../x.html` resolve against the current directory.
-  - A URI argument passes through unchanged.
+  - A URI argument becomes its canonical form (`https://example.org` gives
+    `https://example.org/`).
   - A name that is not UTF-8, `example.com`, `x.html`, `~/x.html` and an empty argument
     are rejected.
 - **`check_cli.py`:**
@@ -354,3 +355,50 @@ core was stored; the helpers left metadata-only journal entries.
 | `src_main.c.o` | 499 | 1,105 |
 | `src_target.c.o` | 1,143 | 3,029 |
 | `src_window_title.c.o` | 1,498 | 1,498 |
+
+#### Follow-up after the reviews of commit 3 and `132cc76`
+
+All three reviews passed (code and security of `68905d1`; a quick code review of
+`132cc76`). The security fuzzer checked 900,000 path arguments under sanitizers with 0
+violations. Follow-ups, chosen by the maintainer:
+
+- **Relative paths now use the kernel's current directory (D-44).** Commit 3 used
+  `g_get_current_dir()`, which prefers `$PWD` and falls back to `/`.
+  - The reviews reproduced three surprises: a symlinked directory resolved `..` to the
+    link's parent, not the real one; a deleted directory made `./x.html` into `/x.html`;
+    and `cd //tmp` made every relative path fail.
+  - Now `getcwd()` is the base, and a missing directory rejects the argument.
+  - **New unit test `/target/from-argument-cwd`:**
+    - `cd` into a symlinked directory with `$PWD` set as a shell sets it: `../x.html`
+      names the real parent, as `realpath ..` does.
+    - The same directory after it is deleted: `./x.html` is rejected.
+    - On commit 3's `target.c` it fails: `file:///tmp/foob-target-…/x.html` instead of
+      `…/real/x.html`.
+- **Two regression cases in `/target/from-argument`:** `//etc/passwd` is rejected, and
+  `/tmp/%2e%2e/x` gives `file:///tmp/%252e%252e/x` (a literal `%` in a name).
+- **Small fixes:**
+  - The usage line lists `../path`.
+  - The socket-collector scenario quotes its scratch path in the shell command, and its
+    comment says it is the kernel that does not abort.
+  - AGENTS.md's guard sentence is reworded.
+  - The roadmap's core-dump line names the D-42 fallback.
+  - M2-03 gets the D-23 acceptance constraints from the security review: the parent
+    passes only canonical http(s), the child checks a URI only, `--` comes before the
+    address, and `--version` is valid only alone.
+- **Wording in this record.**
+  - The `.text` figures in step 1 are `size`'s text column, which also counts read-only
+    data and symbol tables. The `.text` section alone grew from 7,206 to 7,526 B in
+    commit 3.
+  - "A URI argument passes through unchanged" was corrected above.
+- **Size (D-35).**
+  - The stripped binary grows from 22,520 to 26,616 B. That is one page (4,096 B): the
+    content crossed the padding of the last page, as predicted after commit 3.
+  - The content itself grew far less: `size` text column 17,443 → 17,670 B (+227 B), and
+    the `.text` section 7,526 → 7,590 B (+64 B), from `getcwd()` and the longer usage
+    text.
+  - **Step 1 in total:** stripped 22,520 → 26,616 B (+18.2%, one page);
+    `size` text column 13,473 → 17,670 B (+31%). The growth comes from the canonical
+    form's rules (`target.c.o`), the core-dump guard with its fallback, and `--version`
+    (`main.c.o`).
+- **Not changed:** `--version` still exits 0 when stdout cannot be written. It is a
+  cosmetic issue, and `exit_status.h` has no code for it.

@@ -1,6 +1,10 @@
 /* Unit test for the startup-URI allowlist; needs no display. The module needs only
  * GLib; this test also links WebKit to check that WebKit's own parser agrees. */
+#define _DEFAULT_SOURCE  /* symlink(), realpath() under -std=c23 */
+#include <stdlib.h>
+#include <unistd.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <wpe/webkit.h>
 #include "target.h"
 
@@ -88,7 +92,7 @@ static void test_rejected(void)
 
 static void test_from_argument(void)
 {
-    g_autofree char *cwd = g_get_current_dir();
+    char *cwd = getcwd(nullptr, 0);
     g_autofree char *parent = g_path_get_dirname(cwd);
     g_autofree char *here = g_build_filename(cwd, "x.html", nullptr);
     g_autofree char *above = g_build_filename(parent, "x.html", nullptr);
@@ -100,7 +104,9 @@ static void test_from_argument(void)
         { "./x.html", here_uri },
         { "../x.html", above_uri },
         { "https://example.org", "https://example.org/" },  /* not a path: a URI */
+        { "/tmp/%2e%2e/x", "file:///tmp/%252e%252e/x" },  /* a literal '%' in a name */
         { "/tmp/\xe9.html", nullptr },  /* not UTF-8: WebKit cannot open it (D-40) */
+        { "//etc/passwd", nullptr },  /* resolves to "//" (D-43) */
         { "example.com", nullptr }, { "x.html", nullptr }, { "~/x.html", nullptr }, { "", nullptr },
     };
     for (size_t i = 0; i < G_N_ELEMENTS(cases); i++) {
@@ -108,6 +114,35 @@ static void test_from_argument(void)
         g_autofree char *canonical = foob_target_from_argument(cases[i].argument);
         g_assert_cmpstr(canonical, ==, cases[i].canonical);
     }
+    free(cwd);
+}
+
+/* A relative path follows the kernel's current directory, as ls does, not $PWD; a
+ * current directory that is gone rejects it instead of resolving against "/" (D-44). */
+static void test_from_argument_cwd(void)
+{
+    char *start = getcwd(nullptr, 0);
+    g_autofree char *root = g_dir_make_tmp("foob-target-XXXXXX", nullptr);
+    g_autofree char *sub = g_build_filename(root, "real", "sub", nullptr);
+    g_autofree char *link = g_build_filename(root, "link", nullptr);
+    g_assert_cmpint(g_mkdir_with_parents(sub, 0700), ==, 0);
+    g_assert_cmpint(symlink(sub, link), ==, 0);
+    g_assert_cmpint(chdir(link), ==, 0);
+    g_setenv("PWD", link, TRUE);  /* as a shell sets it after "cd link" */
+    char *parent = realpath("..", nullptr);  /* the kernel's "..": root/real */
+    g_autofree char *expected_path = g_build_filename(parent, "x.html", nullptr);
+    g_autofree char *expected = g_filename_to_uri(expected_path, nullptr, nullptr);
+    g_autofree char *up = foob_target_from_argument("../x.html");
+    g_assert_cmpstr(up, ==, expected);
+    g_assert_cmpint(g_unlink(link), ==, 0);
+    g_assert_cmpint(g_rmdir(sub), ==, 0);
+    g_autofree char *gone = foob_target_from_argument("./x.html");
+    g_assert_null(gone);
+    g_assert_cmpint(chdir(start), ==, 0);
+    g_assert_cmpint(g_rmdir(parent), ==, 0);
+    g_assert_cmpint(g_rmdir(root), ==, 0);
+    free(parent);
+    free(start);
 }
 
 static void test_local_uri(void)
@@ -153,6 +188,7 @@ int main(int argc, char *argv[])
     g_test_add_func("/target/webkit-agrees", test_webkit_agrees);
     g_test_add_func("/target/rejected", test_rejected);
     g_test_add_func("/target/from-argument", test_from_argument);
+    g_test_add_func("/target/from-argument-cwd", test_from_argument_cwd);
     g_test_add_func("/target/local-uri", test_local_uri);
     g_test_add_func("/target/navigation", test_navigation);
     return g_test_run();

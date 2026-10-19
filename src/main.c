@@ -53,7 +53,8 @@ int main(int argc, char *argv[])
     /* Load the canonical form, so that what was checked is what WebKit loads. */
     g_autofree char *target = foob_target_from_argument(argc == 2 ? argv[1] : "about:blank");
     if (argc > 2 || !target) {
-        fputs("Usage: foob [http(s)://host/... | file:///absolute/path | /path | ./path | about:blank]\n"
+        fputs("Usage: foob [http(s)://host/... | file:///absolute/path | /path | ./path | ../path |\n"
+              "            about:blank]\n"
               "       foob --version\n", stderr);
         return FOOB_EXIT_REJECTED_ARGUMENT;
     }

@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import shlex
 import shutil
 import signal
 import subprocess
@@ -287,7 +288,8 @@ scenario('core-dumps-off-hard-zero', 0, terminate,
          after_load=expect_core_limit(('0', '0'), dumpable=False, needs_runner_dumps=False),
          diagnostics=False,
          launcher=('prlimit', '--core=0:0'))
-# A socket collector ignores a limit of 1, so foob takes the same fallback (D-42). An
+# The kernel does not abort at a limit of 1 for a socket collector, so foob takes the same
+# fallback (D-42). An
 # unprivileged user and mount namespace shows foob a fake socket core_pattern; there,
 # /proc ownership cannot show dumpability, which the scenario above covers.
 (scratch / 'core_pattern').write_text('@@/run/systemd/coredump.socket\n')
@@ -296,7 +298,8 @@ scenario('core-dumps-off-socket-collector', 0, terminate,
          expected_title='Payevil page \u2014 foob',
          after_load=expect_core_limit(('0', '0'), dumpable=None), diagnostics=False,
          raise_core_limit=True,
-         launcher=('unshare', '-rm', 'sh', '-c', f'mount --bind {scratch}/core_pattern '
+         launcher=('unshare', '-rm', 'sh', '-c',
+                   f'mount --bind {shlex.quote(str(scratch / "core_pattern"))} '
                    '/proc/sys/kernel/core_pattern && exec "$0" "$@"'))
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
 # directory from $XDG_CONFIG_HOME/user-dirs.dirs; the cache, data and temporary
