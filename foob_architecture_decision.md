@@ -87,7 +87,7 @@ CLI / keyboard / optional IPC
        Wayland compositor
 ```
 
-The **webpage occupies the whole browser window**. First implement one web view per window. Tabs, composited overlays, and multi-view management are deferred until actual requirements justify them; do not assume multi-view composition is trivial without another UI layer. Tabs now have a requirement (D-25, roadmap M3-12): keyboard-only, no tab strip, in a form chosen from the M2-11 measurements (D-24).
+The **webpage occupies the whole browser window**. First implement one web view per window. Tabs, composited overlays, and multi-view management are deferred until actual requirements justify them; do not assume multi-view composition is trivial without another UI layer. Tabs now have a requirement (D-25, roadmap M3-12): keyboard-only, no tab strip, in a form chosen from the M2-11 measurements (D-24). The one overlay decided so far is foob's own line (D-28): a separate Wayland subsurface that the compositor places above the page, not a layer composited into the web view.
 
 foob is Wayland-only for interactive use: it builds `WPEDisplayWayland` directly, so the `WPE_PLATFORM` environment variable has no effect. A headless display (idea I-02) needs a maintainer decision.
 
