@@ -65,7 +65,6 @@ A new finding is a row in this table:
 
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
-| F-77 | **A crashing web process can write its memory to disk.** On this machine `kernel.core_pattern` pipes cores to `systemd-coredump` and `ulimit -c` is unlimited, so a WebKit process that faults (a segfault or abort, not the `SIGKILL` the M1 tests use) is stored under `/var/lib/systemd/coredump`, with the page, its addresses and possibly session cookies; private mode does not prevent it. WebKit does not stop it: the user journal holds stored cores of another program's WebKitGTK web and network processes. No foob or WPE entry was found. Fix: `setrlimit(RLIMIT_CORE, 0)` in `main.c` before WebKit starts its processes, so they inherit it, except when `FOOB_DIAGNOSTICS=1` (D-26); password managers and agents (ssh-agent, gpg-agent, KeePassXC) do the same, and Chromium makes its sandboxed renderers non-dumpable. Test: with the guard, `kill -SEGV` on the web process leaves no stored core in `coredumpctl` (bubblewrap must not reset the limit); without it, one is stored (negative control) | Claude, 2026-10-19 (M2 planning, point 3) | `core_pattern`, `ulimit -c`, `coredumpctl list`, `journalctl --user` read on this machine; the guard is untested | Open: a defect in existing behaviour (triage rule), fixed when the maintainer names the task |
 
 ## Suspected issues (not reproduced)
 

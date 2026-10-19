@@ -54,7 +54,10 @@ scale, focus/window state and abnormal web-process termination. They omit URLs,
 error-message text, cookies and input contents. Navigation completion timing is
 **not first-visible-frame timing**. Deferred/coalesced geometry callbacks are
 cancelled on shutdown. Engine/system warnings can still appear with diagnostics
-disabled.
+disabled. Without diagnostics, core dumps are off for foob and every WebKit process, and
+foob is not dumpable, so a crash leaves no memory image on disk and the journal
+never gets foob's command line (F-77); `FOOB_DIAGNOSTICS=1` keeps core dumps
+for debugging.
 
 The [desktop checklist](docs/validation/desktop-checklist.md) passes; the
 [validation/handoff](docs/validation/handoff.md) records Gate A readiness.

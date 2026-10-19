@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import re
+import resource
 import shutil
 import signal
 import subprocess
@@ -46,6 +47,9 @@ def remove_scratch():
 
 atexit.register(remove_scratch)
 (scratch / 'min.kdl').write_text('// empty nested test config\ninput { }\n')
+# foob must lower the core-dump limit itself (F-77), so start it with the highest one allowed.
+hard_core = resource.getrlimit(resource.RLIMIT_CORE)[1]
+resource.setrlimit(resource.RLIMIT_CORE, (hard_core, hard_core))
 
 
 def wait_for(predicate, seconds, message):
@@ -95,20 +99,23 @@ def windows(socket):
 
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
-             load_status='ok', extra_env=None, after_load=None):
+             load_status='ok', extra_env=None, after_load=None, diagnostics=True):
     known.append(name)
     if selected and name not in selected:
         return
     compositor, display, socket = start_compositor()
     errors = scratch / f'{name}.err'
     browser = None
+    env = {key: value for key, value in os.environ.items() if key != 'FOOB_DIAGNOSTICS'}
+    if diagnostics:
+        env['FOOB_DIAGNOSTICS'] = '1'
     try:
         browser = subprocess.Popen([binary, uri], stderr=errors.open('w'),
-                                   env={**os.environ, 'WAYLAND_DISPLAY': display,
-                                        'FOOB_DIAGNOSTICS': '1', **(extra_env or {})},
+                                   env={**env, 'WAYLAND_DISPLAY': display, **(extra_env or {})},
                                    start_new_session=True)
-        wait_for(lambda: f'load-finished status={load_status}' in errors.read_text(), 15,
-                 f'{name}: expected load status {load_status!r}')
+        if diagnostics:  # without them, the window title below is the only sign of a load
+            wait_for(lambda: f'load-finished status={load_status}' in errors.read_text(), 15,
+                     f'{name}: expected load status {load_status!r}')
         window = wait_for(lambda: [w for w in windows(socket) if w['pid'] == browser.pid],
                           10, 'no compositor window for the browser')[0]
         wait_for(lambda: any(w['pid'] == browser.pid and w['title'] == expected_title
@@ -206,6 +213,42 @@ scenario('title-local-unsanitized', 0, terminate,  # the remote scenario below s
 scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')
+
+
+def expect_core_limit(expected, dumpable):
+    """Every process in the browser's tree has this core-dump limit (soft, hard), as /proc writes
+    it; foob itself is dumpable or not (the kernel gives a non-dumpable process's /proc files,
+    not its directory, to root)."""
+    def check(browser, socket, errors):
+        assert hard_core != 0, 'cannot test: this runner may not write core dumps (hard limit 0)'
+        owner = os.stat(f'/proc/{browser.pid}/limits').st_uid
+        assert (owner != 0) == dumpable, f'/proc of foob owned by uid {owner}, expected dumpable={dumpable}'
+        limits = []
+        for pid, item in browser_tree(browser.pid, processes()).items():
+            try:
+                text = Path(f'/proc/{pid}/limits').read_text()
+            except OSError:
+                continue  # exited meanwhile
+            limit = re.search(r'^Max core file size\s+(\S+)\s+(\S+)', text, re.M)
+            limits.append((item['name'], limit[1], limit[2]))
+        names = {name for name, _, _ in limits}
+        # /proc truncates names to 15 bytes: WPENetworkProcess appears as WPENetworkProce.
+        assert {'foob', 'WPEWebProcess', 'WPENetworkProce'} <= names, f'processes seen: {sorted(names)}'
+        wrong = [entry for entry in limits if entry[1:] != expected]
+        assert not wrong, f'core limits {wrong}, expected {expected}'
+    return check
+
+
+# F-77: a default launch lowers the limit for itself and every WebKit process and makes
+# foob non-dumpable; a diagnostics run keeps both (D-26). A loopback page starts the network process.
+runner_core = 'unlimited' if hard_core == resource.RLIM_INFINITY else str(hard_core)
+scenario('core-dumps-off', 0, terminate, uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
+         expected_title='Payevil page \u2014 foob', after_load=expect_core_limit(('0', '0'), dumpable=False),
+         diagnostics=False)
+scenario('core-dumps-diagnostics', 0, terminate,
+         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
+         expected_title='Payevil page \u2014 foob',
+         after_load=expect_core_limit((runner_core, runner_core), dumpable=True))
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
 # directory from $XDG_CONFIG_HOME/user-dirs.dirs; the cache, data and temporary
 # directories are redirected too, so a failure writes only below `scratch` and
