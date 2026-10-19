@@ -75,6 +75,57 @@ their PLT entries.
 | `src_target.c.o` | 1,143 | 1,143 |
 | `src_window_title.c.o` | 1,498 | 1,498 |
 
+#### Rework after the independent reviews (D-41)
+
+The two independent reviews of the F-77 commit (code and security) found no defect in
+what it does. They raised three points:
+
+- **Portals.** The code review measured that a non-dumpable process is refused by every
+  desktop portal ("Unable to open /proc/PID/root"). Portals are planned for the M3 file
+  chooser.
+- **Guard after parsing.** The guard ran after GLib had parsed the argument. That argument
+  will carry page-supplied text once D-23 spawns `foob --private URL`.
+- **Harness.** The nested harness raised the core limit for every scenario.
+
+**What changed.**
+- foob now sets the core limit of itself and every helper to 1 (soft and hard). It no
+  longer calls `PR_SET_DUMPABLE`.
+- The guard runs first in `main()`.
+- The harness raises the runner's limit only while it starts the two core-dump scenarios.
+  `core-dumps-off` now expects 1/1 in all eight processes. On the M1 binary it still fails
+  (every process unlimited).
+
+**Crash check** (once, allowed by the maintainer; `SIGABRT`, nested niri, the marker page).
+Aborting foob, and then the web process, left:
+- no coredump entry (`coredumpctl`: "No coredumps found");
+- no mention of the marker in the journal;
+- only one kernel line per crash, with the PID and process name:
+  `coredump: 27352(foob): RLIMIT_CORE is set to 1, aborting core`.
+
+This is stronger than the first version, where a crashed helper still left a metadata
+entry (rows 1 and 1b above). Portals and gdb (from foob's parent) keep working.
+
+**Accepted.** Other programs of the same user can again read the UI process's `environ`,
+`maps` and open-file links. Its memory and ptrace stay blocked by Yama
+(`ptrace_scope=1`), and the page data lives in the helpers, which are dumpable after exec
+in either design.
+
+**Checks on this commit.**
+- Unit tests 3/3; nested suite 11/11.
+- ASan+UBSan: 3/3 and 11/11, with no report.
+- `gcc -fanalyzer`: clean.
+
+**Size.**
+- Stripped: 22,520 B, unchanged.
+- `.text`: 16,216 → 16,184 B (−32 B).
+- `main.c.o`: 728 → 733 B.
+
+**Later-task risks** (from the security review; recorded in the roadmap's M2-03 and
+M2-04):
+- A private child started by a diagnostics parent would inherit `FOOB_DIAGNOSTICS=1`, and
+  with it, core dumps.
+- An address in argv is readable by every local process through `/proc/PID/cmdline`.
+
 ### M2-02: load the canonical address
 
 `main.c` used to load the argument text that GLib had checked, and WebKit then parsed it

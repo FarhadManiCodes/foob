@@ -8,7 +8,7 @@ Foob contains an M1 prototype for a minimal, keyboard-driven Wayland browser. `f
 
 The layout uses `src/` for C code, `tests/fixtures/` for HTML cases, and `tests/benchmark/` for measurement scripts. Start with `src/main.c` and `meson.build`. Modules (`src/`):
 
-- `main.c`: argument check, the core-dump guard (F-77: core limit 0 for every process and foob non-dumpable, unless `FOOB_DIAGNOSTICS=1`) and startup only.
+- `main.c`: argument check, the core-dump guard (F-77, D-41: core limit 1 for every process, so the kernel aborts any dump, unless `FOOB_DIAGNOSTICS=1`; it runs before the argument is parsed) and startup only.
 - `target.[ch]`: the startup-URI allowlist, `foob_target_canonical()`, which returns the form foob loads (ASCII, and one WebKit's parser leaves unchanged, M2-02) or nullptr, `foob_uri_is_local()` (the single trust decision: `about:blank` and local `file:` are trusted, everything else is untrusted) and `foob_navigation_allowed()` (remote content never navigates to local content; required before any load foob makes on a page's behalf, of which there are none, D-04). GLib only, unit-tested by `tests/test_target.c`, which also links WebKit to check that WebKit's parser keeps each canonical form.
 - `window_title.[ch]`: page title to compositor-visible window title (`<title> — foob`); remote titles are sanitized. GLib only, unit-tested by `tests/test_window_title.c`.
 - `diagnostics.[ch]`: redacted logging; it must never print URLs, hosts, titles, error text, cookies or input contents. The only exception is the on-demand dump decided in D-26 (not built yet): hosts but never paths or queries, written only on the user's key to a `0600` file in the profile.

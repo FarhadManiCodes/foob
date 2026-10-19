@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <sys/prctl.h>
 #include <sys/resource.h>
 #include <glib.h>
 #include "browser.h"
@@ -8,32 +7,31 @@
 
 /*
  * A crash must not leave a process's memory (pages, addresses, cookies) on disk
- * (F-77, D-26). The WebKit processes inherit the limit, so it is set before any of
- * them starts, hard limit included so none can raise it again. systemd-coredump
- * reads the soft limit and stores no core when it is 0, but it still journals the
- * command line, which holds foob's address (not the helpers'), so foob also makes
- * itself non-dumpable: then no handler runs at all.
+ * (F-77, D-26). A core limit of exactly 1 makes the kernel abort a dump before any
+ * handler runs, so systemd-coredump stores no core and journals nothing, not even
+ * the command line that holds foob's address (a limit of 0 still journals it). The
+ * WebKit processes inherit the limit, so it is set before any of them starts, hard
+ * limit included so none can raise it again (D-41).
  */
 static bool disable_core_dumps(void)
 {
-    return setrlimit(RLIMIT_CORE, &(struct rlimit){}) == 0 &&
-        prctl(PR_SET_DUMPABLE, 0UL, 0UL, 0UL, 0UL) == 0;
+    return setrlimit(RLIMIT_CORE, &(struct rlimit){ .rlim_cur = 1, .rlim_max = 1 }) == 0;
 }
 
 int main(int argc, char *argv[])
 {
+    bool diagnostics = g_strcmp0(g_getenv("FOOB_DIAGNOSTICS"), "1") == 0;
+    /* First, before any parsing of the argument; a diagnostics run keeps core dumps. */
+    if (!diagnostics && !disable_core_dumps()) {
+        fputs("foob: could not turn off core dumps\n", stderr);
+        return FOOB_EXIT_START_FAILED;
+    }
     /* Load the canonical form, so that what was checked is what WebKit loads. */
     g_autofree char *target = foob_target_canonical(argc == 2 ? argv[1] : "about:blank");
     if (argc > 2 || !target) {
         fputs("Usage: foob [http(s)://host/... | file:///absolute/path | about:blank]\n",
               stderr);
         return FOOB_EXIT_REJECTED_ARGUMENT;
-    }
-    bool diagnostics = g_strcmp0(g_getenv("FOOB_DIAGNOSTICS"), "1") == 0;
-    /* A diagnostics run keeps core dumps for debugging. */
-    if (!diagnostics && !disable_core_dumps()) {
-        fputs("foob: could not turn off core dumps\n", stderr);
-        return FOOB_EXIT_START_FAILED;
     }
     g_autoptr(FoobBrowser) browser = foob_browser_new(diagnostics);
     if (!browser) {
