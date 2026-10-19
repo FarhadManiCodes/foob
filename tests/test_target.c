@@ -86,6 +86,30 @@ static void test_rejected(void)
     g_assert_null(foob_target_canonical(nullptr));
 }
 
+static void test_from_argument(void)
+{
+    g_autofree char *cwd = g_get_current_dir();
+    g_autofree char *parent = g_path_get_dirname(cwd);
+    g_autofree char *here = g_build_filename(cwd, "x.html", nullptr);
+    g_autofree char *above = g_build_filename(parent, "x.html", nullptr);
+    g_autofree char *here_uri = g_filename_to_uri(here, nullptr, nullptr);
+    g_autofree char *above_uri = g_filename_to_uri(above, nullptr, nullptr);
+    const struct { const char *argument; const char *canonical; } cases[] = {
+        { "/tmp/a b#?.html", "file:///tmp/a%20b%23%3F.html" },
+        { "/tmp/./x/../caf\xc3\xa9.html", "file:///tmp/caf%C3%A9.html" },
+        { "./x.html", here_uri },
+        { "../x.html", above_uri },
+        { "https://example.org", "https://example.org/" },  /* not a path: a URI */
+        { "/tmp/\xe9.html", nullptr },  /* not UTF-8: WebKit cannot open it (D-40) */
+        { "example.com", nullptr }, { "x.html", nullptr }, { "~/x.html", nullptr }, { "", nullptr },
+    };
+    for (size_t i = 0; i < G_N_ELEMENTS(cases); i++) {
+        g_test_message("argument[%zu]", i);
+        g_autofree char *canonical = foob_target_from_argument(cases[i].argument);
+        g_assert_cmpstr(canonical, ==, cases[i].canonical);
+    }
+}
+
 static void test_local_uri(void)
 {
     static const char *const local[] = {
@@ -128,6 +152,7 @@ int main(int argc, char *argv[])
     g_test_add_func("/target/accepted", test_accepted);
     g_test_add_func("/target/webkit-agrees", test_webkit_agrees);
     g_test_add_func("/target/rejected", test_rejected);
+    g_test_add_func("/target/from-argument", test_from_argument);
     g_test_add_func("/target/local-uri", test_local_uri);
     g_test_add_func("/target/navigation", test_navigation);
     return g_test_run();

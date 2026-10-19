@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/prctl.h>
 #include <sys/resource.h>
 #include <glib.h>
+#include <wpe/webkit.h>
 #include "browser.h"
 #include "exit_status.h"
 #include "target.h"
@@ -42,11 +45,16 @@ int main(int argc, char *argv[])
         fputs("foob: could not turn off core dumps\n", stderr);
         return FOOB_EXIT_START_FAILED;
     }
+    if (argc == 2 && strcmp(argv[1], "--version") == 0) {  /* Before any display (D-32). */
+        printf("foob %s\nWPE WebKit %u.%u.%u\n", FOOB_VERSION, webkit_get_major_version(),
+               webkit_get_minor_version(), webkit_get_micro_version());
+        return EXIT_SUCCESS;
+    }
     /* Load the canonical form, so that what was checked is what WebKit loads. */
-    g_autofree char *target = foob_target_canonical(argc == 2 ? argv[1] : "about:blank");
+    g_autofree char *target = foob_target_from_argument(argc == 2 ? argv[1] : "about:blank");
     if (argc > 2 || !target) {
-        fputs("Usage: foob [http(s)://host/... | file:///absolute/path | about:blank]\n",
-              stderr);
+        fputs("Usage: foob [http(s)://host/... | file:///absolute/path | /path | ./path | about:blank]\n"
+              "       foob --version\n", stderr);
         return FOOB_EXIT_REJECTED_ARGUMENT;
     }
     g_autoptr(FoobBrowser) browser = foob_browser_new(diagnostics);

@@ -155,6 +155,16 @@ char *foob_target_canonical(const char *uri)
     return g_steal_pointer(&canonical);
 }
 
+char *foob_target_from_argument(const char *argument)
+{
+    if (!g_str_has_prefix(argument, "/") && !g_str_has_prefix(argument, "./") &&
+        !g_str_has_prefix(argument, "../"))
+        return foob_target_canonical(argument);
+    g_autofree char *path = g_canonicalize_filename(argument, nullptr);
+    g_autofree char *uri = g_filename_to_uri(path, nullptr, nullptr);
+    return foob_target_canonical(uri);
+}
+
 bool foob_uri_is_local(const char *uri)
 {
     g_autofree char *canonical = foob_target_canonical(uri);

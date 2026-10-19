@@ -302,3 +302,55 @@ audit-m1.md).
 core was stored; the helpers left metadata-only journal entries.
 
 **Checks.** Nested suite 14/14. Unit tests 3/3. Only test files changed.
+
+### M2-02: path argument and `--version`
+
+**What changed.**
+- **Path argument (D-32).** A command-line argument that starts with `/`, `./` or `../`
+  is a path. `foob_target_from_argument()` makes it absolute with
+  `g_canonicalize_filename()`, which does not resolve symbolic links, turns it into a
+  `file:` URI with `g_filename_to_uri()`, and passes it through
+  `foob_target_canonical()`. Anything else must still be a URI, so `foob example.com`
+  and `foob notes.html` stay rejected. Only `main.c` calls it: an address from a page
+  is never a path.
+- **`--version`** prints `foob 0.2.0-dev` and `WPE WebKit 2.54.1` (the loaded library's
+  `webkit_get_*_version()`) and exits 0, before any display. The version is set once in
+  `meson.build` (D-39).
+- The usage line lists both.
+
+**Checks.**
+- **Unit test `/target/from-argument`:**
+  - `/tmp/a b#?.html` gives `file:///tmp/a%20b%23%3F.html`.
+  - Dot segments are resolved, and a UTF-8 name is encoded.
+  - `./x.html` and `../x.html` resolve against the current directory.
+  - A URI argument passes through unchanged.
+  - A name that is not UTF-8, `example.com`, `x.html`, `~/x.html` and an empty argument
+    are rejected.
+- **`check_cli.py`:**
+  - `--version` with an unreachable display: exit 0, nothing on stderr, and stdout
+    `foob <version>`, then `WPE WebKit <x.y.z>`.
+  - `--version extra`, `example.com` and a non-UTF-8 path give exit 2.
+  - A relative and an absolute path reach the display check.
+  - On the M1 binary, `--version` and both paths exit 2.
+- **New nested scenario `path-argument-local`** replaces `title-local-escaped-name`.
+  `./café #1?.html`, started from the scratch directory, loads, and its title keeps the
+  ZWSP, so WebKit's committed `file:` address counts as local. On the M1 binary it fails,
+  because the argument is rejected.
+- **Results:** unit tests 3/3; nested 14/14; ASan+UBSan 3/3 and 14/14, with no report;
+  `gcc -fanalyzer` clean.
+
+**Size (D-35).**
+- This commit: the stripped binary is still 22,520 B. `.text` grows from 16,462 to
+  17,443 B (+981 B). `main.c.o` grows from 929 to 1,105 B (the version output and the
+  longer usage text), and `target.c.o` from 2,750 to 3,029 B (the path conversion). The
+  rest is new imports and read-only strings.
+- **Step 1 in total:** `.text` grows from 13,473 to 17,443 B (+3,970 B, +29.5%), with the
+  stripped size unchanged. The next growth will probably cross the page padding.
+
+| Object | `.text` M1 (B) | `.text` after step 1 (B) |
+|---|---|---|
+| `src_browser.c.o` | 2,253 | 2,253 |
+| `src_diagnostics.c.o` | 2,165 | 2,165 |
+| `src_main.c.o` | 499 | 1,105 |
+| `src_target.c.o` | 1,143 | 3,029 |
+| `src_window_title.c.o` | 1,498 | 1,498 |

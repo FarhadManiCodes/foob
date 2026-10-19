@@ -14,6 +14,15 @@
 char *foob_target_canonical(const char *uri);
 
 /*
+ * The canonical form for a command-line argument (D-32): one starting with "/",
+ * "./" or "../" is a path, made absolute (without resolving symbolic links) and
+ * turned into a file: URI; anything else must be a URI. Either way the result
+ * passes foob_target_canonical(). Only for the command line: an address from a
+ * page is never a path.
+ */
+char *foob_target_from_argument(const char *argument);
+
+/*
  * True for content that comes from this machine and is assumed safe:
  * "about:blank" and file: URIs with no host or "localhost". Everything else,
  * including a nullptr or unparsable URI, is remote and untrusted. Later local

@@ -37,12 +37,14 @@ and Igalia. Its MiniBrowser served as the reference implementation.
 ```sh
 ./build/foob                              # about:blank
 ./build/foob https://en.wikipedia.org/wiki/Mathematics
-FOOB_DIAGNOSTICS=1 ./build/foob file://$PWD/tests/fixtures/viewport.html
+FOOB_DIAGNOSTICS=1 ./build/foob ./tests/fixtures/viewport.html
+./build/foob --version                    # foob's and WebKit's version, no window
 meson test -C build --print-errorlogs
 ```
 
-`foob [URI]` accepts one explicit HTTP(S) URI, a local absolute `file:` URI,
-or `about:blank`. HTTP credentials and non-local file hosts are rejected.
+`foob [URI | PATH]` accepts one explicit HTTP(S) URI, a local absolute `file:` URI,
+`about:blank`, or a path starting with `/`, `./` or `../` (made absolute and turned
+into a `file:` URI; `foob example.com` and `foob notes.html` stay rejected). HTTP credentials and non-local file hosts are rejected.
 foob loads the address in a canonical form that WebKit's parser leaves as it is:
 non-ASCII text in the path, query and fragment is percent-encoded, a host must be
 ASCII (punycode for international names), and a file name must be valid UTF-8.

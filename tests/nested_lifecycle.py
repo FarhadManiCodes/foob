@@ -97,7 +97,7 @@ def windows(socket):
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
              load_status='ok', extra_env=None, after_load=None, diagnostics=True,
-             raise_core_limit=False, launcher=()):
+             raise_core_limit=False, launcher=(), cwd=None):
     known.append(name)
     if selected and name not in selected:
         return
@@ -114,7 +114,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         try:
             browser = subprocess.Popen([*launcher, binary, uri], stderr=errors.open('w'),
                                        env={**env, 'WAYLAND_DISPLAY': display, **(extra_env or {})},
-                                       start_new_session=True)
+                                       start_new_session=True, cwd=cwd)
         finally:
             resource.setrlimit(resource.RLIMIT_CORE, saved_core)
         if diagnostics:  # without them, the window title below is the only sign of a load
@@ -216,11 +216,12 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 (scratch / 'local.html').write_text('<!doctype html><meta charset=utf-8><title>a\u200bb</title>x', encoding='utf-8')
 scenario('title-local-unsanitized', 0, terminate,  # the remote scenario below strips the ZWSP
          uri=(scratch / 'local.html').as_uri(), expected_title='a\u200bb \u2014 foob')
-# A file name that needs escaping (space, '#', '?', non-ASCII) loads and stays local
-# (trusted) as WebKit's file: address, so its title keeps the ZWSP (M2-02).
+# A relative path argument (D-32) to a name that needs escaping (space, '#', '?',
+# non-ASCII) loads, and the page stays local (trusted) as WebKit's file: address, so
+# its title keeps the ZWSP (M2-02). The M1 binary rejects the path (exit 2).
 escaped_page = scratch / 'caf\u00e9 #1?.html'
 escaped_page.write_text('<!doctype html><meta charset=utf-8><title>c\u200bd</title>x', encoding='utf-8')
-scenario('title-local-escaped-name', 0, terminate, uri=escaped_page.as_uri(),
+scenario('path-argument-local', 0, terminate, uri=f'./{escaped_page.name}', cwd=scratch,
          expected_title='c\u200bd \u2014 foob')
 # foob loads its canonical form of the argument, not the argument itself (M2-02): it
 # encodes a '|' in a path, which WebKit would send as written.

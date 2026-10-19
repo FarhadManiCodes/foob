@@ -1,4 +1,5 @@
 project('foob', 'c',
+    version: '0.2.0-dev',  # milestone = minor version; 0.2.0 at the M2 exit (D-39)
     license: 'BSD-2-Clause', license_files: 'LICENSE',
     meson_version: '>=1.12.0',
     default_options: ['c_std=c23', 'buildtype=debugoptimized', 'warning_level=3', 'b_pie=true'])
@@ -27,6 +28,7 @@ add_project_arguments(cc.get_supported_arguments(
 if get_option('optimization') in ['1', '2', '3', 's'] and not ' '.join(get_option('c_args')).contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
+add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), language: 'c')
 add_project_link_arguments(cc.get_supported_link_arguments(
     '-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack', '-Wl,--as-needed'), language: 'c')
 
