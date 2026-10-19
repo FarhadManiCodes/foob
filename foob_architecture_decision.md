@@ -7,7 +7,7 @@
 
 ## Decision summary
 
-Build a **minimal, keyboard-driven, chrome-free Wayland web browser** in **C23** using **WPE WebKit with WPEPlatform**. For now, **do not pursue Servo**. The browser renders web content but provides no persistent address bar, toolbar, tab strip, or other browser chrome. Browser control comes from keyboard shortcuts and, where useful, a command-line/IPC interface.
+Build a **minimal, keyboard-driven Wayland web browser with hidden-by-default chrome** in **C23** using **WPE WebKit with WPEPlatform**. For now, **do not pursue Servo**. The browser renders web content but provides no persistent address bar, toolbar, tab strip, or other browser chrome. Its only chrome is a minimal line of its own, drawn with fcft and pixman as foot draws, shown on request (search, tabs) or when it has something to say, and hidden otherwise (D-28, D-29). Browser control comes from keyboard shortcuts and, where useful, a command-line/IPC interface.
 
 The application and the web engine have **separate build and release lifecycles**. Develop the application against WPE's supported public APIs. Start with the distribution build to establish a working baseline, then **evaluate** a custom-built WPE package as an optional optimized deployment. Adopt it only if the benchmark, compatibility and security-maintenance results justify it. Do **not** fork WebKit, check WebKit into this repository, or add it as a Git submodule solely to modify build flags.
 
@@ -196,7 +196,7 @@ Measure **total proportional set size (PSS)** of the full application process tr
 
 ## Browser-shell responsibilities and design audit (2026-10-12)
 
-The browser is deliberately chrome-free and does not use a conventional GUI toolkit. **That does not remove browser-shell responsibilities.** Below, **P0** denotes core browser capabilities to complete by their **assigned milestone**, **P1** means follow-up quality/functionality, and **P2** means deferred. The roadmap's specific task priorities and exit checklists control completion; this overview does not downgrade a roadmap P0 task. **P0 here does not mean every item blocks the M1 first-window smoke test**; M1 has its own smaller acceptance gate. Recommendations are provisional until exercised against the chosen WPE release. For each item, prefer upstream WPEPlatform/WebKit API before introducing custom Wayland protocols, GLib wrappers, or a graphical toolkit.
+The browser has no persistent chrome and does not use a conventional GUI toolkit; its own transient line (D-28, D-29) is the only interface it draws. **That does not remove browser-shell responsibilities.** Below, **P0** denotes core browser capabilities to complete by their **assigned milestone**, **P1** means follow-up quality/functionality, and **P2** means deferred. The roadmap's specific task priorities and exit checklists control completion; this overview does not downgrade a roadmap P0 task. **P0 here does not mean every item blocks the M1 first-window smoke test**; M1 has its own smaller acceptance gate. Recommendations are provisional until exercised against the chosen WPE release. For each item, prefer upstream WPEPlatform/WebKit API before introducing custom Wayland protocols, GLib wrappers, or a graphical toolkit.
 
 | Priority | Subsystem / question | Proposed policy | Acceptance test / research needed |
 |---|---|---|---|
