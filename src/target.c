@@ -92,12 +92,13 @@ static bool names_a_file(const char *uri)
 }
 
 /* Characters each component may keep as written; g_uri_escape_string() encodes every
- * other one except the unreserved. GLib has already encoded each non-ASCII byte, so
- * what is left to encode is what WebKit would encode itself (", <, >, `, ^, {, |, })
- * and, in a query, the ' that WebKit encodes there. */
+ * other one except the unreserved. GLib has already encoded each non-ASCII byte; the
+ * rest is what WebKit encodes in that component: ", <, >, `, ^, {, } in a path (and |,
+ * which WebKit keeps but reads as a drive letter in file:///a|), ", <, >, ' in a
+ * query, and ", <, >, ` in a fragment. */
 static const char path_kept[] = "!$&'()*+,;=:@/[]%";
-static const char query_kept[] = "!$&()*+,;=:@/?[]%";
-static const char fragment_kept[] = "!$&'()*+,;=:@/?#[]%";
+static const char query_kept[] = "!$&()*+,;=:@/?[]%`^{|}";
+static const char fragment_kept[] = "!$&'()*+,;=:@/?#[]%^{|}";
 
 static char *escape(const char *component, const char *kept)
 {
@@ -112,9 +113,10 @@ char *foob_target_canonical(const char *uri)
         return g_strdup(uri);
     if (!g_utf8_validate(uri, -1, nullptr) || has_unsafe_character(uri))
         return nullptr;
-    /* Keeps escapes as written (upper-cased, unreserved ones decoded), encodes each
-     * non-ASCII byte and resolves dot segments, all as WebKit does; the host is kept
-     * as written, so the checks below see what WebKit will see. */
+    /* Keeps escapes, encodes each non-ASCII byte and resolves dot segments (%2e too), as
+     * WebKit does. Unlike WebKit, GLib also upper-cases escapes and decodes unreserved
+     * ones (%7e becomes ~): equivalent addresses, accepted (D-43). The host is kept as
+     * written, so the checks below see what WebKit will see. */
     g_autoptr(GUri) parsed = g_uri_parse(uri, G_URI_FLAGS_ENCODED | G_URI_FLAGS_NON_DNS, nullptr);
     if (!parsed || g_uri_get_userinfo(parsed))
         return nullptr;
@@ -126,7 +128,10 @@ char *foob_target_canonical(const char *uri)
     if (file) {
         const char *file_host = g_uri_get_host(parsed);
         if ((file_host && *file_host && g_ascii_strcasecmp(file_host, "localhost") != 0) ||
-            port != -1 || path[0] != '/')
+            port != -1 || path[0] != '/' ||
+            /* A path that resolves to "//…" (GLib then writes "/.//…") is one WebKit
+             * rewrites again; no one needs it. */
+            g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
             return nullptr;
         host = g_strdup("");  /* "file:///path", as WebKit writes it. */
     } else if (strcmp(scheme, "http") == 0 || strcmp(scheme, "https") == 0) {

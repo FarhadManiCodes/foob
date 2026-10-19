@@ -25,12 +25,13 @@ static const struct { const char *uri; const char *canonical; } accepted[] = {
     /* Dot segments resolved and escapes normalized, as WebKit does. */
     { "https://example.org/a/../b/./c", "https://example.org/b/c" },
     { "https://example.org/%2e%2E/a%41%e9", "https://example.org/aA%E9" },
-    /* Non-ASCII and the characters WebKit encodes, encoded by foob (D-39). */
+    /* Non-ASCII and the characters WebKit encodes in each component (D-39, D-43). */
     { "https://example.org/\xe2\x80\xae\xc2\x85", "https://example.org/%E2%80%AE%C2%85" },  /* U+202E, U+0085 */
     { "https://fa.wikipedia.org/wiki/\xd9\x81?q=\xc3\xa9#\xc3\xa9",
       "https://fa.wikipedia.org/wiki/%D9%81?q=%C3%A9#%C3%A9" },
     { "https://example.org/\"<>`{|}^?'\"#\"'", "https://example.org/%22%3C%3E%60%7B%7C%7D%5E?%27%22#%22'" },
     { "https://example.org/p'q/[x];a=b@c:d?[y]#[z]#", "https://example.org/p'q/[x];a=b@c:d?[y]#[z]#" },
+    { "https://example.org/a|b?q={x}|y^z`w#{x}|y^z`w", "https://example.org/a%7Cb?q={x}|y^z`w#{x}|y^z%60w" },
 };
 
 static const char *const rejected[] = {
@@ -42,6 +43,7 @@ static const char *const rejected[] = {
     "file:relative.html", "file://remote-host/tmp/a.html", "file://127.0.0.1/tmp/a.html",
     "file://localhost:80/tmp/a.html", "file:///tmp/%00", "file:///tmp/a%2Fb",
     "file:///tmp/%E9",  /* a valid Linux name that WebKit cannot open: not UTF-8 (D-40) */
+    "file:/.//tmp/a.html", "file:////tmp/a.html", "FILE:/tmp/..//a",
     "https://example.org/%xx", "https://example.org:99999/",
     "https://exa mple.org/", "https://example.org/\n", "https://example.org/\xe9",
     "http://good.com\\.evil.com/", "file:/\\evil.com/x",

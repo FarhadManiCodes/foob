@@ -164,6 +164,7 @@ stream_size = 300 * 1024 * 1024
 stream = {'sent': 0, 'outcome': None}
 probes = []  # query strings the page reports through /probe
 echoes = []  # each POST to /echo; the blank-form scenario expects none
+requested = []  # the path of each GET, as the browser sent it
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -181,6 +182,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(page)
 
     def do_GET(self):
+        requested.append(self.path)
         if self.path.startswith('/probe?'):
             probes.append(self.path.split('?', 1)[1])
             self.send_response(204)
@@ -220,6 +222,18 @@ escaped_page = scratch / 'caf\u00e9 #1?.html'
 escaped_page.write_text('<!doctype html><meta charset=utf-8><title>c\u200bd</title>x', encoding='utf-8')
 scenario('title-local-escaped-name', 0, terminate, uri=escaped_page.as_uri(),
          expected_title='c\u200bd \u2014 foob')
+# foob loads its canonical form of the argument, not the argument itself (M2-02): it
+# encodes a '|' in a path, which WebKit would send as written.
+(scratch / 'x|y.html').write_text('<!doctype html><title>bar</title>x', encoding='utf-8')
+
+
+def canonical_form_requested(browser, socket, errors):
+    assert '/x%7Cy.html' in requested and '/x|y.html' not in requested, f'requests: {requested}'
+
+
+scenario('canonical-address-loaded', 0, terminate,
+         uri=f'http://127.0.0.1:{server.server_port}/x|y.html', expected_title='bar \u2014 foob',
+         after_load=canonical_form_requested)
 scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')

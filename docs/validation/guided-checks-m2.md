@@ -184,11 +184,12 @@ the same function.
 - **What GLib already does like WebKit,** when it keeps escapes (`G_URI_FLAGS_ENCODED |
   G_URI_FLAGS_NON_DNS`):
   - percent-encode each raw non-ASCII byte;
-  - decode escaped unreserved characters and upper-case the other escapes;
   - resolve dot segments, `%2e` included.
 
-  foob adds the rest: it lower-cases the host, checks it, drops default ports, and encodes
-  the characters WebKit would encode.
+  It also decodes escaped unreserved characters and upper-cases the other escapes, which
+  WebKit does not. *Corrected after the reviews (D-43); this record first said WebKit
+  does this too.* foob adds the rest: it lower-cases the host, checks it, drops default
+  ports, and encodes the characters WebKit would encode.
 - **WebKit's request API reads its argument as Latin-1:** `webkit_uri_request_new()`
   double-encodes raw UTF-8. That is harmless here, because canonical forms are ASCII.
   `webkit_web_view_load_uri()` reads UTF-8 correctly: a nested run on the M1 binary loaded
@@ -234,3 +235,35 @@ host, port and component rules; the compiler inlines all the helpers into
 change, takes about 0.4 µs instead of about 0.2 µs (200,000 calls each on three typical
 addresses, `-O2`). That is negligible next to the title handling itself (about 0.3 ms,
 audit-m1.md).
+
+#### Corrections after the second independent reviews (D-43)
+
+**Findings.**
+- **Code review:** foob encoded `{`, `}`, `|`, `^` and `` ` `` in queries and fragments,
+  which WebKit keeps. GLib's escape normalization was described as WebKit's.
+- **Security review:** a fuzzer found `file:/.//etc/passwd`, whose canonical form WebKit
+  rewrites once more. It is the same file, with the same trust.
+- **Both fuzzers** (about a million inputs each) found no scheme, host or trust mismatch.
+
+**What changed.**
+- **Queries and fragments** now keep what WebKit keeps (query: `` ` ``, `^`, `{`, `|`,
+  `}`; fragment: `^`, `{`, `|`, `}`). A path still encodes `|`, because WebKit reads
+  `file:///a|` as the drive letter `file:///a:`.
+- **A `file:` path that resolves to `//…` is rejected.** GLib writes it `/.//…`, which
+  covers `file:/.//tmp/a.html`, `file:////tmp/a.html` and `FILE:/tmp/..//a`.
+- **GLib's escape normalization is accepted, and the comment says so.** M2-03 rechecks it
+  for links that D-23 passes on.
+
+**Checks.**
+- **New unit pair:** `a|b?q={x}|y^z`w#{x}|y^z`w` gives `a%7Cb?q={x}|y^z`w#{x}|y^z%60w`.
+  Three new rejected cases.
+- **New nested scenario `canonical-address-loaded`:** `/x|y.html` reaches the loopback
+  server as `/x%7Cy.html`, so foob loads its canonical form, not the argument. The M1
+  binary sends `/x|y.html` and fails.
+  - A first try with `%7e` passed on M1 too, because WebKit's network layer also
+    normalizes `%7e`, so it was replaced.
+- **Results:** unit tests 3/3; nested 13/13; ASan+UBSan 3/3 and 13/13, with no report;
+  `gcc -fanalyzer` clean.
+
+**Size.** The stripped binary is still 22,520 B. `.text` shrinks from 16,494 to 16,462 B
+(−32 B), and `target.c.o` from 2,782 to 2,750 B.
