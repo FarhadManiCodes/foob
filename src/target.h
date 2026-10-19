@@ -2,13 +2,16 @@
 #define FOOB_TARGET_H
 
 /*
- * Startup-URI allowlist; foob_navigation_allowed() below reuses it, and the
+ * The startup-URI allowlist; foob_navigation_allowed() below reuses it, and the
  * full navigation policy remains roadmap M2-03.
- * Accepts exactly one of: "about:blank", an http(s) URI with a host and
- * no credentials, or a local absolute file: URI (no host or "localhost").
+ * Accepts exactly one of: "about:blank", an http(s) URI with a host and no
+ * credentials, or a local absolute file: URI (no host or "localhost"), and
+ * returns the form foob loads (newly allocated), or nullptr if the URI is not
+ * allowed. That form is ASCII and one WebKit's own parser leaves unchanged, so
+ * what was checked is what WebKit loads (M2-02).
  * Depends only on GLib so it can be unit-tested without a display.
  */
-bool foob_target_is_valid(const char *target);
+char *foob_target_canonical(const char *uri);
 
 /*
  * True for content that comes from this machine and is assumed safe:

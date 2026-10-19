@@ -44,9 +44,11 @@ foob = executable('foob', 'src/main.c', 'src/browser.c', 'src/diagnostics.c',
     link_with: core, include_directories: 'src',
     dependencies: [glib, gobject, wpe, platform, wayland])
 
+# test-target also links WebKit, to check that WebKit's parser keeps foob's canonical form.
 foreach unit : ['target', 'window_title']
     test(unit, executable('test-' + unit, 'tests/test_' + unit + '.c',
-        link_with: core, include_directories: 'src', dependencies: glib))
+        link_with: core, include_directories: 'src',
+        dependencies: unit == 'target' ? [glib, wpe] : glib))
 endforeach
 
 python = find_program('python3', required: false)

@@ -210,6 +210,12 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 (scratch / 'local.html').write_text('<!doctype html><meta charset=utf-8><title>a\u200bb</title>x', encoding='utf-8')
 scenario('title-local-unsanitized', 0, terminate,  # the remote scenario below strips the ZWSP
          uri=(scratch / 'local.html').as_uri(), expected_title='a\u200bb \u2014 foob')
+# A file name that needs escaping (space, '#', '?', non-ASCII) loads and stays local
+# (trusted) as WebKit's file: address, so its title keeps the ZWSP (M2-02).
+escaped_page = scratch / 'caf\u00e9 #1?.html'
+escaped_page.write_text('<!doctype html><meta charset=utf-8><title>c\u200bd</title>x', encoding='utf-8')
+scenario('title-local-escaped-name', 0, terminate, uri=escaped_page.as_uri(),
+         expected_title='c\u200bd \u2014 foob')
 scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')

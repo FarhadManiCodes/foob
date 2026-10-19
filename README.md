@@ -43,6 +43,9 @@ meson test -C build --print-errorlogs
 
 `foob [URI]` accepts one explicit HTTP(S) URI, a local absolute `file:` URI,
 or `about:blank`. HTTP credentials and non-local file hosts are rejected.
+foob loads the address in a canonical form that WebKit's parser leaves as it is:
+non-ASCII text in the path, query and fragment is percent-encoded, a host must be
+ASCII (punycode for international names), and a file name must be valid UTF-8.
 The M1 prototype is for trusted pages; comprehensive navigation/resource
 policy belongs to M2/M4. It uses one native Wayland window and an explicit
 ephemeral session. The `WPE_PLATFORM` environment cannot select another backend

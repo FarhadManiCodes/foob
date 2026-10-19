@@ -74,3 +74,78 @@ their PLT entries.
 | `src_main.c.o` | 499 | 705 |
 | `src_target.c.o` | 1,143 | 1,143 |
 | `src_window_title.c.o` | 1,498 | 1,498 |
+
+### M2-02: load the canonical address
+
+`main.c` used to load the argument text that GLib had checked, and WebKit then parsed it
+again with its own parser. Now `foob_target_canonical()` (`src/target.c`) returns the
+form foob loads. That form is ASCII, and WebKit's parser leaves it unchanged, so what was
+checked is what WebKit loads. `foob_uri_is_local()` and `foob_navigation_allowed()` use
+the same function.
+
+**Probe** (a scratch program, without a display, on `wpewebkit 2.54.1` and GLib 2.90.1;
+62 addresses).
+
+- **Mismatches today:**
+  - `http://%20/` and `https://host%2540/` were accepted. WebKit leaves them as written,
+    with `%20` as the host.
+  - `1.2.3`, `0x7f.0.0.1`, `1.2.3.04` and `2130706433` are names to GLib. WebKit reads
+    them as IPv4 addresses: `1.2.0.3`, `127.0.0.1`, `1.2.3.4`, `127.0.0.1`.
+  - `[0:0::1]` becomes `[::1]`.
+  - Raw `"<>`{}^` in the path, and `'` in the query, get encoded by WebKit.
+  - `file:///tmp/%E9` was rejected, because GLib requires UTF-8 after decoding.
+- **Already correct:** `file:///x.html#sec` was accepted and local. The plan had
+  suspected otherwise.
+- **What GLib already does like WebKit,** when it keeps escapes (`G_URI_FLAGS_ENCODED |
+  G_URI_FLAGS_NON_DNS`):
+  - percent-encode each raw non-ASCII byte;
+  - decode escaped unreserved characters and upper-case the other escapes;
+  - resolve dot segments, `%2e` included.
+
+  foob adds the rest: it lower-cases the host, checks it, drops default ports, and encodes
+  the characters WebKit would encode.
+- **WebKit's request API reads its argument as Latin-1:** `webkit_uri_request_new()`
+  double-encodes raw UTF-8. That is harmless here, because canonical forms are ASCII.
+  `webkit_web_view_load_uri()` reads UTF-8 correctly: a nested run on the M1 binary loaded
+  a raw `café` path correctly, so that run was not a negative control and was dropped.
+- **Non-UTF-8 file names:** WebKit cannot open a file whose name is not valid UTF-8
+  (`file:///…/%E9.html` fails with GIO error 15, "not supported"). Such names stay
+  rejected (D-40).
+
+**Checks.**
+- **`tests/test_target.c`:**
+  - 23 accepted pairs of input and canonical form; each canonical form is also stable
+    when canonicalized again.
+  - 45 rejected cases, local-trust cases and navigation cases.
+  - `/target/webkit-agrees`: `webkit_uri_request_new()` returns each canonical form
+    unchanged.
+- **Mutation checks** (in scratch copies):
+  - Keeping `'` raw in a query, with my expected string changed to match: only
+    `webkit-agrees` fails.
+  - Turning off the numeric-host check: the rejected cases fail.
+- **`check_cli.py`:** `http://%20/` is rejected. The M1 binary accepts it, which is the
+  negative control.
+- **Nested suite 11/11.** The new `title-local-escaped-name` scenario loads
+  `café #1?.html` through its `file:` address and keeps the title's ZWSP, so the page
+  counts as local. It also passes on the M1 binary: it guards the rewritten
+  `foob_uri_is_local()`, and in commit 3 it becomes the path-argument test.
+- **ASan+UBSan:** 3/3 and 11/11, with no report.
+- **`gcc -fanalyzer`:** clean.
+- **Two unplanned core files.** The two mutation runs ended in deliberate assertion
+  aborts, and each stored a core of the test program (1.1 MB, test strings only) under
+  `/var/lib/systemd/coredump`. Deliberately failing runs now use `ulimit -c 0`.
+
+**Accepted limits.**
+- An IPv6 address must be written in its shortest form.
+- An international host must be given in punycode (D-39).
+- A file name must be UTF-8 (D-40).
+- An `xn--` label that is not valid punycode is left to WebKit.
+
+**Size and time (D-35).** The stripped binary is still 22,520 B: the growth fits in the
+existing page padding. `.text` grows from 13,799 to 16,216 B (+2,417 B, +17.5%).
+`target.c.o` grows from 1,143 to 2,782 B and `main.c.o` from 705 to 728 B. That is the
+host, port and component rules; the compiler inlines all the helpers into
+`foob_target_canonical()`. One `foob_uri_is_local()` call, which runs on each title
+change, takes about 0.4 µs instead of about 0.2 µs (200,000 calls each on three typical
+addresses, `-O2`). That is negligible next to the title handling itself (about 0.3 ms,
+audit-m1.md).

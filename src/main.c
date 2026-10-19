@@ -22,8 +22,9 @@ static bool disable_core_dumps(void)
 
 int main(int argc, char *argv[])
 {
-    const char *target = argc == 2 ? argv[1] : "about:blank";
-    if (argc > 2 || !foob_target_is_valid(target)) {
+    /* Load the canonical form, so that what was checked is what WebKit loads. */
+    g_autofree char *target = foob_target_canonical(argc == 2 ? argv[1] : "about:blank");
+    if (argc > 2 || !target) {
         fputs("Usage: foob [http(s)://host/... | file:///absolute/path | about:blank]\n",
               stderr);
         return FOOB_EXIT_REJECTED_ARGUMENT;
