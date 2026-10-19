@@ -87,7 +87,7 @@ CLI / keyboard / optional IPC
        Wayland compositor
 ```
 
-The **webpage occupies the whole browser window**. First implement one web view per window. Tabs, composited overlays, and multi-view management are deferred until actual requirements justify them; do not assume multi-view composition is trivial without another UI layer.
+The **webpage occupies the whole browser window**. First implement one web view per window. Tabs, composited overlays, and multi-view management are deferred until actual requirements justify them; do not assume multi-view composition is trivial without another UI layer. Tabs now have a requirement (D-25, roadmap M3-12): keyboard-only, no tab strip, in a form chosen from the M2-11 measurements (D-24).
 
 foob is Wayland-only for interactive use: it builds `WPEDisplayWayland` directly, so the `WPE_PLATFORM` environment variable has no effect. A headless display (idea I-02) needs a maintainer decision.
 
@@ -203,7 +203,7 @@ The browser is deliberately chrome-free and does not use a conventional GUI tool
 | P0 | **Keyboard shortcuts vs website input** | Intercept only explicitly reserved shortcuts via WPEPlatform input events; forward all other input. Avoid collisions with Ctrl+C/V, editing, web apps, and compositor shortcuts. | URL prompt, navigation, focus on an input, copy/paste, modifier behavior; test in niri. |
 | P0 | **Focus and keyboard/text input** | Rely on WPEPlatform's view/input-method integration where possible; don't assume key events alone are sufficient for text composition. | Compose/dead keys, Unicode, keyboard repeat, caret/selection, focused forms; investigate input-method protocols and IME behavior if needed. |
 | P0 | **Wayland clipboard and selection** | Use platform/WebKit clipboard mechanisms; support plain text and common content types, copy links and page selections. | Copy rendered text/MathML, paste into HTML text field, exchange with foot and other apps; verify MIME-type and image paste behavior. |
-| P0 | **Dialogs, dropdowns, and new windows** | Use WPE's built-in option popup implementation where available. Explicitly handle JS alert/confirm/prompt, `window.open`, `target=_blank`, context menus, and failed popup requests. Target: no silent loss of website actions (interim: every new-window request is ignored, D-04; feedback is M2-12). | HTML test fixture with each dialog and select control; confirm placement, keyboard focus and dismissal. |
+| P0 | **Dialogs, dropdowns, and new windows** | Use WPE's built-in option popup implementation where available. Explicitly handle JS alert/confirm/prompt, `window.open`, `target=_blank`, context menus, and failed popup requests. Target: no silent loss of website actions (interim: every new-window request is ignored, D-04; in M2 a real click on a `_blank` link opens it in a private foob process, D-23; feedback is M2-12). | HTML test fixture with each dialog and select control; confirm placement, keyboard focus and dismissal. |
 | P0 | **Profile and storage identity** | M2: persistent named profiles in XDG directories, one process and one lock per profile, owner-only directories, and a private mode (D-18, D-19, D-21; M2-04); per-profile settings in M3-11 (D-22). M4: separate ephemeral managed-preview session. Define ownership of cookies, cache, IndexedDB, localStorage, service workers and permissions. | Restart retains browsing state; a second launch on an open profile is refused; private mode keeps nothing; preview cleanup preserves browsing data and leaves no persistent preview site state. |
 | P0 | **TLS, permissions, sandbox, origin restrictions** | Fail closed on certificate errors; preserve WebKit process sandbox and site isolation as offered; default deny or explicitly prompt sensitive permissions. No broad local-file or localhost permissions by default. | Certificate error handling, cross-origin isolation tests, sandbox status, permission signals and logging. |
 | P0 | **Downloads and file uploads** | Use WebKit download/chooser APIs and XDG desktop portals (or a deliberately chosen alternative) without GTK. Enforce safe destination/name handling; authenticate downloads through WebKit session. | PDF download, download cancellation, collision handling, input type=file upload, multiple files, drag/drop if desired. |
@@ -219,7 +219,7 @@ The browser is deliberately chrome-free and does not use a conventional GUI tool
 | P1 | **Startup, termination and subprocess cleanup** | Handle SIGTERM/interrupt cleanly, orderly WebKit shutdown and download cancellation/continuation policy; no leaked child processes. | Quit during page load and download, inspect process tree and persistent state. |
 | P1 | **Desktop integration without toolkit** | Determine whether an XDG portal or external command supplies file chooser, open-with and notifications. Do not assume portals are always present under niri. | File upload and external PDF opening in actual niri session, including missing-portal fallback. |
 | P1 | **Resource control beyond media flags** | Track memory per web/network/GPU process, caching and background pages; establish GPU memory observability and process limits without weakening security. | Blank/Wikipedia/math benchmarks, cold/warm startup, idle after navigation, leaks after repeated opens/closes. |
-| P2 | **Multiple tabs/web views** | Remain one web view per window first; revisit shared profile, process model and keyboard window switching after prototype. | Validate whether tab semantics are needed beyond niri's own windows. |
+| P1 | **Tabs and multiple web views** | Several live views per profile process are decided in M2-11 from measurements (D-24) and built with M3-01 and M3-12. Tabs are keyboard-only with no tab strip (D-25): Ctrl-click adds a tab without disturbing the page, Shift-click opens a logged-in window; the form is niri's tabbed columns, foob's own lazy tabs, or both. | PSS of 1, 2 and 10 views, same-site and different-site (M2-11); M3-12 acceptance. |
 | P2 | **Accessibility and automation** | Removing accessibility from the custom engine is under evaluation (D-13, M5-11); use WebDriver or headless builds for regression tests if justified. | Keyboard-only access, accessibility-tree exposure, repeatable tests. |
 | P2 | **Browser conveniences** | History/bookmarks, printing, saved pages, devtools, reader mode, ad/tracker blocking, password-manager integration, extensions. | Prioritize based on real workflows; do not treat these as included by default. |
 
@@ -428,7 +428,7 @@ Lifecycle was resolved in M1 and persistent-profile concurrency in M2 planning (
 
 - Choose a final project name (`foob` is provisional).
 - Decide on URL prompt strategy (keyboard-only built-in prompt versus external launcher such as fuzzel; M2-07).
-- Decide whether a single-window, multi-tab model is needed at all (M2-11, M6-06).
+- Choose the tab form (niri's tabbed columns, foob's lazy tabs, or both) from the M2-11 measurements (D-24, D-25, M3-12).
 - Evaluate the engine's per-site compatibility before relying on it as a Firefox replacement (M3-06).
 
 ## References

@@ -52,5 +52,5 @@ Preserve the toolkit-free WPE direction: one view per window, no persistent chro
 Interim defaults, each a maintainer decision that holds until the roadmap task named replaces it:
 
 - Downloads: no download may start and no file be created without an explicit user decision, so every download is cancelled until M3-03 (D-02).
-- New windows: every new-window request is ignored (`window.open()` returns `null`, `target=_blank` links and forms do nothing) and foob loads nothing on a page's behalf, until M2-03, M2-11 and M3-01 (D-04).
+- New windows: every new-window request is ignored (`window.open()` returns `null`, `target=_blank` links and forms do nothing) and foob loads nothing on a page's behalf, until M2-03, M2-11 and M3-01 (D-04). Its M2 replacement is decided but not built: a real click on a `_blank` link opens a private foob process (D-23).
 - PDFs: they open inline in the stock PDF.js viewer for now (roadmap M3-04 revisits it if a custom build turns PDF.js off); its save button must still obey the download rule (D-12).
