@@ -33,7 +33,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default; `m0-m1` was not merged there at the time). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
 3. Waived by the maintainer on 2026-10-19 (D-17): the guided checks and the desktop checklist were not rerun on the final binary `a3ba0ca2…` (`d31969a`); the last full interactive run is on `4f2163a`. The three C changes since (signal sources, 16 KiB title read, three-byte back-off) are covered by the unit tests, the nested suite, the sanitizers and the geometry probes only.
 4. Done 2026-10-19: Gate A approved (D-17). Next: the maintainer names the first M2 task.
-5. M2 planning is complete (D-18 to D-38, row *M2 planning* above); the line's design is task M2-14, done when needed. No M2 code until the maintainer names a task.
+5. M2 planning is complete (D-18 to D-38, row *M2 planning* above); the line's design is task M2-14, done when needed. The task order is the roadmap's M2 *Order* paragraph (8 steps, D-30 and D-38); step 1 is F-77 with M2-02's canonical load, path argument and `--version`. No M2 code until the maintainer names a task.
 6. F-77 (core dumps, [findings.md](findings.md#findings)) is open: a defect in existing behaviour, fixed when the maintainer names the task.
 
 **Rules for every agent (Claude, Codex, others)**
