@@ -126,6 +126,40 @@ M2-04):
   with it, core dumps.
 - An address in argv is readable by every local process through `/proc/PID/cmdline`.
 
+#### Fallback where a limit of 1 cannot work (D-42)
+
+The second independent reviews found two gaps in the limit-of-1 design.
+
+- **Code review: foob refused to start.** `setrlimit(RLIMIT_CORE, {1,1})` fails with
+  EPERM when the hard limit is already 0, so foob refused to start, with a false message.
+  `meson test` failed under bash's `ulimit -c 0`.
+- **Security review: socket collectors are not covered.** The kernel's abort at a limit
+  of 1 covers only pipe and file patterns. A socket collector would still receive the
+  dump and journal foob's command line. Such a collector is `@` or `@@` in `core_pattern`;
+  `systemd-coredumpd` is installed here and disabled.
+
+**What changed.** In both cases foob sets the core limit to 0 and makes itself
+non-dumpable, so no handler runs for it; an unreadable `core_pattern` counts as a socket.
+Portals then refuse foob, but only in those setups.
+
+**Checks.**
+- **`check_cli.py`** now runs every case twice: as is, and under `prlimit --core=0:0`.
+  For accepted inputs it also requires the display message, so a refused guard can no
+  longer pass as "reached the display". On `ff1ded2`'s `main.c` it fails as it should:
+  `foob: could not turn off core dumps` under the hard limit of 0.
+- **New nested scenario `core-dumps-off-hard-zero`** (under `prlimit --core=0:0`): every
+  process shows 0/0 and foob is non-dumpable. On the `ff1ded2` binary it fails (foob does
+  not start).
+- **Not testable here:** the socket branch, because it needs a change to the system's
+  `core_pattern`. It shares the fallback code with the hard-zero case. Only the pattern
+  read is untested.
+- **Sanitizers and analyzer:** unit tests 3/3, the three core scenarios pass under
+  ASan+UBSan with no report, `gcc -fanalyzer` is clean.
+
+**Size.** The stripped binary is still 22,520 B. `.text` grows from 16,184 to 16,494 B
+(+310 B), and `main.c.o` from 733 to 929 B, from the `core_pattern` read and the fallback
+branch.
+
 ### M2-02: load the canonical address
 
 `main.c` used to load the argument text that GLib had checked, and WebKit then parsed it

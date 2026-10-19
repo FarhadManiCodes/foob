@@ -97,7 +97,7 @@ def windows(socket):
 
 def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob',
              load_status='ok', extra_env=None, after_load=None, diagnostics=True,
-             raise_core_limit=False):
+             raise_core_limit=False, launcher=()):
     known.append(name)
     if selected and name not in selected:
         return
@@ -112,7 +112,7 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         if raise_core_limit:  # foob must lower it itself (F-77): start it from the highest allowed
             resource.setrlimit(resource.RLIMIT_CORE, (saved_core[1], saved_core[1]))
         try:
-            browser = subprocess.Popen([binary, uri], stderr=errors.open('w'),
+            browser = subprocess.Popen([*launcher, binary, uri], stderr=errors.open('w'),
                                        env={**env, 'WAYLAND_DISPLAY': display, **(extra_env or {})},
                                        start_new_session=True)
         finally:
@@ -228,10 +228,15 @@ scenario('title-remote-sanitized', 0, terminate,
 hard_core = resource.getrlimit(resource.RLIMIT_CORE)[1]
 
 
-def expect_core_limit(expected):
-    """Every process in the browser's tree has this core-dump limit (soft, hard), as /proc writes it."""
+def expect_core_limit(expected, dumpable=True, needs_runner_dumps=True):
+    """Every process in the browser's tree has this core-dump limit (soft, hard), as /proc writes
+    it, and foob is dumpable or not (the kernel gives a non-dumpable process's /proc files, not
+    its directory, to root)."""
     def check(browser, socket, errors):
-        assert hard_core not in (0, 1), f'cannot test: this runner may not write core dumps (hard limit {hard_core})'
+        if needs_runner_dumps:  # else foob's limit would match the runner's whatever foob does
+            assert hard_core not in (0, 1), f'cannot test: this runner may not write core dumps (hard limit {hard_core})'
+        owner = os.stat(f'/proc/{browser.pid}/limits').st_uid
+        assert (owner != 0) == dumpable, f'/proc of foob owned by uid {owner}, expected dumpable={dumpable}'
         limits = []
         for pid, item in browser_tree(browser.pid, processes()).items():
             try:
@@ -259,6 +264,13 @@ scenario('core-dumps-diagnostics', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob',
          after_load=expect_core_limit((runner_core, runner_core)), raise_core_limit=True)
+# Where a limit of 1 cannot be set (a hard limit already 0), foob keeps 0 and is not dumpable (D-42).
+scenario('core-dumps-off-hard-zero', 0, terminate,
+         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
+         expected_title='Payevil page \u2014 foob',
+         after_load=expect_core_limit(('0', '0'), dumpable=False, needs_runner_dumps=False),
+         diagnostics=False,
+         launcher=('prlimit', '--core=0:0'))
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
 # directory from $XDG_CONFIG_HOME/user-dirs.dirs; the cache, data and temporary
 # directories are redirected too, so a failure writes only below `scratch` and

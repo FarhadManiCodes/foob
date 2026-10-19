@@ -1,9 +1,19 @@
 #include <stdio.h>
+#include <sys/prctl.h>
 #include <sys/resource.h>
 #include <glib.h>
 #include "browser.h"
 #include "exit_status.h"
 #include "target.h"
+
+/* The kernel aborts a dump at a core limit of 1 only for a pipe or file pattern,
+ * not for a socket collector ("@" or "@@"); an unreadable pattern counts as one. */
+static bool core_pattern_is_socket(void)
+{
+    g_autofree char *pattern = nullptr;
+    return !g_file_get_contents("/proc/sys/kernel/core_pattern", &pattern, nullptr, nullptr) ||
+        pattern[0] == '@';
+}
 
 /*
  * A crash must not leave a process's memory (pages, addresses, cookies) on disk
@@ -11,11 +21,17 @@
  * handler runs, so systemd-coredump stores no core and journals nothing, not even
  * the command line that holds foob's address (a limit of 0 still journals it). The
  * WebKit processes inherit the limit, so it is set before any of them starts, hard
- * limit included so none can raise it again (D-41).
+ * limit included so none can raise it again (D-41). Where 1 cannot work (a socket
+ * collector, or a hard limit already 0), the limit is 0 and foob is not dumpable,
+ * so no handler runs for it; desktop portals then refuse foob (D-42).
  */
 static bool disable_core_dumps(void)
 {
-    return setrlimit(RLIMIT_CORE, &(struct rlimit){ .rlim_cur = 1, .rlim_max = 1 }) == 0;
+    if (!core_pattern_is_socket() &&
+        setrlimit(RLIMIT_CORE, &(struct rlimit){ .rlim_cur = 1, .rlim_max = 1 }) == 0)
+        return true;
+    return setrlimit(RLIMIT_CORE, &(struct rlimit){}) == 0 &&
+        prctl(PR_SET_DUMPABLE, 0UL, 0UL, 0UL, 0UL) == 0;
 }
 
 int main(int argc, char *argv[])
