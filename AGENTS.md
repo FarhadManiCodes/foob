@@ -47,7 +47,7 @@ PR descriptions should explain behavior, link relevant tasks, and include valida
 
 ## Architecture & Security Boundaries
 
-Preserve the toolkit-free WPE direction: one view per window, no persistent chrome, and PDFs in an external viewer as the target (M3-04). The only chrome is foob's own line, hidden by default and drawn with fcft and pixman (D-28, D-29); never a toolkit, and never a box inside the page. Keep custom engine packaging separate. Never disable TLS checks or sandbox protections, whether for compatibility, speed or memory, and never commit browser profiles and credentials. Treat everything from outside this machine as untrusted (page titles, URLs, responses).
+Preserve the toolkit-free WPE direction: one view per window, no persistent chrome, and PDFs in an external viewer as the target (M3-04). The only chrome is foob's own line, hidden by default and drawn with fcft and pixman (D-28, D-29); never a toolkit, and never a box inside the page. Keep custom engine packaging separate. Never disable TLS checks or sandbox protections, whether for compatibility, speed or memory, and never commit browser profiles and credentials. Any program foob starts gets an argument vector, never a shell, and never `xdg-open` with page-supplied text (D-31). Treat everything from outside this machine as untrusted (page titles, URLs, responses).
 
 Interim defaults, each a maintainer decision that holds until the roadmap task named replaces it:
 
