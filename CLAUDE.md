@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project state
 
-- M0/M1 are implemented and audited (`docs/validation/audit-m1.md`). **Gate A awaits an explicit maintainer decision. Do not start M2 work** (controls, profiles, IPC, converters, custom engine) unless the maintainer authorizes it. A question about Gate A is not approval.
+- M0/M1 are implemented and audited (`docs/validation/audit-m1.md`). **Gate A was approved by the maintainer on 2026-10-19 (D-17).** M2 work happens on the `m2` branch, and only for the task the maintainer names. Gate B and the Scholar decision after M2 are not approved; a question about a gate is not approval.
 - Before resuming, read `docs/validation/handoff.md` and `docs/validation/findings.md` (current state, decided items, open findings), then `foob_architecture_decision.md` and `foob_development_roadmap.md`. Do not repeat checks the handoff records as complete or re-argue decided items. Update both files in the same commit as any change, finding or decision.
 - New findings follow the roadmap's triage rule (under *Scope control*): fix defects in existing behaviour now, record missing features in the milestone that owns them.
 - Deferred by the maintainer: missing glyphs in page text (roadmap M3-10, D-11). Do not attempt a fix unprompted. License: BSD-2-Clause (D-15); source files carry no per-file license line.

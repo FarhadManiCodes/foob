@@ -12,8 +12,8 @@ Build and run: [build instructions](../README.md).
 Current [handoff](validation/handoff.md): M0/M1 P0 complete; M1 implemented and
 audited, with the [audit](validation/audit-m1.md), the [M0/M1 acceptance record](validation/m1.md),
 [measurements](validation/measurements-m1-audit.md) and
-[guided checks](validation/guided-checks-m1-audit.md). Gate A is ready for
-maintainer review, not approved. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-14) is the baseline
+[guided checks](validation/guided-checks-m1-audit.md). Gate A was approved
+on 2026-10-19 (D-17); M2 work is on the `m2` branch. The [MiniBrowser comparison](validation/minibrowser-comparison.md) (D-14) is the baseline
 for roadmap tasks M2-13 and M3-09. Missing glyphs seen during guided
 Scholar testing are deferred to roadmap M3-10.
 

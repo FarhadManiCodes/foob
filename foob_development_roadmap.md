@@ -123,8 +123,8 @@ Evidence: [M0/M1 acceptance record](docs/validation/m1.md), [audit](docs/validat
 [PSS measurements](docs/validation/measurements-m1-audit.md),
 [guided checks](docs/validation/guided-checks-m1-audit.md),
 [memory and GPU baseline](docs/validation/blank-memory.md) and the
-[handoff](docs/validation/handoff.md) (open items and limits). Gate A is ready for review,
-**not approved**.
+[handoff](docs/validation/handoff.md) (open items and limits). Gate A was **approved by the
+maintainer on 2026-10-19** (D-17 in the [findings register](docs/validation/findings.md)); the final interactive rerun was waived.
 
 Evidence to bring to the review:
 

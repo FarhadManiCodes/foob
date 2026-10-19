@@ -1,8 +1,8 @@
 # M1 interactive desktop checklist — passed
 
 The maintainer completed the required checks on 2026-10-13 (local time), after
-the initial deferral. Rerun on the audit binary, all steps pass: [interactive-m1-audit.md](interactive-m1-audit.md). M1 P0 checks pass; Gate A is ready for
-review and has not been approved. No input-automation tools were installed.
+the initial deferral. Rerun on the audit binary, all steps pass: [interactive-m1-audit.md](interactive-m1-audit.md). M1 P0 checks pass; Gate A was approved
+on 2026-10-19 (D-17). No input-automation tools were installed.
 
 ```sh
 FOOB_DIAGNOSTICS=1 ./build/foob file://$PWD/tests/fixtures/viewport.html

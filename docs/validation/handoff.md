@@ -1,15 +1,15 @@
 # M0/M1 resumable handoff
 
-**M0/M1 P0 complete; Gate A ready for maintainer review, not approved.** Stop before M2.
+**M0/M1 P0 complete; Gate A approved by the maintainer on 2026-10-19 (D-17).** M2 work happens on branch `m2`, only for the task the maintainer names; none has started.
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-17. **Branch `main`, in the main checkout** (`m0-m1` was fast-forwarded into `main` at `16bc00a` on 2026-10-17; `origin/main` not yet pushed). The
+Updated 2026-10-19. **Branches `main` (M0/M1, frozen at the Gate A state) and `m2` (created from `main` on 2026-10-19, no code yet), in the main checkout** (`m0-m1` was fast-forwarded into `main` at `16bc00a` on 2026-10-17; `origin/main` was in sync with `main` on 2026-10-19). The
 M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
 security reviews, a final cleanup review) were handled here, and the evidence was
 re-recorded after each C change, last on `147ae45`. The second security review led to
 D-04: foob ignores every new-window request, so a `target=_blank` link or form does
-nothing until M2-03. Gate A is **not approved**; no M2 work is authorized.
+nothing until M2-03. Gate A was approved on 2026-10-19 (D-17); no M2 task is authorized yet.
 
 | | |
 |---|---|
@@ -30,13 +30,13 @@ index below, the roadmap's triage rule (under *Scope control*).
 **Open right now**
 1. All done 2026-10-16 on `4f2163a` (binary `f1c00899…`): geometry probe, trimmed nested suite, the real session (typing, scrolling, focus, maximize, close), the remote-page guided rows and the `pointer.html` click check: the maintainer confirms all pass.
 2. Done 2026-10-16: published at https://github.com/FarhadManiCodes/foob (public, `main` default; `m0-m1` was not merged there at the time). History was rewritten first to remove the machine details and the raw runs; every commit hash changed, and the documents and the local raw records cite the new ones. The old history was deleted: its hashes are not recoverable and must not be cited; `docs/validation/runs/` stays local and backed up, since git ignores it.
-3. Maintainer, once no new issue is open: rerun the guided checks and the desktop checklist on the final binary (the last full run was on the audit binary, before the signal and title changes). The no-handler check of the `target=_blank` rows was done on 2026-10-18: WebKit's default ignores them too, so the handler is a second guard (audit defect 5, D-04).
-4. Maintainer: decide Gate A.
+3. Waived by the maintainer on 2026-10-19 (D-17): the guided checks and the desktop checklist were not rerun on the final binary `a3ba0ca2…` (`d31969a`); the last full interactive run is on `4f2163a`. The three C changes since (signal sources, 16 KiB title read, three-byte back-off) are covered by the unit tests, the nested suite, the sanitizers and the geometry probes only.
+4. Done 2026-10-19: Gate A approved (D-17). Next: the maintainer names the first M2 task.
 
 **Rules for every agent (Claude, Codex, others)**
 - Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.
 - Work in the main checkout on the branch the maintainer names. No worktrees, clones or extra folders without asking. Check `git status` and `git branch --show-current`; another agent may be active.
-- Never merge or approve Gate A; push only when the maintainer asks.
+- Never approve a gate yourself; push only when the maintainer asks. Gate A is approved (D-17); Gate B and the post-M2 Scholar decision are not.
 - Record every new finding, decision and idea in findings.md in the same commit as the change. findings.md says when a finding or idea row is removed; decisions are retired only on the maintainer's request.
 - After any C change, re-record the interleaved measurements and update the hashes (about 6 minutes).
 - Put a negative control behind each safety fix (a test that fails on the old behaviour) and say plainly what a test does not prove.
