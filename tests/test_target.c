@@ -22,7 +22,7 @@ static const struct { const char *uri; const char *canonical; } accepted[] = {
     { "FILE:/tmp/a.html", "file:///tmp/a.html" },
     { "file:///tmp/caf%C3%A9%20%231%3F.html", "file:///tmp/caf%C3%A9%20%231%3F.html" },
     { "file:///tmp/a.html?x#sec", "file:///tmp/a.html?x#sec" },
-    /* Dot segments resolved and escapes normalized, as WebKit does. */
+    /* Dot segments resolved as WebKit does; escapes normalized by GLib, an equivalent form (D-43). */
     { "https://example.org/a/../b/./c", "https://example.org/b/c" },
     { "https://example.org/%2e%2E/a%41%e9", "https://example.org/aA%E9" },
     /* Non-ASCII and the characters WebKit encodes in each component (D-39, D-43). */

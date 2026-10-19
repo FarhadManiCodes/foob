@@ -61,7 +61,9 @@ disabled. Without diagnostics, foob sets the core-dump limit of itself and every
 process to 1, which makes the kernel abort any dump: a crash leaves no memory image
 on disk and no coredump entry in the journal (F-77, D-41). Where a limit of 1 cannot
 be set or does not stop the collector (a hard limit already 0, a socket-based
-`core_pattern`), foob uses 0 and makes itself non-dumpable (D-42). `FOOB_DIAGNOSTICS=1`
+`core_pattern`), foob uses 0 and makes itself non-dumpable (D-42); a crashed WebKit
+helper may then still leave metadata in the journal, without the address, and a
+socket collector receives its memory and must honour the limit itself. `FOOB_DIAGNOSTICS=1`
 keeps core dumps for debugging.
 
 The [desktop checklist](docs/validation/desktop-checklist.md) passes; the

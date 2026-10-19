@@ -250,7 +250,8 @@ def expect_core_limit(expected, dumpable=True, needs_runner_dumps=True):
         if needs_runner_dumps:  # else foob's limit would match the runner's whatever foob does
             assert hard_core not in (0, 1), f'cannot test: this runner may not write core dumps (hard limit {hard_core})'
         owner = os.stat(f'/proc/{browser.pid}/limits').st_uid
-        assert (owner != 0) == dumpable, f'/proc of foob owned by uid {owner}, expected dumpable={dumpable}'
+        assert dumpable is None or (owner != 0) == dumpable, \
+            f'/proc of foob owned by uid {owner}, expected dumpable={dumpable}'
         limits = []
         for pid, item in browser_tree(browser.pid, processes()).items():
             try:
@@ -285,6 +286,17 @@ scenario('core-dumps-off-hard-zero', 0, terminate,
          after_load=expect_core_limit(('0', '0'), dumpable=False, needs_runner_dumps=False),
          diagnostics=False,
          launcher=('prlimit', '--core=0:0'))
+# A socket collector ignores a limit of 1, so foob takes the same fallback (D-42). An
+# unprivileged user and mount namespace shows foob a fake socket core_pattern; there,
+# /proc ownership cannot show dumpability, which the scenario above covers.
+(scratch / 'core_pattern').write_text('@@/run/systemd/coredump.socket\n')
+scenario('core-dumps-off-socket-collector', 0, terminate,
+         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
+         expected_title='Payevil page \u2014 foob',
+         after_load=expect_core_limit(('0', '0'), dumpable=None), diagnostics=False,
+         raise_core_limit=True,
+         launcher=('unshare', '-rm', 'sh', '-c', f'mount --bind {scratch}/core_pattern '
+                   '/proc/sys/kernel/core_pattern && exec "$0" "$@"'))
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
 # directory from $XDG_CONFIG_HOME/user-dirs.dirs; the cache, data and temporary
 # directories are redirected too, so a failure writes only below `scratch` and

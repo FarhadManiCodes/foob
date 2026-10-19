@@ -150,9 +150,8 @@ Portals then refuse foob, but only in those setups.
 - **New nested scenario `core-dumps-off-hard-zero`** (under `prlimit --core=0:0`): every
   process shows 0/0 and foob is non-dumpable. On the `ff1ded2` binary it fails (foob does
   not start).
-- **Not testable here:** the socket branch, because it needs a change to the system's
-  `core_pattern`. It shares the fallback code with the hard-zero case. Only the pattern
-  read is untested.
+- *Corrected after the third reviews:* this record first called the socket branch
+  untestable here. It is tested since the follow-up below.
 - **Sanitizers and analyzer:** unit tests 3/3, the three core scenarios pass under
   ASan+UBSan with no report, `gcc -fanalyzer` is clean.
 
@@ -267,3 +266,39 @@ audit-m1.md).
 
 **Size.** The stripped binary is still 22,520 B. `.text` shrinks from 16,494 to 16,462 B
 (−32 B), and `target.c.o` from 2,782 to 2,750 B.
+
+#### Follow-up after the third reviews and a Codex review
+
+**Outcomes.**
+- Third reviews (code and security): `f63bfd9` and `a6c7188` both pass on correctness.
+- The security fuzzer checked 2.3 M inputs under sanitizers with 0 mismatches. The
+  commit before had 34.
+- The code review confirmed that the encoding matches WebKit per character and per
+  component, with `|` in a path the decided exception.
+
+**Follow-ups the maintainer chose.**
+- **Socket-collector test** (new nested scenario `core-dumps-off-socket-collector`):
+  - `unshare -rm` gives foob an unprivileged user and mount namespace. In it, a fake
+    `core_pattern` (`@@/run/systemd/coredump.socket`) is bind-mounted, with no root and
+    no system change.
+  - Every process then shows 0/0. On the `ff1ded2` binary every process shows 1/1, so
+    the scenario fails there.
+  - Inside the namespace, `/proc` ownership cannot show dumpability; the hard-zero
+    scenario covers that.
+- **Residual risks recorded in D-42, the README and AGENTS.md.** Codex and both
+  reviewers raised them:
+  - In the fallback, the WebKit helpers become dumpable again at exec. With a pipe
+    collector a crashed helper leaves metadata without the address; the security
+    reviewer checked this with a marker page. With a socket collector, the helper's
+    memory reaches the collector, which must honour the limit of 0
+    (`systemd-coredumpd` does).
+  - `core_pattern` is read once at start.
+- **A test comment corrected:** `test_target.c` no longer calls GLib's escape
+  normalization WebKit's.
+
+**Not taken:** a per-character encoding regression test (the maintainer's choice).
+
+**Disclosure.** The security reviewer's crash checks ran under a hard core limit of 0. No
+core was stored; the helpers left metadata-only journal entries.
+
+**Checks.** Nested suite 14/14. Unit tests 3/3. Only test files changed.
