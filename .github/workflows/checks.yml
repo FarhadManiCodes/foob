@@ -1,0 +1,36 @@
+# Continuous integration (D-54): the checks of `meson test` on every push and pull
+# request, in an Arch container (where WPE WebKit with WPEPlatform is packaged), with
+# every tool installed so that no check is skipped (tests/ci.sh). The nested window
+# suite needs a desktop and stays local. Actions are pinned to a commit; D-54 says how
+# to move a pin.
+name: checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  meson-test:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    timeout-minutes: 60
+    steps:
+      - name: Install packages
+        run: pacman -Syu --noconfirm --needed git wpewebkit meson ninja pkgconf gcc clang python binutils rust uv
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      # jscpd is compiled from crates.io, which takes minutes; the cache keeps the last
+      # build, and cargo install replaces it only when a newer release exists.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: /opt/cargo
+          key: cargo-tools-${{ github.run_id }}
+          restore-keys: cargo-tools-
+      - name: Install jscpd and lizard
+        run: |
+          CARGO_HOME=/opt/cargo cargo install --locked jscpd
+          UV_TOOL_DIR=/opt/uv UV_TOOL_BIN_DIR=/opt/uv/bin uv tool install lizard
+      - name: Run the checks as an unprivileged user
+        run: |
+          useradd --create-home ci
+          chown -R ci "$GITHUB_WORKSPACE"
+          runuser -u ci -- env PATH="/opt/cargo/bin:/opt/uv/bin:$PATH" sh tests/ci.sh /tmp/foob-ci
