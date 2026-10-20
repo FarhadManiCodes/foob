@@ -1,0 +1,37 @@
+# Static analysis (D-52): clang's analyzer and the bug-pattern checks, run by
+# `meson test` as "static analysis". Each check left out below says why; a style check
+# that disagrees with the repository's style (AGENTS.md) is not listed at all.
+Checks: >
+  -*,
+  clang-analyzer-*,
+  bugprone-*,
+  cert-*,
+  security-*,
+  portability-*,
+  misc-misleading-bidirectional,
+  misc-misleading-identifier,
+  misc-redundant-expression,
+  readability-function-cognitive-complexity,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  -bugprone-assignment-in-if-condition,
+  -bugprone-signed-bitwise,
+  -bugprone-multi-level-implicit-pointer-conversion,
+  -bugprone-implicit-widening-of-multiplication-result,
+  -bugprone-easily-swappable-parameters,
+  -cert-err33-c
+# Left out: the C11 Annex K "_s" functions, which glibc does not have; assignments in
+# conditions, signed bitwise operands and pointer conversions, which GLib's macros
+# (g_str_has_prefix, g_assert_*, flag values, g_autofree) expand to; widening of a
+# constant product, which cannot overflow unnoticed (an overflowing constant is a
+# compile error); adjacent parameters of one type, which every GObject signal handler
+# has; and unchecked writes to stderr, which have no recovery.
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*/src/[^/]*\.h$'
+# GLib's inline string macros (g_str_has_prefix) expand to blocks with their own
+# branches, which the complexity count would charge to foob; this guard keeps the
+# plain function calls (D-49).
+ExtraArgs: ['-D__GTK_DOC_IGNORE__']
+CheckOptions:
+  # D-49: a function over 25 is split, or its decision row says why not.
+  readability-function-cognitive-complexity.Threshold: 25
+  readability-function-cognitive-complexity.DescribeBasicIncrements: false

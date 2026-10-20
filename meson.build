@@ -19,9 +19,14 @@ endif
 add_project_arguments(cc.get_supported_arguments(
     '-Wshadow', '-Wformat=2', '-Wnull-dereference', '-Wstrict-prototypes',
     '-Wmissing-prototypes', '-Wundef', '-Wcast-align', '-Wwrite-strings',
-    '-Werror=format-security', '-ftrivial-auto-var-init=zero',
+    '-Wconversion', '-Wsign-conversion', '-Wcast-qual', '-ftrivial-auto-var-init=zero',
     '-fstack-protector-strong', '-fstack-clash-protection', '-fcf-protection=full',
     '-fno-plt'), language: 'c')
+# Checked as a pair: GCC refuses -Werror=format-security on its own (it needs -Wformat),
+# which once dropped it unnoticed (D-52).
+if cc.has_multi_arguments('-Wformat', '-Werror=format-security')
+    add_project_arguments('-Wformat', '-Werror=format-security', language: 'c')
+endif
 # Fortify needs optimization, and a caller may already choose a level (makepkg via
 # CFLAGS, which Meson stores in c_args at first configure, or -Dc_args=...);
 # respect that instead of redefining it.
@@ -33,23 +38,27 @@ add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), la
 add_project_link_arguments(cc.get_supported_link_arguments(
     '-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack', '-Wl,--as-needed'), language: 'c')
 
-glib = dependency('glib-2.0', version: '>=2.74')
-gobject = dependency('gobject-2.0')
-wpe = dependency('wpe-webkit-2.0', version: '>=2.54.1')
-platform = dependency('wpe-platform-2.0', version: '>=2.54.1')
-wayland = dependency('wpe-platform-wayland-2.0', version: '>=2.54.1')
+# System headers: their own warnings (clang's __COUNTER__ in GLib's macros) are not foob's.
+glib = dependency('glib-2.0', version: '>=2.74', include_type: 'system')
+gobject = dependency('gobject-2.0', include_type: 'system')
+wpe = dependency('wpe-webkit-2.0', version: '>=2.54.1', include_type: 'system')
+platform = dependency('wpe-platform-2.0', version: '>=2.54.1', include_type: 'system')
+wayland = dependency('wpe-platform-wayland-2.0', version: '>=2.54.1', include_type: 'system')
 
 # Pure GLib logic, kept free of WPE so it is unit-testable without a display.
-core = static_library('foob-core', 'src/target.c', 'src/window_title.c',
-    include_directories: 'src', dependencies: glib)
+core_sources = files('src/target.c', 'src/window_title.c')
+core = static_library('foob-core', core_sources, include_directories: 'src', dependencies: glib)
 
-foob = executable('foob', 'src/main.c', 'src/browser.c', 'src/diagnostics.c',
-    link_with: core, include_directories: 'src',
+app_sources = files('src/main.c', 'src/browser.c', 'src/diagnostics.c')
+foob = executable('foob', app_sources, link_with: core, include_directories: 'src',
     dependencies: [glib, gobject, wpe, platform, wayland])
 
 # test-target also links WebKit, to check that WebKit's parser keeps foob's canonical form.
+test_sources = []
 foreach unit : ['target', 'window_title']
-    test(unit, executable('test-' + unit, 'tests/test_' + unit + '.c',
+    source = files('tests/test_' + unit + '.c')
+    test_sources += source
+    test(unit, executable('test-' + unit, source,
         link_with: core, include_directories: 'src',
         dependencies: unit == 'target' ? [glib, wpe] : glib))
 endforeach
@@ -59,12 +68,15 @@ endforeach
 if get_option('fuzz') and cc.get_id() != 'clang'
     error('-Dfuzz=true needs clang (libFuzzer)')
 endif
-fuzz_core = get_option('fuzz') ? static_library('foob-core-fuzz', 'src/target.c', 'src/window_title.c',
+replay = files('tests/fuzz/replay.c')
+test_sources += replay
+fuzz_core = get_option('fuzz') ? static_library('foob-core-fuzz', core_sources,
     include_directories: 'src', dependencies: glib, c_args: '-fsanitize=fuzzer-no-link') : core
 foreach unit : ['target', 'window_title']
-    source = 'tests/fuzz/fuzz_' + unit + '.c'
+    source = files('tests/fuzz/fuzz_' + unit + '.c')
+    test_sources += source
     deps = unit == 'target' ? [glib, wpe] : glib
-    test('fuzz seeds ' + unit, executable('replay-' + unit, source, 'tests/fuzz/replay.c',
+    test('fuzz seeds ' + unit, executable('replay-' + unit, source, replay,
         link_with: core, include_directories: 'src', dependencies: deps),
         args: meson.project_source_root() / 'tests/fuzz/seeds' / unit)
     if get_option('fuzz')
@@ -79,4 +91,14 @@ if python.found()
         args: [files('tests/check_cli.py'), foob], timeout: 30)
     test('binary contract', python,
         args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
+endif
+
+# Static analysis (D-52, .clang-tidy): every C file, read through this build's
+# compile_commands.json; skipped (77) where clang-tidy is not installed.
+clang_tidy = find_program('clang-tidy', required: false)
+if clang_tidy.found()
+    test('static analysis', clang_tidy, timeout: 120,
+        args: ['-p', meson.project_build_root(), '--quiet', app_sources, core_sources, test_sources])
+elif python.found()
+    test('static analysis', python, args: ['-c', 'print("SKIP: clang-tidy missing"); raise SystemExit(77)'])
 endif

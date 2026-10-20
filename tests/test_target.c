@@ -1,6 +1,6 @@
 /* Unit test for the startup-URI allowlist; needs no display. The module needs only
  * GLib; this test also links WebKit to check that WebKit's own parser agrees. */
-#define _DEFAULT_SOURCE  /* symlink(), realpath() under -std=c23 */
+#define _DEFAULT_SOURCE  /* symlink(), realpath() under -std=c23; NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp) */
 #include <stdlib.h>
 #include <unistd.h>
 #include <glib.h>
@@ -31,7 +31,7 @@ static const struct { const char *uri; const char *canonical; } accepted[] = {
     { "https://example.org/a/../b/./c", "https://example.org/b/c" },
     { "https://example.org/%2e%2E/a%41%e9", "https://example.org/aA%E9" },
     /* Non-ASCII and the characters WebKit encodes in each component (D-39, D-43). */
-    { "https://example.org/\xe2\x80\xae\xc2\x85", "https://example.org/%E2%80%AE%C2%85" },  /* U+202E, U+0085 */
+    { "https://example.org/\xe2\x80\xae\xc2\x85", "https://example.org/%E2%80%AE%C2%85" },  /* U+202E, U+0085; NOLINT(misc-misleading-bidirectional) */
     { "https://fa.wikipedia.org/wiki/\xd9\x81?q=\xc3\xa9#\xc3\xa9",
       "https://fa.wikipedia.org/wiki/%D9%81?q=%C3%A9#%C3%A9" },
     { "https://example.org/\"<>`{|}^?'\"#\"'", "https://example.org/%22%3C%3E%60%7B%7C%7D%5E?%27%22#%22'" },
@@ -53,7 +53,7 @@ static const char *const rejected[] = {
     "https://exa mple.org/", "https://example.org/\n", "https://example.org/\xe9",
     "http://good.com\\.evil.com/", "file:/\\evil.com/x",
     /* Hosts WebKit refuses or reads differently (pre-Gate-A review). */
-    "http://%20/", "https://host%2540/", "https://stra\xc3\x9f" "e.de/", "https://a..b/", "https://.a/",
+    "http://%20/", "https://host%2540/", "https://stra\u00dfe.de/", "https://a..b/", "https://.a/",
     "http://[0:0::1]/", "http://[::ffff:1.2.3.4]/", "https://[fe80::1%25eth0]/",
 };
 

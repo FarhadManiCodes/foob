@@ -75,7 +75,7 @@ static void test_trust_levels(void)
 {
     /* Remote: whitespace runs collapse and bidi overrides cannot reorder the suffix. */
     check("a   b \r\n\t c", false, "a b c — foob");
-    check("Pay" RLO "evil" LRI "x" RLM, false, "Payevilx \u2014 foob");
+    check("Pay" RLO "evil" LRI "x" RLM, false, "Payevilx \u2014 foob");  /* NOLINT(misc-misleading-bidirectional) */
     /* Local: text is kept as written apart from protocol requirements. */
     check("a   b", true, "a   b — foob");
     /* Joiners are not bidi controls: emoji sequences stay intact. */

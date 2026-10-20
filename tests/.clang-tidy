@@ -1,0 +1,4 @@
+# Tests are flat lists of assertions, and each g_assert_* macro expands to branches, so
+# the complexity limit (D-49) applies to src/ only.
+InheritParentConfig: true
+Checks: '-readability-function-cognitive-complexity'
