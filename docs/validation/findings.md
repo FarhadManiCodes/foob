@@ -61,7 +61,7 @@ into that roadmap task (the roadmap's triage rule, under *Scope control*); when 
 choice, it becomes a decision. Record who found it (`Maintainer`, `Claude`, `Codex` or the
 review) and how it was checked.
 
-Next number: **F-78**. F-01 to F-74 were used until 2026-10-15, when the maintainer
+Next number: **F-79**. F-01 to F-74 were used until 2026-10-15, when the maintainer
 reviewed every finding: what was still needed moved to the roadmap, the code, D-04 and
 `AGENTS.md`, and the rows were removed. Older commits and notes that cite those numbers
 refer to that earlier register (see its git history).
@@ -70,6 +70,7 @@ A new finding is a row in this table:
 
 | ID | Finding | Found by | How checked | Status |
 |---|---|---|---|---|
+| F-78 | **Pointer lock (and, per the review, installing missing media plugins) is allowed without asking.** foob did not handle WebKit's `permission-request` signal; unanswered, WebKit allows `WebKitPointerLockPermissionRequest` (documented in the installed API) while it denies the other request types. Fixed in code (maintainer, 2026-10-20, triage rule: existing behaviour): `browser.c` denies every permission request, with a diagnostics line naming the request type; which permission a page may get is decided in M3-05 | Security review of the branch (`security-review-m2-step1.md`), 2026-10-20 | Not reachable automatically: without a real click, `requestPointerLock()` throws and no request reaches foob (nested probe, both binaries). Guided row in [guided-checks-m2.md](guided-checks-m2.md) with `tests/fixtures/permissions.html` | Fixed in code; open until the maintainer's guided click passes |
 
 ## Suspected issues (not reproduced)
 

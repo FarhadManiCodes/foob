@@ -407,3 +407,42 @@ violations. Follow-ups, chosen by the maintainer:
     (`main.c.o`).
 - **Not changed:** `--version` still exits 0 when stdout cannot be written. It is a
   cosmetic issue, and `exit_status.h` has no code for it.
+
+## F-78: every permission request denied
+
+Found by the branch security review (`security-review-m2-step1.md`). foob did not handle
+WebKit's `permission-request`, and unanswered WebKit *allows* pointer lock. Its API
+documentation says the other request types, notifications among them, are denied; the
+review read installing missing media plugins as allowed too. `browser.c` now denies every
+request and, with `FOOB_DIAGNOSTICS=1`, logs `permission-denied type=<request type>`
+(the type only, never an address). M3-05 decides which permission a page may get.
+
+**Why a guided row.** In a nested probe of both binaries, a page that calls
+`requestPointerLock()` without a click gets an exception, and geolocation is refused
+before foob is asked. No request reaches foob without a real click, so a nested
+scenario could not fail on the old binary, and none was added.
+
+**Guided row** (maintainer at the keyboard, real clicks):
+
+```sh
+FOOB_DIAGNOSTICS=1 ./build/foob ./tests/fixtures/permissions.html
+```
+
+| # | Click on the page | Expected (read the page's log panel and the terminal) | Result |
+|---|---|---|---|
+| 1 | "Lock the pointer" | the pointer stays free; log: `pointer lock refused`; terminal: `permission-denied type=WebKitPointerLockPermissionRequest`. **Negative control:** the M1 binary (`main`) locks the pointer and the log says `pointer locked` (`Escape` releases it) | pending |
+| 2 | "Ask to show notifications" | log: `notifications: denied` | pending |
+
+**Checks on this change.**
+- Unit tests 3/3; nested suite 14/14.
+- ASan+UBSan: 3/3 and 14/14, with no report.
+- `gcc -fanalyzer`: clean.
+
+**Size (D-35).**
+- `size` text column: 17,670 → 17,943 B (+273 B). `browser.c.o` grows from 2,253 to
+  2,450 B: the handler, the diagnostics line and the signal connection.
+- The stripped binary grows from 26,616 to 30,712 B. That is one page: the file pads each
+  segment to a page boundary, and another segment just crossed one.
+- The M2 reduction pass (D-35) should check whether the build options can pack the
+  segments tighter.
+

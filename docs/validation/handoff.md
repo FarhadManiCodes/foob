@@ -38,7 +38,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 4. Done 2026-10-19: Gate A approved (D-17). Next: the maintainer names the first M2 task.
 5. M2 planning is complete (D-18 to D-38, row *M2 planning* above); the line's design is task M2-14, done when needed. The task order is the roadmap's M2 *Order* paragraph (8 steps, D-30 and D-38); step 1 is F-77 with M2-02's canonical load, path argument and `--version`. Step 1 was named on 2026-10-19 (D-39) and is complete; step 2 (M2-04 profiles) waits for the maintainer.
 6. Done 2026-10-19: F-77 fixed in M2 step 1 (commit 1); its row left [findings.md](findings.md#findings).
-7. Merge review of `main...m2` (2026-10-19) found no bugs. Follow-ups: MiniBrowser comparison rows 4 and 6 marked done, and the first guided-checks F-77 subsection marked superseded (2026-10-20); the double canonicalization in `foob_navigation_allowed()` waits for M2-03, which builds its caller. The security review's permission finding is F-78.
+7. Merge review of `main...m2` (2026-10-19) found no bugs. Follow-ups: MiniBrowser comparison rows 4 and 6 marked done, and the first guided-checks F-77 subsection marked superseded (2026-10-20); the double canonicalization in `foob_navigation_allowed()` waits for M2-03, which builds its caller. F-78 (permissions, from the security review) is fixed in code on 2026-10-20 (every request denied) and stays open until the maintainer runs its guided row in [guided-checks-m2.md](guided-checks-m2.md#f-78-every-permission-request-denied).
 
 **Rules for every agent (Claude, Codex, others)**
 - Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.

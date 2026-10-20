@@ -85,6 +85,20 @@ static gboolean decide_policy([[maybe_unused]] WebKitWebView *web_view, WebKitPo
 }
 
 /*
+ * Every permission a page asks for is denied (F-78). Unanswered, WebKit denies most
+ * requests but allows pointer lock (and, per the security review, installing missing
+ * media plugins); which permission a page may get is decided in roadmap M3-05.
+ */
+static gboolean permission_requested([[maybe_unused]] WebKitWebView *web_view,
+                                     WebKitPermissionRequest *request, gpointer user_data)
+{
+    foob_diagnostics_log(((FoobBrowser *)user_data)->diagnostics, "permission-denied type=%s",
+                         G_OBJECT_TYPE_NAME(request));
+    webkit_permission_request_deny(request);
+    return TRUE;
+}
+
+/*
  * The web process crashed or was killed; the page is gone and the window would
  * stay blank or frozen with no signal. Exit with a distinct status so the
  * failure is visible and the launcher can react. Reloading once is roadmap M3-07.
@@ -169,6 +183,7 @@ FoobBrowser *foob_browser_new(bool diagnostics)
     g_signal_connect(display, "disconnected", G_CALLBACK(display_disconnected), browser);
     g_signal_connect(session, "download-started", G_CALLBACK(download_started), browser);
     g_signal_connect(browser->web_view, "decide-policy", G_CALLBACK(decide_policy), browser);
+    g_signal_connect(browser->web_view, "permission-request", G_CALLBACK(permission_requested), browser);
     g_signal_connect(browser->web_view, "web-process-terminated",
                      G_CALLBACK(web_process_terminated), browser);
     if (diagnostics) {

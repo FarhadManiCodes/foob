@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permissions fixture</title>
+<style>
+  body { font: 20px/1.5 sans-serif; margin: 24px; background: #f3f0ff; color: #23183d; }
+  li { margin: 10px 0; }
+  code { background: #e4ddfb; padding: 2px 6px; }
+  body { padding-bottom: 40vh; }
+  #log { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; margin: 0;
+         padding: 8px 24px; background: #23183d; color: #ece6ff; font: 16px/1.4 monospace; white-space: pre-wrap; }
+</style>
+<h1>Permissions fixture</h1>
+<p>foob denies every permission a page asks for (F-78). Click each button and compare
+with the expected result. The dark panel at the bottom is this page's own log. Pointer
+lock and notifications need a real click: WebKit refuses them without one.</p>
+<ol>
+  <li><button id="lock">Lock the pointer</button><br>
+    Expected: the pointer stays free; the log says <code>pointer lock refused</code>.
+    Without the fix (the M1 binary) the pointer disappears and the log says
+    <code>pointer locked</code>; press <code>Escape</code> to release it.</li>
+  <li><button id="notify">Ask to show notifications</button><br>
+    Expected: the log says <code>notifications: denied</code>.</li>
+</ol>
+<div id="log">log (what the page saw)</div>
+<script>
+  const log = (text) => { document.getElementById('log').textContent += '\n' + text; };
+  document.addEventListener('pointerlockchange', () =>
+    log(document.pointerLockElement ? 'pointer locked' : 'pointer released'));
+  document.addEventListener('pointerlockerror', () => log('pointer lock refused'));
+  document.getElementById('lock').onclick = () => {
+    try {
+      const result = document.body.requestPointerLock();
+      if (result && result.catch) result.catch(() => log('pointer lock refused'));
+    } catch (error) {
+      log('pointer lock refused (' + error.name + ')');
+    }
+  };
+  document.getElementById('notify').onclick = () => {
+    if (!('Notification' in window)) return log('notifications: not supported');
+    Notification.requestPermission().then((answer) => log('notifications: ' + answer));
+  };
+</script>
