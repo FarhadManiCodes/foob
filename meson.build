@@ -25,7 +25,8 @@ add_project_arguments(cc.get_supported_arguments(
 # Fortify needs optimization, and a caller may already choose a level (makepkg via
 # CFLAGS, which Meson stores in c_args at first configure, or -Dc_args=...);
 # respect that instead of redefining it.
-if get_option('optimization') in ['1', '2', '3', 's'] and not ' '.join(get_option('c_args')).contains('_FORTIFY_SOURCE')
+fortify = get_option('optimization') in ['1', '2', '3', 's']
+if fortify and not ' '.join(get_option('c_args')).contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
 add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), language: 'c')
@@ -76,4 +77,6 @@ python = find_program('python3', required: false)
 if python.found()
     test('startup URI contract', python,
         args: [files('tests/check_cli.py'), foob], timeout: 30)
+    test('binary contract', python,
+        args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
 endif
