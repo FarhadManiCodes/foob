@@ -74,9 +74,10 @@ def stop_compositor(compositor):
 def start_compositor():
     log = scratch / 'niri.log'
     env = {key: value for key, value in os.environ.items() if key != 'NIRI_SOCKET'}
-    compositor = subprocess.Popen(['niri', '-c', str(scratch / 'min.kdl')], env=env,
-                                  stdout=log.open('w'), stderr=subprocess.STDOUT,
-                                  start_new_session=True)
+    with log.open('w') as output:
+        compositor = subprocess.Popen(['niri', '-c', str(scratch / 'min.kdl')], env=env,
+                                      stdout=output, stderr=subprocess.STDOUT,
+                                      start_new_session=True)
 
     def endpoints():
         text = log.read_text()
@@ -115,9 +116,11 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         if raise_core_limit:  # foob must lower it itself (F-77): start it from the highest allowed
             resource.setrlimit(resource.RLIMIT_CORE, (saved_core[1], saved_core[1]))
         try:
-            browser = subprocess.Popen([*launcher, binary, uri], stderr=errors.open('w'),
-                                       env={**env, 'WAYLAND_DISPLAY': display, **(extra_env or {})},
-                                       start_new_session=True, cwd=cwd)
+            # stdout too: the logging ban covers every output (D-63).
+            with errors.open('w') as output:
+                browser = subprocess.Popen([*launcher, binary, uri], stdout=output, stderr=output,
+                                           env={**env, 'WAYLAND_DISPLAY': display, **(extra_env or {})},
+                                           start_new_session=True, cwd=cwd)
         finally:
             resource.setrlimit(resource.RLIMIT_CORE, saved_core)
         if diagnostics:  # without them, the window title below is the only sign of a load

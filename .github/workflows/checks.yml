@@ -4,8 +4,9 @@
 # suite needs a desktop and stays local. Actions are pinned to a commit; D-54 says how
 # to move a pin.
 name: checks
-# Pushes to the long-lived branches and pull requests: a pull-request branch then runs
-# once, not twice (once for its push and once for the request).
+# Pushes to the long-lived branches and pull requests: a feature branch's pull request
+# runs once, not twice. A pull request from m2 itself would run twice (its push and the
+# request); m2 is merged into main locally, so none is opened (D-63).
 on:
   push:
     branches: [main, m2]

@@ -36,7 +36,8 @@ static void log_line(const FoobDiagnostics *diagnostics, const char *format, ...
 
 void foob_diagnostics_event(const FoobDiagnostics *diagnostics, FoobEvent event)
 {
-    log_line(diagnostics, "%s", event_names[event]);
+    if (diagnostics && (size_t)event < G_N_ELEMENTS(event_names))  /* Read only a name. */
+        log_line(diagnostics, "%s", event_names[event]);
 }
 
 void foob_diagnostics_permission_denied(const FoobDiagnostics *diagnostics, GType request)

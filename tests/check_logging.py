@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
-"""The logging ban (D-61): foob's output never carries a URL, host, title, error text,
-cookie or input contents. Reads src/ and fails, with file:line, on:
+"""The logging ban (D-61, D-63): foob's output never carries a URL, host, title, error
+text, cookie or input contents. Reads src/ and fails, with file:line, on:
 
-- an output call (stdio, wide and _unlocked included, write, perror, syslog, the journal,
-  GLib's print and log functions, GIO writes) outside main.c and diagnostics.c;
-- in main.c, an output argument other than a string literal, FOOB_VERSION, WebKit's
-  version numbers, stdout or stderr;
-- the word char in diagnostics.h, whose interface takes no text;
+- an output call (the names and prefixes below) outside main.c and diagnostics.c;
+- in main.c, an output call other than printf or fputs, an argument other than a string
+  literal, FOOB_VERSION, WebKit's version numbers, stdout or stderr, or a printf format
+  the rule below refuses;
+- in diagnostics.h, a parameter of a type other than foob's own, GType and the two views:
+  the interface takes no text;
 - in diagnostics.c, any output call but the one in log_line(), and a log_line() whose
-  format is not literal, has a conversion other than an integer, a floating-point number
-  or a plain %s (so no %m, %ls, %c, %p, %n or '*'), or gives a %s anything but a literal, a
-  choice between two literals, an event_names[] entry, g_quark_to_string(name) or
+  format is not literal or refused, or that gives a %s anything but a literal, a choice
+  between two literals, an event_names[] entry, g_quark_to_string(error->domain) or
   g_type_name(name).
+
+A format is refused for a numeric escape (\\x25 is a hidden %) or a conversion other than
+an integer, a floating-point number or a plain %s (so no %m, %ls, %c, %p, %n or '*').
 
 A text check of a small source tree, not a C parser: a macro could hide a call from it.
 The nested suite's logs-redacted scenarios check the real output.
@@ -23,20 +26,27 @@ from pathlib import Path
 import re
 import sys
 
-OUTPUT = re.compile(
-    r'\b((?:v?[fd]?w?printf|f?putw?s|f?putw?c|putw?char|fwrite|p?writev?|perror|v?syslog|v?errx?'
-    r'|v?warnx?|error(?:_at_line)?)(?:_unlocked)?|sd_journal_\w+|g_(?:v?f?printf|print\w*)|g_log\w*|g_message|g_warning\w*|g_critical'
-    r'|g_debug|g_info|g_error|g_output_stream_\w*|g_file_set_contents\w*|g_file_replace\w*)\s*\(')
+# Calls that write somewhere: stdio (each also as _unlocked), POSIX writes and sockets,
+# error reporters, syslog, and GLib's print, log and file writers; then whole prefixes.
+NAMES = '''printf fprintf dprintf vprintf vfprintf vdprintf wprintf fwprintf vwprintf vfwprintf
+    puts fputs putws fputws putc fputc putwc fputwc putchar putwchar fwrite
+    write writev pwrite pwritev pwrite64 pwritev2 send sendto sendmsg
+    perror psignal psiginfo err errx verr verrx warn warnx vwarn vwarnx error error_at_line
+    syslog vsyslog g_print g_printerr g_printf g_fprintf g_vprintf g_vfprintf g_message
+    g_critical g_debug g_info g_error g_io_channel_write_chars g_io_channel_write_unichar'''
+PREFIXES = '''sd_journal_ g_log g_warning g_output_stream_ g_data_output_stream_put_
+    g_file_set_contents g_file_replace'''
+OUTPUT = re.compile(rf"\b((?:{'|'.join(NAMES.split())})(?:_unlocked)?"
+                    rf"|(?:{'|'.join(PREFIXES.split())})\w*)\s*\(")
 LITERALS = r'(?:"(?:[^"\\]|\\.)*"\s*)+'
 MAIN_ARGUMENT = re.compile(rf'{LITERALS}|FOOB_VERSION|webkit_get_\w+_version\(\)|stdout|stderr')
-NAME = r'\w+(?:->\w+|\.\w+)*'
 STRING_ARGUMENT = re.compile(
-    rf'{LITERALS}|[^?]+\?\s*{LITERALS}:\s*{LITERALS}|event_names\[{NAME}\]'
-    rf'|g_quark_to_string\({NAME}\)|g_type_name\({NAME}\)')
-# Every conversion, and the ones allowed: integers, floating point and plain %s, with no
-# '*' (an extra argument). Any other (%m's error text, %ls, %c, %p, %n) is refused.
+    rf'{LITERALS}|[^?]+\?\s*{LITERALS}:\s*{LITERALS}|event_names\[\w+\]'
+    r'|g_quark_to_string\(error->domain\)|g_type_name\(\w+\)')
+HEADER_TYPES = {'FoobDiagnostics', 'FoobEvent', 'GType', 'WebKitWebView', 'WPEView', 'void'}
 CONVERSION = re.compile(r"%[-+ #0-9.*'I]*(?:hh|h|ll|l|L|z|j|t|q)?(?:.|$)", re.S)
 ALLOWED = re.compile(r'%%|%[-+ #0]*\d*(?:\.\d+)?(?:(?:hh|h|ll|l|z|j|t)?[diuxX]|[fFeEgG]|s)')
+QUOTED = {q: re.compile(rf'{q}(?:[^{q}\\]|\\.)*{q}', re.S) for q in '"\''}
 
 
 def strip_comments(text):
@@ -50,8 +60,8 @@ def arguments(text, start):
     depth, current, found, i = 0, [], [], start
     while i < len(text):
         c = text[i]
-        if c in '"\'':
-            end = re.compile(rf'{c}(?:[^{c}\\]|\\.)*{c}', re.S).match(text, i).end()
+        if c in QUOTED:
+            end = QUOTED[c].match(text, i).end()
             current.append(text[i:end])
             i = end
             continue
@@ -75,8 +85,14 @@ def arguments(text, start):
     raise ValueError('unbalanced call')
 
 
-def literal_text(argument):
-    return ''.join(re.findall(r'"((?:[^"\\]|\\.)*)"', argument))
+def format_conversions(literal):
+    """The conversion letters of a literal format, or the reason it is refused."""
+    text = ''.join(re.findall(r'"((?:[^"\\]|\\.)*)"', literal))
+    if re.search(r'\\[0-7xuU]', text):
+        return 'a numeric escape'
+    specs = [c for c in CONVERSION.findall(text) if c != '%%']
+    refused = [c for c in specs if not ALLOWED.fullmatch(c)]
+    return ', '.join(refused) if refused else [c[-1] for c in specs]
 
 
 def check(source):
@@ -88,40 +104,47 @@ def check(source):
             problems.append(f'{path}:{text.count(chr(10), 0, offset) + 1}: {message}')
 
         calls = list(OUTPUT.finditer(text))
-        if path.name == 'diagnostics.h' and re.search(r'\bchar\b', text):
-            report(re.search(r'\bchar\b', text).start(), 'the diagnostics interface takes no text')
+        if path.name == 'diagnostics.h':
+            for m in re.finditer(r'\b\w+\s*\(([^()]*)\)\s*;', text):
+                for parameter in m[1].split(','):
+                    kind = [w for w in re.findall(r'\w+', parameter) if w != 'const'][:1]
+                    if kind and kind[0] not in HEADER_TYPES:
+                        report(m.start(), f'the diagnostics interface takes no {kind[0]}')
         if path.name not in ('main.c', 'diagnostics.c'):
             for m in calls:
                 report(m.start(), f'{m[1]}() outside main.c and diagnostics.c')
         elif path.name == 'main.c':
             for m in calls:
-                for argument in arguments(text, m.end() - 1)[0]:
+                found = arguments(text, m.end() - 1)[0]
+                if m[1] not in ('printf', 'fputs'):
+                    report(m.start(), f'{m[1]}() in main.c')
+                for argument in found:
                     if not MAIN_ARGUMENT.fullmatch(argument):
                         report(m.start(), f'{m[1]}() prints {argument!r}')
+                conversions = format_conversions(found[0]) if m[1] == 'printf' and found else []
+                if isinstance(conversions, str):
+                    report(m.start(), f'printf(): {conversions} not allowed')
         else:
             if [re.sub(r'\s', '', text[m.start():arguments(text, m.end() - 1)[1] + 1]) for m in calls] \
                     != ['g_printerr("foob:%s\\n",message)']:
                 report(calls[0].start() if calls else 0,
                        'log_line()\'s g_printerr must be the only output call')
             for m in re.finditer(r'\blog_line\s*\(', text):
-                if re.search(r'\bvoid\s+$', text[:m.start()]):
+                if re.search(r'\bvoid\s+$', text[max(0, m.start() - 16):m.start()]):
                     continue  # the definition
                 found = arguments(text, m.end() - 1)[0]
                 if len(found) < 2 or not re.fullmatch(LITERALS, found[1]):
                     report(m.start(), 'log_line() needs a literal format')
                     continue
-                specs = [c for c in CONVERSION.findall(literal_text(found[1])) if c != '%%']
-                refused = [c for c in specs if not ALLOWED.fullmatch(c)]
-                if refused:
-                    report(m.start(), f'log_line(): {", ".join(refused)} not allowed')
-                    continue
-                conversions = [c[-1] for c in specs]
-                if len(conversions) != len(found) - 2:
+                conversions = format_conversions(found[1])
+                if isinstance(conversions, str):
+                    report(m.start(), f'log_line(): {conversions} not allowed')
+                elif len(conversions) != len(found) - 2:
                     report(m.start(), 'log_line(): format and arguments differ in number')
-                    continue
-                for conversion, argument in zip(conversions, found[2:], strict=True):
-                    if conversion == 's' and not STRING_ARGUMENT.fullmatch(argument):
-                        report(m.start(), f'log_line(): %s of {argument!r}')
+                else:
+                    for conversion, argument in zip(conversions, found[2:], strict=True):
+                        if conversion == 's' and not STRING_ARGUMENT.fullmatch(argument):
+                            report(m.start(), f'log_line(): %s of {argument!r}')
     return problems
 
 

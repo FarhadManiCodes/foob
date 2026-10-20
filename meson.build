@@ -35,13 +35,19 @@ caller_args = ' '.join(get_option('c_args'))
 if fortify and not caller_args.contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
-# Whether fortify makes checked calls, so the binary contract expects one only then: at
-# level 2 or 3 (foob's own 3, or a caller's =2 or =3). glibc checks printf only from
-# level 2, so a caller's level 1 (=1, or a bare -D_FORTIFY_SOURCE), =0 or
-# -U_FORTIFY_SOURCE leaves foob with none (D-62).
-fortified = fortify and not caller_args.contains('-U_FORTIFY_SOURCE') and (
-    not caller_args.contains('_FORTIFY_SOURCE') or
-    caller_args.contains('_FORTIFY_SOURCE=2') or caller_args.contains('_FORTIFY_SOURCE=3'))
+# Whether glibc makes checked calls, so the binary contract expects one only then: it
+# checks printf from fortify level 2 (D-62). The compiler answers with the caller's
+# arguments, as the build reads them (the last of several levels, -Wp,... forms), and the
+# build's optimization, without which glibc turns fortify off (D-63). Meson's own checks
+# add -O0 -U_FORTIFY_SOURCE after the caller's arguments, so these come again after it.
+fortified = fortify and cc.compiles('''
+    #include <stdio.h>
+    #if !defined(__USE_FORTIFY_LEVEL) || __USE_FORTIFY_LEVEL < 2
+    #error no checked printf
+    #endif
+''', args: get_option('c_args') + ['-O' + get_option('optimization')] +
+    (caller_args.contains('_FORTIFY_SOURCE') ? [] : ['-D_FORTIFY_SOURCE=3']),
+    name: 'fortify level 2 or higher')
 add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), language: 'c')
 add_project_link_arguments(cc.get_supported_link_arguments(
     '-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack', '-Wl,--as-needed'), language: 'c')
