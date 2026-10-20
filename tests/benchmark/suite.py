@@ -3,14 +3,14 @@
 Every run writes into a new directory docs/validation/runs/suite-<UTC time>/ so earlier
 evidence is never overwritten; summarize it with `python3 tests/benchmark/summarize.py <dir>`.
 """
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
 import json
+from pathlib import Path
 import subprocess
 import sys
 
 fixture = Path('tests/fixtures/viewport.html').resolve().as_uri()
-runs = Path('docs/validation/runs') / datetime.now(timezone.utc).strftime('suite-%Y%m%dT%H%M%SZ')
+runs = Path('docs/validation/runs') / datetime.now(UTC).strftime('suite-%Y%m%dT%H%M%SZ')
 runs.mkdir(parents=True)  # fails if it exists
 print(f'writing to {runs}', flush=True)
 runner = [sys.executable, 'tests/benchmark/run.py']

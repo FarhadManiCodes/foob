@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Install packages
-        run: pacman -Syu --noconfirm --needed git wpewebkit meson ninja pkgconf gcc clang python binutils rust uv
+        run: pacman -Syu --noconfirm --needed git wpewebkit meson ninja pkgconf gcc clang python binutils rust uv ruff shellcheck
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false

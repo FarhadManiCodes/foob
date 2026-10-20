@@ -4,18 +4,20 @@ Run from repository root after validation:
 
     python3 tests/benchmark/summarize.py                      # runs/*.json -> docs/validation/results.json
     python3 tests/benchmark/summarize.py docs/validation/runs/suite-<time> --output NEW.json
-    python3 tests/benchmark/summarize.py docs/validation/runs/suite-<time> --output docs/validation/results.json --replace
+    python3 tests/benchmark/summarize.py docs/validation/runs/suite-<time> \
+        --output docs/validation/results.json --replace
 
 The input is ONE directory of run records (default: the top level of docs/validation/runs,
 which does not include the suite-<time> folders that suite.py creates). Without --output
 the summary goes to docs/validation/results.json when no directory is given and to
 <directory>/results.json otherwise. An existing output file is only replaced with --replace;
-only the default call regenerates the curated file without it. An input without run records, or holding a file that is not a run record (for example
-another summary), is rejected before anything is written. This never launches a browser or modifies the runs.
+only the default call regenerates the curated file without it. An input without run records, or
+holding a file that is not a run record (for example another summary), is rejected before
+anything is written. This never launches a browser or modifies the runs.
 """
 import argparse
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 import json
 from pathlib import Path
 
@@ -37,7 +39,7 @@ if target.resolve() == curated.resolve() and not default_call and not args.repla
     raise SystemExit(f'{target} is the curated file; pass --replace to overwrite it')
 if target.exists() and not default_call and not args.replace:
     raise SystemExit(f'{target} exists; choose a new --output or pass --replace')
-result = {'schema_version': 1, 'generated_utc': datetime.now(timezone.utc).isoformat(),
+result = {'schema_version': 1, 'generated_utc': datetime.now(UTC).isoformat(),
           'raw_artifacts': 'docs/validation/runs/ is ignored; preserved locally',
           'measurements': {}, 'lifecycle_and_controls': {}, 'geometry_probes': {}}
 
@@ -86,7 +88,7 @@ for path in records:
                 'mapping_group_pss_kib': detail['mapping_groups_pss_kib'],
                 'largest_mapping_names': detail['largest_mapping_names_by_pss_kib'][:6],
                 'drm_clients': detail['drm_clients'],
-            } for row, detail in zip(middle['processes'], middle['memory_details'])
+            } for row, detail in zip(middle['processes'], middle['memory_details'], strict=True)
                 if row['name'] in ['foob', 'WPENetworkProce', 'WPEWebProcess']]
         result['measurements'][path.stem] = common
     elif 'geometry' in raw:

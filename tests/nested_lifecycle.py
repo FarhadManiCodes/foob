@@ -27,8 +27,8 @@ import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
-from process_tree import browser_tree, processes, survivors  # noqa: E402
-from policy_server import read_post_body  # noqa: E402  (tests/ is the script's directory)
+from policy_server import read_post_body
+from process_tree import browser_tree, processes, survivors
 
 if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help') or not os.access(sys.argv[1], os.X_OK):
     sys.exit(__doc__)  # usage, before any scratch directory or server exists
@@ -93,7 +93,7 @@ def start_compositor():
 
 def windows(socket):
     result = subprocess.run(['niri', 'msg', '-j', 'windows'], capture_output=True, text=True,
-                            env={**os.environ, 'NIRI_SOCKET': socket})
+                            env={**os.environ, 'NIRI_SOCKET': socket}, check=False)
     return json.loads(result.stdout) if result.returncode == 0 else []
 
 
@@ -275,7 +275,8 @@ def expect_core_limit(expected, dumpable=True, needs_runner_dumps=True):
     its directory, to root)."""
     def check(browser, socket, errors):
         if needs_runner_dumps:  # else foob's limit would match the runner's whatever foob does
-            assert hard_core not in (0, 1), f'cannot test: this runner may not write core dumps (hard limit {hard_core})'
+            assert hard_core not in (0, 1), \
+                f'cannot test: this runner may not write core dumps (hard limit {hard_core})'
         owner = os.stat(f'/proc/{browser.pid}/limits').st_uid
         assert dumpable is None or (owner != 0) == dumpable, \
             f'/proc of foob owned by uid {owner}, expected dumpable={dumpable}'

@@ -7,6 +7,7 @@ for foob, so this exercises the untrusted-origin rules. Request paths are printe
 so a blocked download can be seen to reach the server. The local-file links point
 at tests/fixtures/linked.html.
 """
+import contextlib
 import http.server
 from pathlib import Path
 import sys
@@ -78,10 +79,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if disposition:
             self.send_header('Content-Disposition', disposition)
         self.end_headers()
-        try:
+        with contextlib.suppress(OSError):  # the client cancelled the transfer
             self.wfile.write(body)
-        except OSError:
-            pass  # the client cancelled the transfer
 
     def log_message(self, fmt, *arguments):
         print(self.command, self.path.split('?')[0], arguments[1] if len(arguments) > 1 else '', flush=True)
@@ -91,7 +90,5 @@ if __name__ == '__main__':
     server = http.server.ThreadingHTTPServer(
         ('127.0.0.1', int(sys.argv[1]) if len(sys.argv) > 1 else 8765), Handler)
     print(f'Open with: ./build/foob http://127.0.0.1:{server.server_port}/', flush=True)
-    try:
+    with contextlib.suppress(KeyboardInterrupt):
         server.serve_forever()
-    except KeyboardInterrupt:
-        pass

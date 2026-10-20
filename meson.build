@@ -94,7 +94,8 @@ test('binary contract', python,
 
 # Source checks, each skipped (77) where its tool is not installed: static analysis
 # (clang-tidy with .clang-tidy, through this build's compile_commands.json, D-52),
-# duplication (jscpd, D-53) and McCabe complexity (lizard, D-51), run in the source tree.
+# duplication (jscpd, D-53), McCabe complexity (lizard, D-51) and the lint of the Python
+# (ruff with ruff.toml) and shell scripts (shellcheck, D-59), run in the source tree.
 # They read only sources, so they form the suite "source", which a second build of the
 # same tree can leave out (tests/ci.sh).
 foreach check : [
@@ -102,6 +103,8 @@ foreach check : [
         ['-p', meson.project_build_root(), '--quiet', app_sources, core_sources, test_sources]],
     ['duplication', 'jscpd', ['--no-tips', '--no-colors', '--exit-code', '-f', 'c,python', '--ignore-identifiers', 'src', 'tests']],
     ['complexity', 'lizard', ['-l', 'c', '-w', '-C', '15', 'src']],
+    ['python lint', 'ruff', ['check', '--no-cache', 'tests']],
+    ['shell lint', 'shellcheck', files('tests/ci.sh')],
 ]
     tool = find_program(check[1], required: false)
     if tool.found()

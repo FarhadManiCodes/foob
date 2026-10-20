@@ -8,7 +8,7 @@ This supplements but cannot replace user pointer/typing/scroll observations.
 Probe a fixture, not about:blank: that load ends before niri lists the window.
 """
 import argparse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 import json
 import os
 from pathlib import Path
@@ -34,7 +34,7 @@ else:
 print(f'writing to {output}', flush=True)
 log = output / f'foob-{args.label}.log'
 tracked = {}
-record = {'date_utc': datetime.now(timezone.utc).isoformat(), **provenance(Path(args.binary).resolve()),
+record = {'date_utc': datetime.now(UTC).isoformat(), **provenance(Path(args.binary).resolve()),
           'result': 'fail', 'captures': []}  # provenance is taken before the browser starts
 
 
@@ -111,7 +111,7 @@ with log.open('w') as stream:
         if any(marker in log.read_text() for marker in FAILURE_MARKERS):
             raise RuntimeError('late browser/load failure')
         record['result'] = 'pass' if record['exit_code'] == 0 else 'fail'
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001  (any failure is recorded; cleanup follows)
         record['error'] = str(error)
     finally:
         tracked.update(browser_tree(process.pid, processes()))

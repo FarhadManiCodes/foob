@@ -4,7 +4,7 @@ Only application diagnostics/process identities are recorded; no input contents.
 Interaction acceptance is recorded separately from lifecycle results.
 """
 import argparse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 import json
 from pathlib import Path
 import time
@@ -22,7 +22,7 @@ if output.exists() or output.with_suffix('.log').exists():
     raise SystemExit('Choose a new output path to preserve existing evidence')
 binary = Path(args.binary).resolve()
 record = {
-    'date_utc': datetime.now(timezone.utc).isoformat(),
+    'date_utc': datetime.now(UTC).isoformat(),
     **provenance(binary),
     'mode': 'user interaction; ephemeral session; acceptance recorded separately',
 }

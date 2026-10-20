@@ -4,7 +4,7 @@ python3 tests/benchmark/run.py --binary build/foob --label blank --uri about:bla
 Requires desktop access and readable /proc/*/smaps_rollup. Never disables sandbox.
 """
 import argparse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 import json
 import os
 from pathlib import Path
@@ -13,7 +13,16 @@ import signal
 import subprocess
 import time
 
-from process_tree import FAILURE_MARKERS, browser_tree, launch, processes, provenance, sample, stop, survivors_after_wait
+from process_tree import (
+    FAILURE_MARKERS,
+    browser_tree,
+    launch,
+    processes,
+    provenance,
+    sample,
+    stop,
+    survivors_after_wait,
+)
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--binary', default='build/foob')
@@ -23,12 +32,14 @@ parser.add_argument('--output', required=True)
 parser.add_argument('--stop', choices=['sigterm', 'sigint', 'compositor'], default='sigterm')
 parser.add_argument('--lifecycle-only', action='store_true')
 parser.add_argument('--loads', type=int, default=1, help='2 for the fixture warm reload')
-parser.add_argument('--fault-web-process', action='store_true', help='negative control: kill own test web process after load')
-parser.add_argument('--memory-details', action='store_true', help='read own process smaps/DRM fdinfo after each PSS sample')
+parser.add_argument('--fault-web-process', action='store_true',
+                    help='negative control: kill own test web process after load')
+parser.add_argument('--memory-details', action='store_true',
+                    help='read own process smaps/DRM fdinfo after each PSS sample')
 args = parser.parse_args()
 binary = Path(args.binary).resolve()
 record = {
-    'date_utc': datetime.now(timezone.utc).isoformat(), 'workload': args.label,
+    'date_utc': datetime.now(UTC).isoformat(), 'workload': args.label,
     'condition': ('warm reload within a fresh ephemeral session' if args.loads > 1
                   else 'fresh process, ephemeral session') + '; OS caches uncontrolled',
     **provenance(binary),
@@ -54,7 +65,8 @@ def check_health(expected_loads=None, allow_exit=False):
     if not allow_exit and process.poll() is not None:
         raise RuntimeError('browser exited before requested shutdown')
     if expected_loads is not None:
-        if text.count('foob: load-started') != expected_loads or text.count('foob: load-finished status=ok') != expected_loads:
+        finished = text.count('foob: load-finished status=ok')
+        if text.count('foob: load-started') != expected_loads or finished != expected_loads:
             raise RuntimeError('navigation changed after requested completion; idle interval invalid')
         if geometry_reference is not None:
             geometry = re.findall(VIEWPORT, text[geometry_guard_offset:])
@@ -125,8 +137,9 @@ try:
                 evidence['dri_fds'] = sorted({os.readlink(fd) for fd in Path(f'/proc/{pid}/fd').iterdir()
                                               if os.readlink(fd).startswith('/dev/dri/')})
                 maps = Path(f'/proc/{pid}/maps').read_text()
+                graphics = ['libEGL', 'libGL', 'radeonsi', 'libvulkan', 'libgbm']
                 evidence['graphics_libraries'] = sorted({line.split()[-1] for line in maps.splitlines()
-                                                         if any(x in line for x in ['libEGL', 'libGL', 'radeonsi', 'libvulkan', 'libgbm'])})
+                                                         if any(x in line for x in graphics)})
                 status = Path(f'/proc/{pid}/status').read_text()
                 evidence['confinement'] = [line for line in status.splitlines()
                                            if line.startswith(('Seccomp:', 'NoNewPrivs:', 'NSpid:'))]
@@ -150,7 +163,7 @@ try:
             raise RuntimeError('nonzero browser exit')
         check_health(args.loads, allow_exit=True)
         record['result'] = 'pass'
-except Exception as error:
+except Exception as error:  # noqa: BLE001  (any failure is recorded; cleanup follows)
     record['result'] = 'fail'
     record['error'] = str(error)
 finally:

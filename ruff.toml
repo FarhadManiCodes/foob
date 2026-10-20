@@ -1,0 +1,17 @@
+# Python lint (D-59), run by `meson test` as "python lint". The scripts use only the
+# standard library (AGENTS.md); this file keeps every agent's and CI's result the same,
+# whatever personal ruff configuration a machine has.
+line-length = 120
+target-version = "py313"
+
+[lint]
+# pyflakes, pycodestyle, bugbear, security (bandit), pyupgrade, pylint warnings and
+# errors, simplifications, ruff's own rules, import order and blind excepts.
+select = ["F", "E", "W", "B", "S", "UP", "PLW", "PLE", "SIM", "RUF", "I", "BLE"]
+# Left out: assert, which is how the test scripts check; and subprocess calls, which
+# always take an argument vector, never a shell (D-31), and name their tools by PATH.
+ignore = ["S101", "S603", "S607"]
+
+[lint.isort]
+# The repository's order: `import x` and `from x import y` sorted together by module.
+force-sort-within-sections = true
