@@ -22,8 +22,8 @@ static bool has_unsafe_character(const char *target)
  * digits, '-' and '_' in non-empty labels (one trailing dot allowed; an internationalized
  * name must be given in punycode, D-39), or an IPv6 address in its shortest form, as
  * inet_ntop() and WebKit write it. WebKit reads a name ending in a number (1.2.3,
- * 0x7f.1) as an IPv4 address; such rare names load as WebKit reads them, still remote
- * (D-45). */
+ * 0x7f.1) as an IPv4 address, or refuses it with its error page if it is not a valid
+ * one (256.1.1.1); either way it stays remote (D-45). */
 static char *canonical_host(const char *host)
 {
     if (!host || !*host)
@@ -147,6 +147,8 @@ bool foob_uri_is_local(const char *uri)
     if (strcmp(uri, "about:blank") == 0)
         return true;
     g_autofree char *resource = g_strndup(uri, strcspn(uri, "?#"));
+    if (has_unsafe_character(resource))  /* WebKit reads file:/\\h/x as host h. */
+        return false;
     g_autoptr(GUri) parsed = g_uri_parse(resource, G_URI_FLAGS_ENCODED | G_URI_FLAGS_NON_DNS, nullptr);
     if (!parsed || strcmp(g_uri_get_scheme(parsed), "file") != 0 || g_uri_get_userinfo(parsed) ||
         g_uri_get_port(parsed) != -1 || g_uri_get_path(parsed)[0] != '/')

@@ -155,6 +155,7 @@ static void test_local_uri(void)
         "https://example.org/", "http://127.0.0.1/", "file://remote-host/tmp/a.html",
         "file:relative.html", "about:config", "javascript:1",
         "blob:file:///tmp/x", "", "file://remote-host/a#\\", "file://user@localhost/a",
+        "file:/\\evil.example/x", "file:/\t/evil.example/x",  /* WebKit: host evil.example */
     };
     for (size_t i = 0; i < G_N_ELEMENTS(local); i++)
         g_assert_true(foob_uri_is_local(local[i]));

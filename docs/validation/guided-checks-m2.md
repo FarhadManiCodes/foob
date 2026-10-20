@@ -496,3 +496,18 @@ loads as WebKit reads it and stays remote.
 - `size` text column: 17,943 → 17,653 B.
 - Stripped: 30,712 B, unchanged, because the saving stays inside the same page.
 
+**Review of `44d2e5f`** (code and security): no vulnerability. Two corrections followed
+in the next commit.
+- **Backslashes and control characters in the trust check.** The lighter trust check no
+  longer rejected them on raw text, so `file:/\evil.example/x` counted as local while
+  WebKit reads host `evil.example`.
+  - It was unreachable: `browser.c` passes only WebKit's serialized address. But M2-03
+    will pass page text.
+  - It now rejects them in the part before `?` or `#`, so a local page's own `#a\b`
+    stays local.
+  - The reviewer's fuzz run (about 1.5 M inputs, raw and serialized) found 0
+    mismatches with this check.
+  - Two new remote unit cases; both fail on `44d2e5f`.
+- **Invalid numeric hosts** (`256.1.1.1`, `1.2.3.4.5`): WebKit refuses them with its
+  error page instead of loading them. The comments and D-45 now say so.
+

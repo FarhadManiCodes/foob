@@ -9,7 +9,8 @@
  * returns the form foob loads (newly allocated), or nullptr if the URI is not
  * allowed. That form is ASCII and one WebKit's own parser leaves unchanged, so
  * what was checked is what WebKit loads (M2-02); only a host ending in a number,
- * which WebKit reads as an IPv4 address, may change, and it stays remote (D-45).
+ * which WebKit reads as an IPv4 address or refuses, may differ, and it stays
+ * remote (D-45).
  * Depends only on GLib and POSIX libc (no WebKit), so it can be unit-tested
  * without a display.
  */
