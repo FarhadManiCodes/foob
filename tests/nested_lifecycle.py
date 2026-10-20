@@ -28,6 +28,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'benchmark'))
 from process_tree import browser_tree, processes, survivors  # noqa: E402
+from policy_server import read_post_body  # noqa: E402  (tests/ is the script's directory)
 
 if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help') or not os.access(sys.argv[1], os.X_OK):
     sys.exit(__doc__)  # usage, before any scratch directory or server exists
@@ -174,7 +175,9 @@ requested = []  # the path of each GET, as the browser sent it
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         path, _, query = self.path.partition('?')
-        body = self.rfile.read(int(self.headers.get('Content-Length', '0')))
+        body = read_post_body(self)
+        if body is None:
+            return None
         if path != '/echo':
             return self.send_error(404)
         echoes.append({'from': query, 'bytes': len(body), 'site': self.headers.get('Sec-Fetch-Site')})

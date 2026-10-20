@@ -22,6 +22,19 @@ PDF = (b'%PDF-1.1\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n'
        b'trailer<</Root 1 0 R/Size 4>>\n%%EOF\n')
 
 
+def read_post_body(handler, limit=65536):
+    """A POST request's body, or None after a 400 reply when Content-Length is malformed,
+    negative or over the limit (missing counts as 0). Shared with nested_lifecycle.py."""
+    try:
+        length = int(handler.headers.get('Content-Length', '0'))
+    except ValueError:
+        length = -1
+    if not 0 <= length <= limit:
+        handler.send_error(400, 'bad content length')
+        return None
+    return handler.rfile.read(length)
+
+
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split('?')[0]
@@ -42,14 +55,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.reply(404, 'text/plain', b'not found')
 
     def do_POST(self):
-        try:
-            length = int(self.headers.get('Content-Length', '0'))
-        except ValueError:
-            length = -1
-        if not 0 <= length <= 65536:  # missing is 0; refuse malformed, negative or oversized bodies
-            self.reply(400, 'text/plain', b'bad content length')
+        if read_post_body(self) is None:
             return
-        self.rfile.read(length)
         if self.path.split('?')[0] == '/echo':
             self.reply_echo()
         else:
