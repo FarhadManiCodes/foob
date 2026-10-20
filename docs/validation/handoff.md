@@ -4,7 +4,7 @@
 
 ## Current state (living section: update it with every change)
 
-Updated 2026-10-20. **Branches `main` (M0/M1, frozen at the Gate A state) and `m2` (created from `main` on 2026-10-19; step 1 code since), in the main checkout** (`m0-m1` was fast-forwarded into `main` at `16bc00a` on 2026-10-17; `origin/main` was in sync with `main` on 2026-10-19). The
+Updated 2026-10-20. **Branches `main` (M0/M1, frozen at the Gate A state) and `m2` (created from `main` on 2026-10-19; step 1 code since), in the main checkout** (`m0-m1` was fast-forwarded into `main` at `16bc00a` on 2026-10-17 and deleted, locally and on GitHub, on 2026-10-20, as was the merged `m2-review`; `origin/main` was in sync with `main` on 2026-10-19). The
 M1 audit (`audit-m1.md`) was merged into `m0-m1`; the reviews after it (Codex, two
 security reviews, a final cleanup review) were handled here, and the evidence was
 re-recorded after each C change, last on `147ae45`. The second security review led to
