@@ -14,6 +14,11 @@ automated; the maintainer reviews the commits and this section.
 
 ### F-77: core dumps off outside diagnostics
 
+*Superseded:* this subsection describes the first design (commit `b372cc9`). The current
+guard is a core limit of 1 ([Rework, D-41](#rework-after-the-independent-reviews-d-41)),
+with limit 0 and a non-dumpable foob only where 1 cannot work
+([Fallback, D-42](#fallback-where-a-limit-of-1-cannot-work-d-42)).
+
 Without `FOOB_DIAGNOSTICS=1`, `main.c` sets the core-dump limit to 0 (soft and hard)
 before WebKit starts any process, and makes foob itself non-dumpable
 (`PR_SET_DUMPABLE`); if either call fails, foob refuses to start (exit 1). A diagnostics
