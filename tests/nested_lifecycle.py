@@ -216,6 +216,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 server = http.server.ThreadingHTTPServer(
     ('127.0.0.1', 0), functools.partial(Handler, directory=str(scratch)))
 threading.Thread(target=server.serve_forever, daemon=True).start()
+origin = f'http://127.0.0.1:{server.server_port}'
 
 (scratch / 'local.html').write_text('<!doctype html><meta charset=utf-8><title>a\u200bb</title>x', encoding='utf-8')
 scenario('title-local-unsanitized', 0, terminate,  # the remote scenario below strips the ZWSP
@@ -237,7 +238,7 @@ def canonical_form_requested(browser, socket, errors):
 
 
 scenario('canonical-address-loaded', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/x|y.html', expected_title='bar \u2014 foob',
+         uri=f'{origin}/x|y.html', expected_title='bar \u2014 foob',
          after_load=canonical_form_requested)
 # Every permission request is denied (F-78). Geolocation reaches foob without a click
 # (pointer lock needs one: a guided row); WebKit denies it unanswered too, so the
@@ -253,12 +254,11 @@ def geolocation_denied_by_foob(browser, socket, errors):
         'foob did not answer the geolocation request'
 
 
-scenario('permissions-denied', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/geolocation.html',
+scenario('permissions-denied', 0, terminate, uri=f'{origin}/geolocation.html',
          expected_title='geo 1 \u2014 foob', after_load=geolocation_denied_by_foob)
-scenario('title-remote-sanitized', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
-         expected_title='Payevil page \u2014 foob')
+# A remote page whose title needs sanitizing; the core-dump scenarios load it too.
+hostile = {'uri': f'{origin}/hostile.html', 'expected_title': 'Payevil page \u2014 foob'}
+scenario('title-remote-sanitized', 0, terminate, **hostile)
 
 
 hard_core = resource.getrlimit(resource.RLIMIT_CORE)[1]
@@ -294,31 +294,21 @@ def expect_core_limit(expected, dumpable=True, needs_runner_dumps=True):
 # aborts any dump (D-41); a diagnostics run keeps the runner's limit (D-26). A loopback page
 # starts the network process.
 runner_core = 'unlimited' if hard_core == resource.RLIM_INFINITY else str(hard_core)
-scenario('core-dumps-off', 0, terminate, uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
-         expected_title='Payevil page \u2014 foob', after_load=expect_core_limit(('1', '1')),
+scenario('core-dumps-off', 0, terminate, **hostile, after_load=expect_core_limit(('1', '1')),
          diagnostics=False, raise_core_limit=True)
-scenario('core-dumps-diagnostics', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
-         expected_title='Payevil page \u2014 foob',
+scenario('core-dumps-diagnostics', 0, terminate, **hostile,
          after_load=expect_core_limit((runner_core, runner_core)), raise_core_limit=True)
 # Where a limit of 1 cannot be set (a hard limit already 0), foob keeps 0 and is not dumpable (D-42).
-scenario('core-dumps-off-hard-zero', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
-         expected_title='Payevil page \u2014 foob',
+scenario('core-dumps-off-hard-zero', 0, terminate, **hostile,
          after_load=expect_core_limit(('0', '0'), dumpable=False, needs_runner_dumps=False),
-         diagnostics=False,
-         launcher=('prlimit', '--core=0:0'))
+         diagnostics=False, launcher=('prlimit', '--core=0:0'))
 # The kernel does not abort at a limit of 1 for a socket collector, so foob takes the same
-# fallback (D-42). An
-# unprivileged user and mount namespace shows foob a fake socket core_pattern; there,
-# /proc ownership cannot show dumpability, which the scenario above covers.
+# fallback (D-42). An unprivileged user and mount namespace shows foob a fake socket
+# core_pattern; there, /proc ownership cannot show dumpability, which the scenario above covers.
 (scratch / 'core_pattern').write_text('@@/run/systemd/coredump.socket\n')
-scenario('core-dumps-off-socket-collector', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
-         expected_title='Payevil page \u2014 foob',
+scenario('core-dumps-off-socket-collector', 0, terminate, **hostile,
          after_load=expect_core_limit(('0', '0'), dumpable=None), diagnostics=False,
-         raise_core_limit=True,
-         launcher=('unshare', '-rm', 'sh', '-c',
+         raise_core_limit=True, launcher=('unshare', '-rm', 'sh', '-c',
                    f'mount --bind {shlex.quote(str(scratch / "core_pattern"))} '
                    '/proc/sys/kernel/core_pattern && exec "$0" "$@"'))
 # Downloads are cancelled until M3 designs a policy. GLib reads the download
@@ -355,8 +345,7 @@ def transfer_stopped_without_files(browser, socket, errors):
     assert not saved, f'attachment data was written to disk: {saved}'
 
 
-scenario('download-cancelled', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/stream', load_status='failed',
+scenario('download-cancelled', 0, terminate, uri=f'{origin}/stream', load_status='failed',
          extra_env=download_env, after_load=transfer_stopped_without_files)
 
 # A trusted submit of a target=_blank form asks for a new window, which foob ignores: nothing
@@ -387,8 +376,7 @@ def blank_form_does_not_navigate(browser, socket, errors):
     assert not echoes, f'a _blank form reached /echo: {echoes}'
 
 
-scenario('blank-form-does-not-navigate', 0, terminate,
-         uri=f'http://127.0.0.1:{server.server_port}/blank-form.html',
+scenario('blank-form-does-not-navigate', 0, terminate, uri=f'{origin}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
 scenario('compositor-close', 0, close_window)
 scenario('sigint', 0, lambda c, s, w, b: os.killpg(b.pid, signal.SIGINT))  # like a terminal's Ctrl-C

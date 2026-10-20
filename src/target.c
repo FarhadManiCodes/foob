@@ -89,12 +89,10 @@ char *foob_target_canonical(const char *uri)
     g_autofree char *host = nullptr;
     bool file = strcmp(scheme, "file") == 0;
     if (file) {
-        const char *file_host = g_uri_get_host(parsed);
-        if ((file_host && *file_host && g_ascii_strcasecmp(file_host, "localhost") != 0) ||
-            port != -1 || path[0] != '/' ||
-            /* A path that resolves to "//…" (GLib then writes "/.//…") is one WebKit
-             * rewrites again; no one needs it. */
-            g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
+        /* The trust decision's rule, so every file: address foob loads is local. A path
+         * that resolves to "//…" (GLib then writes "/.//…") is one WebKit rewrites
+         * again; no one needs it. */
+        if (!foob_uri_is_local(uri) || g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
             return nullptr;
         host = g_strdup("");  /* "file:///path", as WebKit writes it. */
     } else if (strcmp(scheme, "http") == 0 || strcmp(scheme, "https") == 0) {
