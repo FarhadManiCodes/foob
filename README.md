@@ -8,9 +8,9 @@ the baseline. See [docs](docs/README.md), the
 ## Build
 
 Required packages: `wpewebkit meson ninja pkgconf gcc` (GLib comes with WPE).
-The tested engine is Arch `wpewebkit 2.54.1-2`; `2.0` in pkg-config names
-is the API namespace, not the engine release. WPEPlatform with Wayland support
-is required. Meson >= 1.12 and a C23 compiler are required.
+The minimum versions (WPE WebKit, GLib, Meson) are in `meson.build`; `2.0` in
+pkg-config names is the API namespace, not the engine release. WPEPlatform with
+Wayland support and a C23 compiler are required.
 
 ```sh
 meson setup build
