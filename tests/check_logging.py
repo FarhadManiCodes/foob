@@ -2,8 +2,8 @@
 """The logging ban (D-61): foob's output never carries a URL, host, title, error text,
 cookie or input contents. Reads src/ and fails, with file:line, on:
 
-- an output call (stdio, write, perror, GLib's print and log functions) outside main.c
-  and diagnostics.c;
+- an output call (stdio, wide and _unlocked included, write, perror, syslog, the journal,
+  GLib's print and log functions, GIO writes) outside main.c and diagnostics.c;
 - in main.c, an output argument other than a string literal, FOOB_VERSION, WebKit's
   version numbers, stdout or stderr;
 - the word char in diagnostics.h, whose interface takes no text;
@@ -24,8 +24,8 @@ import re
 import sys
 
 OUTPUT = re.compile(
-    r'\b(v?[fd]?printf|puts|fputs|putc|putchar|fputc|fwrite|write|perror|syslog|v?errx?|v?warnx?'
-    r'|error(?:_at_line)?|g_(?:v?f?printf|print\w*)|g_log\w*|g_message|g_warning\w*|g_critical'
+    r'\b((?:v?[fd]?w?printf|f?putw?s|f?putw?c|putw?char|fwrite|p?writev?|perror|v?syslog|v?errx?'
+    r'|v?warnx?|error(?:_at_line)?)(?:_unlocked)?|sd_journal_\w+|g_(?:v?f?printf|print\w*)|g_log\w*|g_message|g_warning\w*|g_critical'
     r'|g_debug|g_info|g_error|g_output_stream_\w*|g_file_set_contents\w*|g_file_replace\w*)\s*\(')
 LITERALS = r'(?:"(?:[^"\\]|\\.)*"\s*)+'
 MAIN_ARGUMENT = re.compile(rf'{LITERALS}|FOOB_VERSION|webkit_get_\w+_version\(\)|stdout|stderr')
