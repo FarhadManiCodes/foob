@@ -23,4 +23,5 @@ crash-*
 leak-*
 timeout-*
 oom-*
+!tests/fuzz/seeds/**
 fuzz-*.log

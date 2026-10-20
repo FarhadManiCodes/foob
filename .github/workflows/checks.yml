@@ -18,13 +18,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      # jscpd is compiled from crates.io, which takes minutes; the cache keeps the last
-      # build, and cargo install replaces it only when a newer release exists.
+      # jscpd is compiled from crates.io, which takes minutes, so one build is cached per
+      # jscpd release: the key is the latest release's version, so the cache is saved once
+      # per release and cargo install skips a version it already has.
+      - name: Find the latest jscpd release
+        id: jscpd
+        run: echo "version=$(cargo search --limit 1 jscpd | sed -n 's/^jscpd = "\([^"]*\)".*/\1/p')" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          path: /opt/cargo
-          key: cargo-tools-${{ github.run_id }}
-          restore-keys: cargo-tools-
+          path: |
+            /opt/cargo/bin
+            /opt/cargo/.crates.toml
+            /opt/cargo/.crates2.json
+          key: jscpd-${{ steps.jscpd.outputs.version }}
       - name: Install jscpd and lizard
         run: |
           CARGO_HOME=/opt/cargo cargo install --locked jscpd

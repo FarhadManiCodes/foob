@@ -31,9 +31,15 @@ endif
 # CFLAGS, which Meson stores in c_args at first configure, or -Dc_args=...);
 # respect that instead of redefining it.
 fortify = get_option('optimization') in ['1', '2', '3', 's']
-if fortify and not ' '.join(get_option('c_args')).contains('_FORTIFY_SOURCE')
+caller_args = ' '.join(get_option('c_args'))
+if fortify and not caller_args.contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
+# Whether fortify is really on, so the binary contract expects fortified calls only then:
+# a caller's -U_FORTIFY_SOURCE or -D_FORTIFY_SOURCE=0 turns it off.
+fortified = fortify and not caller_args.contains('-U_FORTIFY_SOURCE') and (
+    not caller_args.contains('_FORTIFY_SOURCE') or caller_args.contains('_FORTIFY_SOURCE=1') or
+    caller_args.contains('_FORTIFY_SOURCE=2') or caller_args.contains('_FORTIFY_SOURCE=3'))
 add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), language: 'c')
 add_project_link_arguments(cc.get_supported_link_arguments(
     '-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack', '-Wl,--as-needed'), language: 'c')
@@ -53,34 +59,29 @@ app_sources = files('src/main.c', 'src/browser.c', 'src/diagnostics.c')
 foob = executable('foob', app_sources, link_with: core, include_directories: 'src',
     dependencies: [glib, gobject, wpe, platform, wayland])
 
-# test-target also links WebKit, to check that WebKit's parser keeps foob's canonical form.
-test_sources = []
-foreach unit : ['target', 'window_title']
-    source = files('tests/test_' + unit + '.c')
-    test_sources += source
-    test(unit, executable('test-' + unit, source,
-        link_with: core, include_directories: 'src',
-        dependencies: unit == 'target' ? [glib, wpe] : glib))
-endforeach
-
-# Fuzz targets (D-46). Every build replays the stored inputs as a test; -Dfuzz=true
-# (clang) also builds the libFuzzer binaries, with the code under test instrumented.
+# Each module that reads untrusted text has a unit test and a fuzz target (D-46), whose
+# stored inputs every build replays; -Dfuzz=true (clang) also builds the libFuzzer
+# binaries, with the code under test instrumented. The address module's tests also link
+# WebKit, to check that WebKit's parser keeps foob's canonical form.
 if get_option('fuzz') and cc.get_id() != 'clang'
     error('-Dfuzz=true needs clang (libFuzzer)')
 endif
 replay = files('tests/fuzz/replay.c')
-test_sources += replay
+test_sources = [replay]
 fuzz_core = get_option('fuzz') ? static_library('foob-core-fuzz', core_sources,
     include_directories: 'src', dependencies: glib, c_args: '-fsanitize=fuzzer-no-link') : core
 foreach unit : ['target', 'window_title']
-    source = files('tests/fuzz/fuzz_' + unit + '.c')
-    test_sources += source
+    unit_test = files('tests/test_' + unit + '.c')
+    fuzz_target = files('tests/fuzz/fuzz_' + unit + '.c')
+    test_sources += [unit_test, fuzz_target]
     deps = unit == 'target' ? [glib, wpe] : glib
-    test('fuzz seeds ' + unit, executable('replay-' + unit, source, replay,
+    test(unit, executable('test-' + unit, unit_test,
+        link_with: core, include_directories: 'src', dependencies: deps))
+    test('fuzz seeds ' + unit, executable('replay-' + unit, fuzz_target, replay,
         link_with: core, include_directories: 'src', dependencies: deps),
         args: meson.project_source_root() / 'tests/fuzz/seeds' / unit)
     if get_option('fuzz')
-        executable('fuzz-' + unit, source, link_with: fuzz_core, include_directories: 'src',
+        executable('fuzz-' + unit, fuzz_target, link_with: fuzz_core, include_directories: 'src',
             dependencies: deps, c_args: '-fsanitize=fuzzer', link_args: '-fsanitize=fuzzer')
     endif
 endforeach
@@ -89,11 +90,13 @@ endforeach
 python = find_program('python3')
 test('startup URI contract', python, args: [files('tests/check_cli.py'), foob], timeout: 30)
 test('binary contract', python,
-    args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
+    args: [files('tests/check_binary.py'), foob] + (fortified ? ['--fortify'] : []))
 
 # Source checks, each skipped (77) where its tool is not installed: static analysis
 # (clang-tidy with .clang-tidy, through this build's compile_commands.json, D-52),
 # duplication (jscpd, D-53) and McCabe complexity (lizard, D-51), run in the source tree.
+# They read only sources, so they form the suite "source", which a second build of the
+# same tree can leave out (tests/ci.sh).
 foreach check : [
     ['static analysis', 'clang-tidy',
         ['-p', meson.project_build_root(), '--quiet', app_sources, core_sources, test_sources]],
@@ -102,8 +105,10 @@ foreach check : [
 ]
     tool = find_program(check[1], required: false)
     if tool.found()
-        test(check[0], tool, args: check[2], workdir: meson.project_source_root(), timeout: 120)
+        test(check[0], tool, args: check[2], workdir: meson.project_source_root(), timeout: 120,
+            suite: 'source')
     else
-        test(check[0], python, args: ['-c', 'print("SKIP: @0@ missing"); raise SystemExit(77)'.format(check[1])])
+        test(check[0], python, suite: 'source',
+            args: ['-c', 'print("SKIP: @0@ missing"); raise SystemExit(77)'.format(check[1])])
     endif
 endforeach

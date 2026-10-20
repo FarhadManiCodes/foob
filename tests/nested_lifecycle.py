@@ -175,12 +175,14 @@ requested = []  # the path of each GET, as the browser sent it
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         path, _, query = self.path.partition('?')
+        if path != '/echo':
+            return self.send_error(404)
+        # Recorded before the body is checked: a refused body is still a submission.
+        echoes.append({'from': query, 'bytes': None, 'site': self.headers.get('Sec-Fetch-Site')})
         body = read_post_body(self)
         if body is None:
             return None
-        if path != '/echo':
-            return self.send_error(404)
-        echoes.append({'from': query, 'bytes': len(body), 'site': self.headers.get('Sec-Fetch-Site')})
+        echoes[-1]['bytes'] = len(body)
         page = b'<!doctype html><title>echo</title>echo'
         self.send_response(200)
         self.send_header('Content-Type', 'text/html')

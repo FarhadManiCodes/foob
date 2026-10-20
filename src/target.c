@@ -78,13 +78,24 @@ static char *join_escaped(GUri *parsed, const char *host, int port, const char *
                       escaped_path, query, fragment);
 }
 
-/* file: the trust decision's rule, so every file: address foob loads is local, written
+/* The local-file rule, shared by the startup allowlist and the trust decision so they
+ * cannot drift apart (D-56): a file: URI with no userinfo or port, an absolute path,
+ * and no host or "localhost". */
+static bool is_local_file(GUri *parsed)
+{
+    const char *host = g_uri_get_host(parsed);
+    return strcmp(g_uri_get_scheme(parsed), "file") == 0 && !g_uri_get_userinfo(parsed) &&
+        g_uri_get_port(parsed) == -1 && g_uri_get_path(parsed)[0] == '/' &&
+        (!host || !*host || g_ascii_strcasecmp(host, "localhost") == 0);
+}
+
+/* file: a local file, so every file: address foob loads is trusted, written
  * "file:///path" as WebKit writes it. A path that resolves to "//…" (GLib then writes
  * "/.//…") is one WebKit rewrites again; no one needs it. */
-static char *canonical_file(const char *uri, GUri *parsed)
+static char *canonical_file(GUri *parsed)
 {
     const char *path = g_uri_get_path(parsed);
-    if (!foob_uri_is_local(uri) || g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
+    if (!is_local_file(parsed) || g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
         return nullptr;
     g_autofree char *canonical = join_escaped(parsed, "", -1, path);
     return names_a_file(canonical) ? g_steal_pointer(&canonical) : nullptr;
@@ -119,7 +130,7 @@ char *foob_target_canonical(const char *uri)
     /* One function per scheme: a new one (foob:, M4-02) adds a function and a line (D-50). */
     const char *scheme = g_uri_get_scheme(parsed);
     if (strcmp(scheme, "file") == 0)
-        return canonical_file(uri, parsed);
+        return canonical_file(parsed);
     if (strcmp(scheme, "http") == 0)
         return canonical_web(parsed, 80);
     if (strcmp(scheme, "https") == 0)
@@ -158,11 +169,7 @@ bool foob_uri_is_local(const char *uri)
     if (has_unsafe_character(resource))  /* WebKit reads file:/\\h/x as host h. */
         return false;
     g_autoptr(GUri) parsed = g_uri_parse(resource, G_URI_FLAGS_ENCODED | G_URI_FLAGS_NON_DNS, nullptr);
-    if (!parsed || strcmp(g_uri_get_scheme(parsed), "file") != 0 || g_uri_get_userinfo(parsed) ||
-        g_uri_get_port(parsed) != -1 || g_uri_get_path(parsed)[0] != '/')
-        return false;
-    const char *host = g_uri_get_host(parsed);
-    return !host || !*host || g_ascii_strcasecmp(host, "localhost") == 0;
+    return parsed && is_local_file(parsed);
 }
 
 bool foob_navigation_allowed(const char *from_uri, const char *to_uri)
