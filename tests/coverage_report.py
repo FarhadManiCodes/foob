@@ -23,15 +23,19 @@ for module in ('target', 'window_title'):
     report = subprocess.run(['gcov', '--branch-probabilities', '--branch-counts', '--stdout',
                              str(notes.relative_to(build))],
                             cwd=build, check=True, capture_output=True, text=True).stdout
-    source, untaken, inside = None, [], False
+    source, untaken, inside, seen = None, [], False, False
     for line in report.splitlines():
         counted = re.match(r'\s*[^:]+:\s*(\d+):(.*)', line)
         if counted and counted[1] == '0' and counted[2].startswith('Source:'):
-            inside = counted[2].endswith(f'/src/{module}.c')  # not GLib's or libc's headers
+            # Not GLib's or libc's headers; the path is relative to the build directory.
+            inside = re.search(rf'(^|/)src/{module}\.c$', counted[2]) is not None
+            seen = seen or inside
         elif counted and counted[1] != '0' and inside:
             source = (int(counted[1]), counted[2].strip())
         elif re.match(r'branch\s+\d+ (taken 0\b|never executed)', line) and source and inside:
             untaken.append(source)
+    if not seen:  # otherwise a path mismatch would read as full coverage
+        sys.exit(f'gcov reported no lines of src/{module}.c')
     print(f'== src/{module}.c: {len(untaken)} untaken branch outcomes')
     for number, text in dict.fromkeys(untaken):
         print(f'{number:5}: {text[:100]}')

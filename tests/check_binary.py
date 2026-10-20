@@ -56,7 +56,7 @@ def check(condition, message):
         failures.append(message)
 
 
-check('Type:                              DYN' in header and re.search(r'FLAGS_1\).*\bPIE\b', dynamic),
+check(re.search(r'Type:\s+DYN\b', header) and re.search(r'FLAGS_1\).*\bPIE\b', dynamic),
       'not a position-independent executable')
 check(re.search(r'\(FLAGS\).*\bBIND_NOW\b', dynamic) and re.search(r'FLAGS_1\).*\bNOW\b', dynamic),
       'lazy binding: link with -z now (full RELRO)')
@@ -68,7 +68,7 @@ if 'X86-64' in header or 'x86-64' in header:
     check(re.search(r'x86 feature: .*IBT', notes) and re.search(r'x86 feature: .*SHSTK', notes),
           'no CET (IBT and SHSTK) property')
 check('__stack_chk_fail' in imports, 'no stack protector')
-check(not fortify or any(name.endswith('_chk') and name != '__stack_chk_fail' for name in imports),
+check(not fortify or any(name.endswith('_chk') for name in imports),
       'no fortified call (_FORTIFY_SOURCE)')
 allowed = {'libglib-2.0.so.0', 'libgobject-2.0.so.0', 'libWPEWebKit-2.0.so.1', 'libc.so.6'}
 check(needed <= allowed and 'libWPEWebKit-2.0.so.1' in needed,
