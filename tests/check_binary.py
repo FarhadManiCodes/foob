@@ -3,9 +3,9 @@
 python3 tests/check_binary.py build/foob [--fortify]
 
 Reads the ELF with binutils (readelf, nm, strip, size); standard library only. Exit 77
-(a skip for meson) when binutils are missing or the binary is a sanitizer build, whose
-runtime adds its own imports. Prints the stripped size and the section sizes for the
-per-task record (D-35).
+(a skip for meson) when binutils are missing or the binary is a sanitizer or coverage
+build, whose runtime adds its own imports. Prints the stripped size and the section sizes
+for the per-task record (D-35).
 """
 import re
 import shutil
@@ -31,8 +31,11 @@ notes = run('readelf', '-W', '-n', binary)
 symbols = run('nm', '-D', binary).splitlines()
 imports = {line.split()[-1].split('@')[0] for line in symbols if line.split()[-2:-1] == ['U']}
 defined = {line.split()[-1] for line in symbols if len(line.split()) == 3}
-if any(name.startswith(('__asan_', '__ubsan_', '__msan_', '__tsan_')) for name in imports | defined):
-    print('SKIP: sanitizer build')
+# The full symbol table, where present, also shows a statically linked coverage runtime.
+static = subprocess.run(['nm', binary], check=False, capture_output=True, text=True).stdout.split()  # stripped: none
+if any(name.startswith(('__asan_', '__ubsan_', '__msan_', '__tsan_', '__gcov_', '__llvm_profile_'))
+       for name in imports | defined | set(static)):
+    print('SKIP: sanitizer or coverage build')
     sys.exit(77)
 
 needed = set(re.findall(r'\(NEEDED\)\s+Shared library: \[([^\]]+)\]', dynamic))

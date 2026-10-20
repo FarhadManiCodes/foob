@@ -128,9 +128,8 @@ char *foob_target_from_argument(const char *argument)
         return nullptr;
     g_autofree char *path = g_canonicalize_filename(argument, cwd);
     free(cwd);
-    const char *single = path;  /* GLib keeps a leading "//" (POSIX); the kernel reads "/". */
-    while (single[0] == '/' && single[1] == '/')
-        single++;
+    /* GLib keeps exactly two leading slashes (POSIX) and collapses more; the kernel reads "/". */
+    const char *single = path[0] == '/' && path[1] == '/' ? path + 1 : path;
     g_autofree char *uri = g_filename_to_uri(single, nullptr, nullptr);
     return foob_target_canonical(uri);
 }

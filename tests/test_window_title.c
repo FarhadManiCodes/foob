@@ -110,6 +110,7 @@ static void test_direction(void)
     /* A leading right-to-left letter must not make the line right to left. */
     check("\u05d0 Bank", false, LRM "\u05d0 Bank \u2014 foob");
     check("Bank \u0628\u0646\u0643", false, LRM "Bank \u0628\u0646\u0643 \u2014 foob");
+    check("\ufe8d\ufe8e", false, LRM "\ufe8d\ufe8e \u2014 foob");  /* Arabic presentation forms */
     /* An unassigned code point in a right-to-left block counts as right to left. */
     check("\U0001EFFFx", false, LRM "\U0001EFFFx \u2014 foob");
     /* A page-supplied right-to-left mark is removed, not trusted to set the direction. */

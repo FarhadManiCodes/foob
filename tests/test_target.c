@@ -17,6 +17,7 @@ static const struct { const char *uri; const char *canonical; } accepted[] = {
     { "https://example.org:443/", "https://example.org/" },
     { "http://example.org:080/", "http://example.org/" },
     { "https://ex%41mple.org./", "https://example.org./" },
+    { "https://xn--bcher-kva.my_host.example/", "https://xn--bcher-kva.my_host.example/" },
     { "http://127.0.0.1:8080/", "http://127.0.0.1:8080/" },
     { "http://[::1]/", "http://[::1]/" },
     { "http://[2001:db8::1]/", "http://[2001:db8::1]/" },
