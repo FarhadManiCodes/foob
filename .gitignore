@@ -12,3 +12,8 @@ __pycache__/
 
 # Generated raw validation runs; curated results remain tracked in docs/validation/.
 /docs/validation/runs/
+
+# Core dumps can hold page memory (F-77); never commit one.
+core
+*.core
+core.[0-9]*

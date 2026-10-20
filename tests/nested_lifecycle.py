@@ -138,7 +138,10 @@ def scenario(name, expected_exit, stop, uri='about:blank', expected_title='foob'
         print(f'PASS {name}: exit {code}, no survivors')
     finally:
         try:
-            if browser:  # the group outlives a reaped leader while a helper survives
+            # The group outlives a reaped leader while a helper survives; once none is left,
+            # the ID may be reused, so signal it only while foob or a helper still holds it.
+            if browser and (browser.poll() is None or any(
+                    item['session'] == browser.pid for item in processes().values())):
                 os.killpg(browser.pid, signal.SIGKILL)  # first: a stuck compositor must not skip it
         except ProcessLookupError:
             pass

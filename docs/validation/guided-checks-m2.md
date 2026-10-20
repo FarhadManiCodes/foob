@@ -410,7 +410,8 @@ violations. Follow-ups, chosen by the maintainer:
 
 ## F-78: every permission request denied
 
-Found by the branch security review (`security-review-m2-step1.md`). foob did not handle
+Found by the branch security review (2026-10-20; its report is in git history, commit
+`50331a3`). foob did not handle
 WebKit's `permission-request`, and unanswered WebKit *allows* pointer lock. Its API
 documentation says the other request types, notifications among them, are denied; the
 review read installing missing media plugins as allowed too. `browser.c` now denies every
