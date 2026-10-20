@@ -53,6 +53,25 @@ foreach unit : ['target', 'window_title']
         dependencies: unit == 'target' ? [glib, wpe] : glib))
 endforeach
 
+# Fuzz targets (D-46). Every build replays the stored inputs as a test; -Dfuzz=true
+# (clang) also builds the libFuzzer binaries, with the code under test instrumented.
+if get_option('fuzz') and cc.get_id() != 'clang'
+    error('-Dfuzz=true needs clang (libFuzzer)')
+endif
+fuzz_core = get_option('fuzz') ? static_library('foob-core-fuzz', 'src/target.c', 'src/window_title.c',
+    include_directories: 'src', dependencies: glib, c_args: '-fsanitize=fuzzer-no-link') : core
+foreach unit : ['target', 'window_title']
+    source = 'tests/fuzz/fuzz_' + unit + '.c'
+    deps = unit == 'target' ? [glib, wpe] : glib
+    test('fuzz seeds ' + unit, executable('replay-' + unit, source, 'tests/fuzz/replay.c',
+        link_with: core, include_directories: 'src', dependencies: deps),
+        args: meson.project_source_root() / 'tests/fuzz/seeds' / unit)
+    if get_option('fuzz')
+        executable('fuzz-' + unit, source, link_with: fuzz_core, include_directories: 'src',
+            dependencies: deps, c_args: '-fsanitize=fuzzer', link_args: '-fsanitize=fuzzer')
+    endif
+endforeach
+
 python = find_program('python3', required: false)
 if python.found()
     test('startup URI contract', python,

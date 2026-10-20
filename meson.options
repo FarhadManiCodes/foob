@@ -1,0 +1,2 @@
+option('fuzz', type: 'boolean', value: false,
+    description: 'Also build the libFuzzer targets in tests/fuzz (needs clang, D-46)')

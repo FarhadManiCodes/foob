@@ -17,3 +17,10 @@ __pycache__/
 core
 *.core
 core.[0-9]*
+
+# libFuzzer output (D-46); a failing input is kept on purpose in tests/fuzz/seeds/.
+crash-*
+leak-*
+timeout-*
+oom-*
+fuzz-*.log
