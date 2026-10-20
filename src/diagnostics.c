@@ -42,12 +42,14 @@ void foob_diagnostics_event(const FoobDiagnostics *diagnostics, FoobEvent event)
 
 void foob_diagnostics_permission_denied(const FoobDiagnostics *diagnostics, GType request)
 {
-    log_line(diagnostics, "permission-denied type=%s", g_type_name(request));
+    if (diagnostics)
+        log_line(diagnostics, "permission-denied type=%s", g_type_name(request));
 }
 
 void foob_diagnostics_backend(const FoobDiagnostics *diagnostics, GType display)
 {
-    log_line(diagnostics, "backend=%s session=ephemeral", g_type_name(display));
+    if (diagnostics)
+        log_line(diagnostics, "backend=%s session=ephemeral", g_type_name(display));
 }
 
 static void report_geometry(const FoobDiagnostics *diagnostics)

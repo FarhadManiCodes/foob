@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -145,11 +144,10 @@ char *foob_target_from_argument(const char *argument)
         return foob_target_canonical(argument);
     /* The kernel's current directory, as ls and tab completion see it (D-44); GLib's
      * g_get_current_dir() would prefer $PWD and fall back to "/" when it is gone. */
-    char *cwd = absolute ? nullptr : getcwd(nullptr, 0);
+    g_autofree char *cwd = absolute ? nullptr : getcwd(nullptr, 0);
     if (!absolute && !cwd)
         return nullptr;
     g_autofree char *path = g_canonicalize_filename(argument, cwd);
-    free(cwd);
     /* GLib keeps exactly two leading slashes (POSIX) and collapses more; the kernel reads "/". */
     const char *single = path[0] == '/' && path[1] == '/' ? path + 1 : path;
     g_autofree char *uri = g_filename_to_uri(single, nullptr, nullptr);

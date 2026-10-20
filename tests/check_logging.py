@@ -6,8 +6,8 @@ text, cookie or input contents. Reads src/ and fails, with file:line, on:
 - in main.c, an output call other than printf or fputs, an argument other than a string
   literal, FOOB_VERSION, WebKit's version numbers, stdout or stderr, or a printf format
   the rule below refuses;
-- in diagnostics.h, a parameter of a type other than foob's own, GType and the two views:
-  the interface takes no text;
+- in diagnostics.h, a parameter of a type other than foob's own, GType and the two views,
+  a '...' or a function pointer: the interface takes no text;
 - in diagnostics.c, any output call but the one in log_line(), and a log_line() whose
   format is not literal or refused, or that gives a %s anything but a literal, a choice
   between two literals, an event_names[] entry, g_quark_to_string(error->domain) or
@@ -27,15 +27,16 @@ import re
 import sys
 
 # Calls that write somewhere: stdio (each also as _unlocked), POSIX writes and sockets,
-# error reporters, syslog, and GLib's print, log and file writers; then whole prefixes.
+# error reporters, syslog, and GLib's print, log and file writers; then whole prefixes
+# (GLib's assertions and test messages print the values they compare).
 NAMES = '''printf fprintf dprintf vprintf vfprintf vdprintf wprintf fwprintf vwprintf vfwprintf
     puts fputs putws fputws putc fputc putwc fputwc putchar putwchar fwrite
     write writev pwrite pwritev pwrite64 pwritev2 send sendto sendmsg
     perror psignal psiginfo err errx verr verrx warn warnx vwarn vwarnx error error_at_line
     syslog vsyslog g_print g_printerr g_printf g_fprintf g_vprintf g_vfprintf g_message
     g_critical g_debug g_info g_error g_io_channel_write_chars g_io_channel_write_unichar'''
-PREFIXES = '''sd_journal_ g_log g_warning g_output_stream_ g_data_output_stream_put_
-    g_file_set_contents g_file_replace'''
+PREFIXES = '''sd_journal_ g_log g_warning g_warn_ g_assert g_test_ g_output_stream_
+    g_data_output_stream_put_ g_file_set_contents g_file_replace'''
 OUTPUT = re.compile(rf"\b((?:{'|'.join(NAMES.split())})(?:_unlocked)?"
                     rf"|(?:{'|'.join(PREFIXES.split())})\w*)\s*\(")
 LITERALS = r'(?:"(?:[^"\\]|\\.)*"\s*)+'
@@ -105,7 +106,10 @@ def check(source):
 
         calls = list(OUTPUT.finditer(text))
         if path.name == 'diagnostics.h':
-            for m in re.finditer(r'\b\w+\s*\(([^()]*)\)\s*;', text):
+            for m in re.finditer(r'\b\w+\s*\(([^;]*)\)\s*;', text):
+                if '...' in m[1] or '(' in m[1]:
+                    report(m.start(), 'the diagnostics interface takes no variadic or function parameter')
+                    continue
                 for parameter in m[1].split(','):
                     kind = [w for w in re.findall(r'\w+', parameter) if w != 'const'][:1]
                     if kind and kind[0] not in HEADER_TYPES:
