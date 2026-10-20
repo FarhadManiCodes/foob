@@ -1,5 +1,6 @@
 """Linux browser-process identity, PSS and cleanup helpers; no external deps."""
 import hashlib
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -74,6 +75,12 @@ def survivors(tracked):
 
 
 FAILURE_MARKERS = ('load-failed ', 'status=failed', 'web-process-terminated')
+
+
+def launch(binary, uri, stream):
+    """Starts foob with diagnostics on, its output to stream, in its own session."""
+    return subprocess.Popen([str(binary), uri], env={**os.environ, 'FOOB_DIAGNOSTICS': '1'},
+                            stdout=stream, stderr=stream, start_new_session=True)
 
 
 def stop(process):

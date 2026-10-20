@@ -93,12 +93,19 @@ if python.found()
         args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
 endif
 
-# Static analysis (D-52, .clang-tidy): every C file, read through this build's
-# compile_commands.json; skipped (77) where clang-tidy is not installed.
-clang_tidy = find_program('clang-tidy', required: false)
-if clang_tidy.found()
-    test('static analysis', clang_tidy, timeout: 120,
-        args: ['-p', meson.project_build_root(), '--quiet', app_sources, core_sources, test_sources])
-elif python.found()
-    test('static analysis', python, args: ['-c', 'print("SKIP: clang-tidy missing"); raise SystemExit(77)'])
-endif
+# Source checks, each skipped (77) where its tool is not installed: static analysis
+# (clang-tidy with .clang-tidy, through this build's compile_commands.json, D-52),
+# duplication (jscpd, D-53) and McCabe complexity (lizard, D-51), run in the source tree.
+foreach check : [
+    ['static analysis', 'clang-tidy',
+        ['-p', meson.project_build_root(), '--quiet', app_sources, core_sources, test_sources]],
+    ['duplication', 'jscpd', ['--no-tips', '--no-colors', '--exit-code', '-f', 'c,python', '--ignore-identifiers', 'src', 'tests']],
+    ['complexity', 'lizard', ['-l', 'c', '-w', '-C', '15', 'src']],
+]
+    tool = find_program(check[1], required: false)
+    if tool.found()
+        test(check[0], tool, args: check[2], workdir: meson.project_source_root(), timeout: 120)
+    elif python.found()
+        test(check[0], python, args: ['-c', 'print("SKIP: @0@ missing"); raise SystemExit(77)'.format(check[1])])
+    endif
+endforeach

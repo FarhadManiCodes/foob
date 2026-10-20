@@ -6,12 +6,10 @@ Interaction acceptance is recorded separately from lifecycle results.
 import argparse
 from datetime import datetime, timezone
 import json
-import os
 from pathlib import Path
-import subprocess
 import time
 
-from process_tree import browser_tree, processes, provenance, stop, survivors_after_wait
+from process_tree import browser_tree, launch, processes, provenance, stop, survivors_after_wait
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--uri', required=True)
@@ -30,9 +28,7 @@ record = {
 }
 tracked = {}
 with output.with_suffix('.log').open('w') as stream:
-    process = subprocess.Popen([str(binary), args.uri],
-                               env={**os.environ, 'FOOB_DIAGNOSTICS': '1'},
-                               stdout=stream, stderr=stream, start_new_session=True)
+    process = launch(binary, args.uri, stream)
     record['root_pid'] = process.pid
     output.write_text(json.dumps({**record, 'lifecycle_result': 'running'}, indent=2) + '\n')
     print(f'Interactive foob window launched; PID {process.pid}. Close it after the guided checks.', flush=True)

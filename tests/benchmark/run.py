@@ -13,7 +13,7 @@ import signal
 import subprocess
 import time
 
-from process_tree import FAILURE_MARKERS, browser_tree, processes, provenance, sample, stop, survivors_after_wait
+from process_tree import FAILURE_MARKERS, browser_tree, launch, processes, provenance, sample, stop, survivors_after_wait
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--binary', default='build/foob')
@@ -65,8 +65,7 @@ def check_health(expected_loads=None, allow_exit=False):
 
 try:
     with log.open('w') as stream:
-        process = subprocess.Popen([str(binary), args.uri], env={**os.environ, 'FOOB_DIAGNOSTICS': '1'},
-                                   stdout=stream, stderr=stream, start_new_session=True)
+        process = launch(binary, args.uri, stream)
         record['root_pid'] = process.pid
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
