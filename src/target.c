@@ -68,6 +68,39 @@ static char *escape(const char *component, const char *kept)
     return component ? g_uri_escape_string(component, kept, FALSE) : nullptr;
 }
 
+/* The address from its checked parts, each component encoded as WebKit would. */
+static char *join_escaped(GUri *parsed, const char *host, int port, const char *path)
+{
+    g_autofree char *escaped_path = escape(path, path_kept);
+    g_autofree char *query = escape(g_uri_get_query(parsed), query_kept);
+    g_autofree char *fragment = escape(g_uri_get_fragment(parsed), fragment_kept);
+    return g_uri_join(G_URI_FLAGS_ENCODED, g_uri_get_scheme(parsed), nullptr, host, port,
+                      escaped_path, query, fragment);
+}
+
+/* file: the trust decision's rule, so every file: address foob loads is local, written
+ * "file:///path" as WebKit writes it. A path that resolves to "//…" (GLib then writes
+ * "/.//…") is one WebKit rewrites again; no one needs it. */
+static char *canonical_file(const char *uri, GUri *parsed)
+{
+    const char *path = g_uri_get_path(parsed);
+    if (!foob_uri_is_local(uri) || g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
+        return nullptr;
+    g_autofree char *canonical = join_escaped(parsed, "", -1, path);
+    return names_a_file(canonical) ? g_steal_pointer(&canonical) : nullptr;
+}
+
+/* http and https: a checked host, no default port, and "/" for an empty path. */
+static char *canonical_web(GUri *parsed, int default_port)
+{
+    g_autofree char *host = canonical_host(g_uri_get_host(parsed));
+    if (!host)
+        return nullptr;
+    int port = g_uri_get_port(parsed);
+    const char *path = g_uri_get_path(parsed);
+    return join_escaped(parsed, host, port == default_port ? -1 : port, *path ? path : "/");
+}
+
 char *foob_target_canonical(const char *uri)
 {
     if (!uri)
@@ -83,37 +116,15 @@ char *foob_target_canonical(const char *uri)
     g_autoptr(GUri) parsed = g_uri_parse(uri, G_URI_FLAGS_ENCODED | G_URI_FLAGS_NON_DNS, nullptr);
     if (!parsed || g_uri_get_userinfo(parsed))
         return nullptr;
+    /* One function per scheme: a new one (foob:, M4-02) adds a function and a line (D-50). */
     const char *scheme = g_uri_get_scheme(parsed);
-    const char *path = g_uri_get_path(parsed);
-    int port = g_uri_get_port(parsed);
-    g_autofree char *host = nullptr;
-    bool file = strcmp(scheme, "file") == 0;
-    if (file) {
-        /* The trust decision's rule, so every file: address foob loads is local. A path
-         * that resolves to "//…" (GLib then writes "/.//…") is one WebKit rewrites
-         * again; no one needs it. */
-        if (!foob_uri_is_local(uri) || g_str_has_prefix(path, "//") || g_str_has_prefix(path, "/.//"))
-            return nullptr;
-        host = g_strdup("");  /* "file:///path", as WebKit writes it. */
-    } else if (strcmp(scheme, "http") == 0 || strcmp(scheme, "https") == 0) {
-        host = canonical_host(g_uri_get_host(parsed));
-        if (!host)
-            return nullptr;
-        if (port == (strcmp(scheme, "http") == 0 ? 80 : 443))
-            port = -1;
-        if (!*path)
-            path = "/";
-    } else {
-        return nullptr;
-    }
-    g_autofree char *escaped_path = escape(path, path_kept);
-    g_autofree char *query = escape(g_uri_get_query(parsed), query_kept);
-    g_autofree char *fragment = escape(g_uri_get_fragment(parsed), fragment_kept);
-    g_autofree char *canonical = g_uri_join(G_URI_FLAGS_ENCODED, scheme, nullptr, host, port,
-                                            escaped_path, query, fragment);
-    if (file && !names_a_file(canonical))
-        return nullptr;
-    return g_steal_pointer(&canonical);
+    if (strcmp(scheme, "file") == 0)
+        return canonical_file(uri, parsed);
+    if (strcmp(scheme, "http") == 0)
+        return canonical_web(parsed, 80);
+    if (strcmp(scheme, "https") == 0)
+        return canonical_web(parsed, 443);
+    return nullptr;
 }
 
 char *foob_target_from_argument(const char *argument)
