@@ -60,7 +60,7 @@ static void close_requested([[maybe_unused]] gpointer instance, gpointer user_da
 static void download_started([[maybe_unused]] WebKitNetworkSession *session,
                              WebKitDownload *download, gpointer user_data)
 {
-    foob_diagnostics_log(((FoobBrowser *)user_data)->diagnostics, "download-cancelled");
+    foob_diagnostics_event(((FoobBrowser *)user_data)->diagnostics, FOOB_EVENT_DOWNLOAD_CANCELLED);
     webkit_download_cancel(download);
 }
 
@@ -92,8 +92,8 @@ static gboolean decide_policy([[maybe_unused]] WebKitWebView *web_view, WebKitPo
 static gboolean permission_requested([[maybe_unused]] WebKitWebView *web_view,
                                      WebKitPermissionRequest *request, gpointer user_data)
 {
-    foob_diagnostics_log(((FoobBrowser *)user_data)->diagnostics, "permission-denied type=%s",
-                         G_OBJECT_TYPE_NAME(request));
+    foob_diagnostics_permission_denied(((FoobBrowser *)user_data)->diagnostics,
+                                       G_OBJECT_TYPE(request));
     webkit_permission_request_deny(request);
     return TRUE;
 }
@@ -124,14 +124,14 @@ static void display_disconnected([[maybe_unused]] WPEDisplay *display,
                                  [[maybe_unused]] GError *error, gpointer user_data)
 {
     FoobBrowser *browser = user_data;
-    foob_diagnostics_log(browser->diagnostics, "display-disconnected");
+    foob_diagnostics_event(browser->diagnostics, FOOB_EVENT_DISPLAY_DISCONNECTED);
     _exit(FOOB_EXIT_DISPLAY_LOST);
 }
 
 static gboolean unix_signal(gpointer user_data)
 {
     FoobBrowser *browser = user_data;
-    foob_diagnostics_log(browser->diagnostics, "shutdown signal");
+    foob_diagnostics_event(browser->diagnostics, FOOB_EVENT_SHUTDOWN_SIGNAL);
     stop_loop(browser);
     /* Keep IDs valid until remove_signal_sources() removes both signal sources. */
     return G_SOURCE_CONTINUE;
@@ -188,8 +188,7 @@ FoobBrowser *foob_browser_new(bool diagnostics)
                      G_CALLBACK(web_process_terminated), browser);
     if (diagnostics) {
         browser->diagnostics = foob_diagnostics_new(browser->web_view, view);
-        foob_diagnostics_log(browser->diagnostics, "backend=%s session=ephemeral",
-                             G_OBJECT_TYPE_NAME(display));
+        foob_diagnostics_backend(browser->diagnostics, G_OBJECT_TYPE(display));
     }
     return browser;
 }

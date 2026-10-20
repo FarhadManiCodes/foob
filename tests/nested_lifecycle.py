@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import secrets
 import shlex
 import shutil
 import signal
@@ -384,6 +385,32 @@ def blank_form_does_not_navigate(browser, socket, errors):
 
 scenario('blank-form-does-not-navigate', 0, terminate, uri=f'{origin}/blank-form.html',
          expected_title='forms \u2014 foob', after_load=blank_form_does_not_navigate)
+# The logging ban (D-61): no address, host or title reaches any process's output, foob's
+# or WebKit's, with diagnostics on or off. One lower-case token marks the page's path,
+# query, fragment and title, and the host of a failed load the page starts; percent-
+# encoding leaves it unchanged. The window title shows it by design; stderr must not.
+token = secrets.token_hex(8)
+(scratch / f'{token}-path.html').write_text(
+    f'<!doctype html><title>{token}-title</title><script>setTimeout(() =>'
+    f' location = "http://{token}-host.invalid/", 2000);</script>x', encoding='utf-8')
+marked = {'uri': f'{origin}/{token}-path.html?{token}-query#{token}-fragment',
+          'expected_title': f'{token}-title \u2014 foob'}
+
+
+def failed_load_started(browser, socket, errors):
+    if 'load-started' in errors.read_text():  # diagnostics on
+        wait_for(lambda: 'load-failed' in errors.read_text(), 15, 'the marked host never failed to load')
+    else:
+        time.sleep(5)  # without diagnostics nothing reports the failed load; .invalid fails at once
+
+
+for name, diagnostics in (('logs-redacted', True), ('logs-redacted-quiet', False)):
+    scenario(name, 0, terminate, **marked, diagnostics=diagnostics, after_load=failed_load_started)
+    output = scratch / f'{name}.err'
+    assert not output.exists() or token not in output.read_text(errors='replace'), \
+        f'{name}: page text in {output}'
+    if output.exists():
+        print(f'PASS {name}: no page text in {output.stat().st_size} bytes of output')
 scenario('compositor-close', 0, close_window)
 scenario('sigint', 0, lambda c, s, w, b: os.killpg(b.pid, signal.SIGINT))  # like a terminal's Ctrl-C
 scenario('compositor-lost', 3, lambda c, s, w, b: c.kill())

@@ -14,7 +14,15 @@ static const char *const geometry_properties[] = {
     "notify::width", "notify::height", "notify::scale", "notify::has-focus",
 };
 
-void foob_diagnostics_log(const FoobDiagnostics *diagnostics, const char *format, ...)
+static const char *const event_names[] = {
+    [FOOB_EVENT_DOWNLOAD_CANCELLED] = "download-cancelled",
+    [FOOB_EVENT_DISPLAY_DISCONNECTED] = "display-disconnected",
+    [FOOB_EVENT_SHUTDOWN_SIGNAL] = "shutdown signal",
+};
+
+/* The one output of this file; each %s takes only foob's own text or a type name. */
+G_GNUC_PRINTF(2, 3)
+static void log_line(const FoobDiagnostics *diagnostics, const char *format, ...)
 {
     if (!diagnostics)
         return;
@@ -25,11 +33,26 @@ void foob_diagnostics_log(const FoobDiagnostics *diagnostics, const char *format
     g_printerr("foob: %s\n", message);
 }
 
+void foob_diagnostics_event(const FoobDiagnostics *diagnostics, FoobEvent event)
+{
+    log_line(diagnostics, "%s", event_names[event]);
+}
+
+void foob_diagnostics_permission_denied(const FoobDiagnostics *diagnostics, GType request)
+{
+    log_line(diagnostics, "permission-denied type=%s", g_type_name(request));
+}
+
+void foob_diagnostics_backend(const FoobDiagnostics *diagnostics, GType display)
+{
+    log_line(diagnostics, "backend=%s session=ephemeral", g_type_name(display));
+}
+
 static void report_geometry(const FoobDiagnostics *diagnostics)
 {
     WPEView *view = diagnostics->view;
     WPEToplevelState state = wpe_view_get_toplevel_state(view);
-    foob_diagnostics_log(diagnostics,
+    log_line(diagnostics,
                          "viewport width=%d height=%d scale=%.3f "
                          "active=%d fullscreen=%d maximized=%d focus=%d",
                          wpe_view_get_width(view), wpe_view_get_height(view),
@@ -71,7 +94,7 @@ static void view_closed([[maybe_unused]] WPEView *view, gpointer user_data)
 {
     FoobDiagnostics *diagnostics = user_data;
     diagnostics->closed = true;
-    foob_diagnostics_log(diagnostics, "closed");
+    log_line(diagnostics, "closed");
 }
 
 static void load_changed([[maybe_unused]] WebKitWebView *web_view, WebKitLoadEvent event,
@@ -81,11 +104,11 @@ static void load_changed([[maybe_unused]] WebKitWebView *web_view, WebKitLoadEve
     if (event == WEBKIT_LOAD_STARTED) {
         diagnostics->navigation_started = g_get_monotonic_time();
         diagnostics->load_failed = false;
-        foob_diagnostics_log(diagnostics, "load-started");
+        log_line(diagnostics, "load-started");
     } else if (event == WEBKIT_LOAD_FINISHED) {
         double elapsed_ms = (double)(g_get_monotonic_time() - diagnostics->navigation_started) /
             (double)G_TIME_SPAN_MILLISECOND;
-        foob_diagnostics_log(diagnostics, "load-finished status=%s elapsed_ms=%.3f",
+        log_line(diagnostics, "load-finished status=%s elapsed_ms=%.3f",
                              diagnostics->load_failed ? "failed" : "ok", elapsed_ms);
         report_geometry(diagnostics);
     }
@@ -97,7 +120,7 @@ static gboolean load_failed([[maybe_unused]] WebKitWebView *web_view, WebKitLoad
 {
     FoobDiagnostics *diagnostics = user_data;
     diagnostics->load_failed = true;
-    foob_diagnostics_log(diagnostics, "load-failed phase=%d domain=%s code=%d",
+    log_line(diagnostics, "load-failed phase=%d domain=%s code=%d",
                          event, g_quark_to_string(error->domain), error->code);
     return FALSE; /* Preserve default error handling and TLS policy. */
 }
@@ -105,7 +128,7 @@ static gboolean load_failed([[maybe_unused]] WebKitWebView *web_view, WebKitLoad
 static void process_terminated([[maybe_unused]] WebKitWebView *web_view,
                                WebKitWebProcessTerminationReason reason, gpointer user_data)
 {
-    foob_diagnostics_log(user_data, "web-process-terminated reason=%d", reason);
+    log_line(user_data, "web-process-terminated reason=%d", reason);
 }
 
 FoobDiagnostics *foob_diagnostics_new(WebKitWebView *web_view, WPEView *view)

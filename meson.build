@@ -91,6 +91,10 @@ python = find_program('python3')
 test('startup URI contract', python, args: [files('tests/check_cli.py'), foob], timeout: 30)
 test('binary contract', python,
     args: [files('tests/check_binary.py'), foob] + (fortified ? ['--fortify'] : []))
+# The logging ban (D-61): no URL, host, title or page text in foob's output. It reads
+# only sources, so it belongs to the suite "source" below, and needs no tool.
+test('logging ban', python, args: files('tests/check_logging.py'),
+    workdir: meson.project_source_root(), suite: 'source')
 
 # Source checks, each skipped (77) where its tool is not installed: static analysis
 # (clang-tidy with .clang-tidy, through this build's compile_commands.json, D-52),
