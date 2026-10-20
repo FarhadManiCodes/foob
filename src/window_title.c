@@ -9,43 +9,75 @@ static constexpr glong trusted_max_chars = 240;
  * much of it is read, so the work per change stays bounded (F-76). */
 static constexpr size_t max_input_bytes = 16 * 1024;
 
-/* Format characters (Unicode category Cf) that render as visible glyphs, mostly Arabic
- * and Syriac prefixed number signs, and the joiners U+200C and U+200D, which emoji
- * sequences and Persian or Indic text need. Every other Cf character is invisible. */
-static bool is_visible_or_needed_format(gunichar c)
+/* Inclusive ranges of code points; each list is one rule, one entry per line. */
+struct range {
+    gunichar first, last;
+};
+
+static bool in_ranges(gunichar c, const struct range *ranges, size_t count)
 {
-    return c == 0x200c || c == 0x200d || (c >= 0x0600 && c <= 0x0605) || c == 0x06dd ||
-        c == 0x070f || c == 0x0890 || c == 0x0891 || c == 0x08e2 || c == 0x110bd || c == 0x110cd;
+    for (size_t i = 0; i < count; i++) {
+        if (c >= ranges[i].first && c <= ranges[i].last)
+            return true;
+    }
+    return false;
 }
 
+/* Format characters (Unicode category Cf) that render as visible glyphs, or that emoji
+ * sequences and Persian or Indic text need. Every other Cf character is invisible. */
+static const struct range visible_formats[] = {
+    { 0x0600, 0x0605 },    /* Arabic number signs and marks */
+    { 0x06dd, 0x06dd },    /* Arabic end of ayah */
+    { 0x070f, 0x070f },    /* Syriac abbreviation mark */
+    { 0x0890, 0x0891 },    /* Arabic pound and piastre marks above */
+    { 0x08e2, 0x08e2 },    /* Arabic disputed end of ayah */
+    { 0x200c, 0x200d },    /* zero width non-joiner and joiner */
+    { 0x110bd, 0x110bd },  /* Kaithi number sign */
+    { 0x110cd, 0x110cd },  /* Kaithi number sign above */
+};
+
+/* The rest of Unicode's Default_Ignorable_Code_Point set, which renderers draw as
+ * nothing, and two characters that are not default-ignorable but look blank. Variation
+ * selectors 1-16 (U+FE00-FE0F) stay: emoji presentation needs U+FE0F. */
+static const struct range invisible_others[] = {
+    { 0x034f, 0x034f },    /* combining grapheme joiner */
+    { 0x115f, 0x1160 },    /* Hangul choseong and jungseong fillers */
+    { 0x17b4, 0x17b5 },    /* Khmer inherent vowels */
+    { 0x180b, 0x180f },    /* Mongolian free variation selectors */
+    { 0x2065, 0x2065 },    /* unassigned, default-ignorable */
+    { 0x2800, 0x2800 },    /* Braille pattern blank (not default-ignorable) */
+    { 0x3164, 0x3164 },    /* Hangul filler */
+    { 0xffa0, 0xffa0 },    /* halfwidth Hangul filler */
+    { 0xfff0, 0xfff8 },    /* unassigned, default-ignorable */
+    { 0xfffc, 0xfffc },    /* object replacement character (not default-ignorable) */
+    { 0xe0000, 0xe0fff },  /* tags and the variation selector supplement */
+};
+
+/* Code points whose bidi class is, or by default would be, right-to-left (R or AL).
+ * Unassigned code points count too: bidi algorithms give them their block's default. */
+static const struct range right_to_left[] = {
+    { 0x0590, 0x08ff },    /* Hebrew to Arabic Extended-A */
+    { 0xfb1d, 0xfdff },    /* Hebrew and Arabic presentation forms A */
+    { 0xfe70, 0xfeff },    /* Arabic presentation forms B */
+    { 0x10800, 0x10fff },  /* right-to-left supplementary scripts */
+    { 0x1e800, 0x1efff },  /* right-to-left supplementary scripts */
+};
+
 /* Invisible characters that can hide or reorder text, or pad it with blank-looking runs:
- * every category Cf format character (bidi controls, zero width characters, soft
- * hyphen, interlinear annotation, musical format characters, tag characters, ...) except
- * the ones above, plus the rest of Unicode's Default_Ignorable_Code_Point set, which
- * renderers draw as nothing: combining grapheme joiner, Hangul and halfwidth fillers,
- * Khmer inherent vowels, Mongolian free variation selectors, the unassigned U+2065,
- * U+FFF0-FFF8 and U+E0000-E0FFF (with the variation selector supplement). Variation
- * selectors 1-16 (U+FE00-FE0F) stay, like the joiners: emoji presentation needs U+FE0F.
- * Also removed although not default-ignorable: Braille blank and object replacement. */
+ * every format character (bidi controls, zero width characters, soft hyphen, tag
+ * characters, ...) but the visible ones, and the others above. */
 static bool is_invisible_format(gunichar c)
 {
     if (g_unichar_type(c) == G_UNICODE_FORMAT)
-        return !is_visible_or_needed_format(c);
-    return c == 0x034f || c == 0x115f || c == 0x1160 || c == 0x17b4 || c == 0x17b5 ||
-        (c >= 0x180b && c <= 0x180f) || c == 0x2065 || c == 0x2800 || c == 0x3164 ||
-        c == 0xffa0 || (c >= 0xfff0 && c <= 0xfff8) || c == 0xfffc || (c >= 0xe0000 && c <= 0xe0fff);
+        return !in_ranges(c, visible_formats, G_N_ELEMENTS(visible_formats));
+    return in_ranges(c, invisible_others, G_N_ELEMENTS(invisible_others));
 }
 
-/* Code points whose bidi class is, or by default would be, right-to-left (R or AL):
- * the Hebrew to Arabic Extended-A blocks, Hebrew and Arabic presentation forms, and the
- * right-to-left supplementary ranges. Unassigned code points there count too, because
- * bidi algorithms give them their block's default class. Bidi controls such as U+200F
- * are format characters and already removed from untrusted titles. */
+/* Bidi controls such as U+200F are format characters and already removed from untrusted
+ * titles. */
 static bool may_be_right_to_left(gunichar c)
 {
-    return (c >= 0x0590 && c <= 0x08ff) || (c >= 0xfb1d && c <= 0xfdff) ||
-        (c >= 0xfe70 && c <= 0xfeff) || (c >= 0x10800 && c <= 0x10fff) ||
-        (c >= 0x1e800 && c <= 0x1efff);
+    return in_ranges(c, right_to_left, G_N_ELEMENTS(right_to_left));
 }
 
 /* Builds a valid-UTF-8 copy with control characters (C0, DEL and C1) as spaces;
