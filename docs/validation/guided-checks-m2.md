@@ -454,3 +454,45 @@ FOOB_DIAGNOSTICS=1 ./build/foob ./tests/fixtures/permissions.html
 - The M2 reduction pass (D-35) should check whether the build options can pack the
   segments tighter.
 
+## Simplification after a `/code-review` and a growth review (D-45)
+
+A `/code-review` of `main...m2` found seven items. The maintainer also asked why the code
+grew so much since `main`: `target.c` from 60 to 189 lines, `main.c` from 22 to 67,
+`browser.c` by 15.
+
+**Growth by purpose.** Most of the code guards trust or handles common input:
+- the scheme, userinfo, local host and unsafe-character checks;
+- the UTF-8 file names;
+- the escape sets for pasted links;
+- the path argument;
+- the core-dump guard and its fallback.
+
+One block was large and covered a case that never occurs: the numeric-host rules, about
+37 lines, for hosts such as `1.2.3` or `0x7f.0.0.1`. They were removed. Such a host now
+loads as WebKit reads it and stays remote.
+
+**Code-review findings.**
+1. **Trust check too strict.** `foob_uri_is_local()` now checks only the scheme and the
+   host, after dropping the query and fragment. A local page whose own script sets
+   `#a\b` or `?%zz`, and WebKit's `file:////…`, now count as local again.
+2. **`//` paths refused.** A path argument's leading `//` collapses, so
+   `foob //tmp/x.html` works.
+3. **`inet_pton()` for IPv4.** Moot: the IPv4 parser was removed.
+4. **Double canonicalization.** Fixed by finding 1.
+5. **Stale handoff size.** Corrected.
+6. **`findings.md` not updated in `68905d1`.** Not changed: that commit made no new
+   decision.
+7. **Module dependencies.** "GLib only" now reads "GLib and POSIX libc, no WebKit".
+
+**Checks.**
+- New unit cases: three local addresses that WebKit can report (they fail on the
+  previous `target.c`), two remote ones, and `//etc/passwd` → `file:///etc/passwd` (fails
+  on the previous code). The numeric-host rejection cases were removed.
+- Unit tests 3/3; nested 15/15; ASan+UBSan 3/3 and 15/15, with no report;
+  `gcc -fanalyzer` clean.
+
+**Size.**
+- `target.c`: 189 → 162 lines; `target.c.o`: 3,029 → 2,706 B.
+- `size` text column: 17,943 → 17,653 B.
+- Stripped: 30,712 B, unchanged, because the saving stays inside the same page.
+

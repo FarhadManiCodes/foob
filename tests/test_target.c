@@ -53,8 +53,6 @@ static const char *const rejected[] = {
     "http://good.com\\.evil.com/", "file:/\\evil.com/x",
     /* Hosts WebKit refuses or reads differently (pre-Gate-A review). */
     "http://%20/", "https://host%2540/", "https://stra\xc3\x9f" "e.de/", "https://a..b/", "https://.a/",
-    "https://1.2.3/", "https://0x7f.0.0.1/", "https://1.2.3.04/", "https://2130706433/",
-    "https://1.2.3.4./", "https://256.1.1.1/", "https://example.0x1f/",
     "http://[0:0::1]/", "http://[::ffff:1.2.3.4]/", "https://[fe80::1%25eth0]/",
 };
 
@@ -106,7 +104,7 @@ static void test_from_argument(void)
         { "https://example.org", "https://example.org/" },  /* not a path: a URI */
         { "/tmp/%2e%2e/x", "file:///tmp/%252e%252e/x" },  /* a literal '%' in a name */
         { "/tmp/\xe9.html", nullptr },  /* not UTF-8: WebKit cannot open it (D-40) */
-        { "//etc/passwd", nullptr },  /* resolves to "//" (D-43) */
+        { "//etc/passwd", "file:///etc/passwd" },  /* the kernel reads "//" as "/" */
         { "example.com", nullptr }, { "x.html", nullptr }, { "~/x.html", nullptr }, { "", nullptr },
     };
     for (size_t i = 0; i < G_N_ELEMENTS(cases); i++) {
@@ -150,11 +148,13 @@ static void test_local_uri(void)
     static const char *const local[] = {
         "about:blank", "file:///tmp/a.html", "FILE:///tmp/a%20b.md",
         "file://localhost/tmp/a.typ", "file:///tmp/caf%C3%A9.html", "file:///tmp/a.html#x",
+        /* What WebKit can report for a local page, though the startup rules refuse it (D-45). */
+        "file:///tmp/a.html#a\\b", "file:///tmp/a.html?%zz", "file:////tmp/a.html",
     };
     static const char *const remote[] = {
         "https://example.org/", "http://127.0.0.1/", "file://remote-host/tmp/a.html",
         "file:relative.html", "about:config", "javascript:1",
-        "blob:file:///tmp/x", "",
+        "blob:file:///tmp/x", "", "file://remote-host/a#\\", "file://user@localhost/a",
     };
     for (size_t i = 0; i < G_N_ELEMENTS(local); i++)
         g_assert_true(foob_uri_is_local(local[i]));

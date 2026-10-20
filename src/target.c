@@ -18,49 +18,12 @@ static bool has_unsafe_character(const char *target)
     return false;
 }
 
-/* Four decimal parts of 0 to 255 without leading zeros, the only IPv4 form WebKit
- * writes back unchanged. */
-static bool is_dotted_quad(const char *host)
-{
-    int parts = 0;
-    for (const char *c = host;; c++) {
-        const char *start = c;
-        int value = 0;
-        while (g_ascii_isdigit(*c) && c - start < 3)
-            value = value * 10 + (*c++ - '0');
-        if (c == start || (*start == '0' && c - start > 1) || value > 255)
-            return false;
-        parts++;
-        if (!*c)
-            return parts == 4;
-        if (*c != '.')
-            return false;
-    }
-}
-
-/* WebKit reads a host whose last label is a number (decimal, or hex after "0x") as an
- * IPv4 address: 1.2.3 becomes 1.2.0.3, 0x7f.0.0.1 becomes 127.0.0.1. The host is
- * lower-case here. */
-static bool ends_in_number(const char *host)
-{
-    size_t end = strlen(host);
-    if (end && host[end - 1] == '.')
-        end--;  /* WebKit skips one trailing dot here. */
-    size_t start = end;
-    while (start && host[start - 1] != '.')
-        start--;
-    bool hex = end - start >= 2 && host[start] == '0' && host[start + 1] == 'x';
-    for (size_t i = start + (hex ? 2 : 0); i < end; i++) {
-        if (!(hex ? g_ascii_isxdigit(host[i]) : g_ascii_isdigit(host[i])))
-            return false;
-    }
-    return end > start;
-}
-
-/* The lower-cased host of an http(s) URI if WebKit reads it as written, else nullptr:
- * a name of ASCII letters, digits, '-' and '_' in non-empty labels (one trailing dot
- * allowed; an internationalized name must be given in punycode), a dotted-quad IPv4
- * address, or an IPv6 address in its shortest form, as inet_ntop() writes it. */
+/* The lower-cased host of an http(s) URI, else nullptr: a name of ASCII letters,
+ * digits, '-' and '_' in non-empty labels (one trailing dot allowed; an internationalized
+ * name must be given in punycode, D-39), or an IPv6 address in its shortest form, as
+ * inet_ntop() and WebKit write it. WebKit reads a name ending in a number (1.2.3,
+ * 0x7f.1) as an IPv4 address; such rare names load as WebKit reads them, still remote
+ * (D-45). */
 static char *canonical_host(const char *host)
 {
     if (!host || !*host)
@@ -79,8 +42,6 @@ static char *canonical_host(const char *host)
         if (*c == '.' ? label_start : !g_ascii_isalnum(*c) && *c != '-' && *c != '_')
             return nullptr;
     }
-    if (ends_in_number(lower) && !is_dotted_quad(lower))
-        return nullptr;
     return g_steal_pointer(&lower);
 }
 
@@ -169,21 +130,33 @@ char *foob_target_from_argument(const char *argument)
         return nullptr;
     g_autofree char *path = g_canonicalize_filename(argument, cwd);
     free(cwd);
-    g_autofree char *uri = g_filename_to_uri(path, nullptr, nullptr);
+    const char *single = path;  /* GLib keeps a leading "//" (POSIX); the kernel reads "/". */
+    while (single[0] == '/' && single[1] == '/')
+        single++;
+    g_autofree char *uri = g_filename_to_uri(single, nullptr, nullptr);
     return foob_target_canonical(uri);
 }
 
+/* Trust needs only the scheme and the host, so this does not apply the startup rules:
+ * WebKit reports addresses they would refuse, such as a local page's own fragment with
+ * a backslash or "%zz" (D-45). The query and fragment never name another file. */
 bool foob_uri_is_local(const char *uri)
 {
-    g_autofree char *canonical = foob_target_canonical(uri);
-    return canonical &&
-        (strcmp(canonical, "about:blank") == 0 || g_str_has_prefix(canonical, "file:"));
+    if (!uri)
+        return false;
+    if (strcmp(uri, "about:blank") == 0)
+        return true;
+    g_autofree char *resource = g_strndup(uri, strcspn(uri, "?#"));
+    g_autoptr(GUri) parsed = g_uri_parse(resource, G_URI_FLAGS_ENCODED | G_URI_FLAGS_NON_DNS, nullptr);
+    if (!parsed || strcmp(g_uri_get_scheme(parsed), "file") != 0 || g_uri_get_userinfo(parsed) ||
+        g_uri_get_port(parsed) != -1 || g_uri_get_path(parsed)[0] != '/')
+        return false;
+    const char *host = g_uri_get_host(parsed);
+    return !host || !*host || g_ascii_strcasecmp(host, "localhost") == 0;
 }
 
 bool foob_navigation_allowed(const char *from_uri, const char *to_uri)
 {
     g_autofree char *destination = foob_target_canonical(to_uri);
-    if (!destination)
-        return false;
-    return foob_uri_is_local(from_uri) || !foob_uri_is_local(destination);
+    return destination && (foob_uri_is_local(from_uri) || !foob_uri_is_local(destination));
 }
