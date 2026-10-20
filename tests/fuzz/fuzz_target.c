@@ -13,7 +13,9 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size);
 static char *webkit_form(const char *uri)
 {
     g_autoptr(WebKitURIRequest) request = webkit_uri_request_new(uri);
-    return g_strdup(webkit_uri_request_get_uri(request));
+    const char *serialized = webkit_uri_request_get_uri(request);
+    g_assert(serialized);
+    return g_strdup(serialized);
 }
 
 static bool is_ascii(const char *text)
@@ -28,7 +30,7 @@ static bool is_ascii(const char *text)
 /* WebKit's API returns text it cannot parse unchanged, and a parsed URL with its scheme
  * in lower case; so the text with an upper-case scheme comes back changed only if WebKit
  * parsed it. */
-static bool webkit_parses(const char *uri)
+[[gnu::nonnull]] static bool webkit_parses(const char *uri)
 {
     g_autofree char *upper = g_strdup(uri);
     for (char *c = upper; *c && *c != ':'; c++)
