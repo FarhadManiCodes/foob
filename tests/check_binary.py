@@ -68,8 +68,11 @@ if 'X86-64' in header or 'x86-64' in header:
     check(re.search(r'x86 feature: .*IBT', notes) and re.search(r'x86 feature: .*SHSTK', notes),
           'no CET (IBT and SHSTK) property')
 check('__stack_chk_fail' in imports, 'no stack protector')
+# A fortified build imports a *_chk function only where glibc can check a call; today
+# that is one, __printf_chk, from main.c's --version output. If a change leaves no such
+# call, this fails although fortify is on: drop --fortify in meson.build and say why.
 check(not fortify or any(name.endswith('_chk') for name in imports),
-      'no fortified call (_FORTIFY_SOURCE)')
+      'no fortified call (_FORTIFY_SOURCE; see the comment above this check)')
 allowed = {'libglib-2.0.so.0', 'libgobject-2.0.so.0', 'libWPEWebKit-2.0.so.1', 'libc.so.6'}
 check(needed <= allowed and 'libWPEWebKit-2.0.so.1' in needed,
       f'linked libraries {sorted(needed)}, expected a subset of {sorted(allowed)}')

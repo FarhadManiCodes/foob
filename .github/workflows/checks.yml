@@ -4,7 +4,12 @@
 # suite needs a desktop and stays local. Actions are pinned to a commit; D-54 says how
 # to move a pin.
 name: checks
-on: [push, pull_request]
+# Pushes to the long-lived branches and pull requests: a pull-request branch then runs
+# once, not twice (once for its push and once for the request).
+on:
+  push:
+    branches: [main, m2]
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -23,7 +28,10 @@ jobs:
       # per release and cargo install skips a version it already has.
       - name: Find the latest jscpd release
         id: jscpd
-        run: echo "version=$(cargo search --limit 1 jscpd | sed -n 's/^jscpd = "\([^"]*\)".*/\1/p')" >> "$GITHUB_OUTPUT"
+        run: |
+          version=$(cargo search --limit 1 jscpd | sed -n 's/^jscpd = "\([^"]*\)".*/\1/p')
+          test -n "$version" || { echo 'cannot read the latest jscpd version' >&2; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: |
