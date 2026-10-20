@@ -56,15 +56,23 @@ def browser_tree(root, table):
         members = expanded
 
 
+# One "Name:   123 kB" line of /proc/PID/smaps or smaps_rollup.
+KIB_FIELD = re.compile(r'^([A-Za-z_]+):\s+(\d+) kB$', re.MULTILINE)
+
+
+def rollup(pid):
+    """/proc/PID/smaps_rollup as {field: KiB}."""
+    return {key: int(value) for key, value in KIB_FIELD.findall(Path(f'/proc/{pid}/smaps_rollup').read_text())}
+
+
 def sample(root):
     tree = browser_tree(root, processes())
     rows = []
     for pid, identity in sorted(tree.items()):
-        content = Path(f'/proc/{pid}/smaps_rollup').read_text()
-        pss = re.search(r'^Pss:\s+(\d+) kB$', content, re.MULTILINE)
+        pss = rollup(pid).get('Pss')
         if pss is None:
             raise RuntimeError(f'PSS unavailable for {pid}')
-        rows.append({'pid': pid, **identity, 'pss_kib': int(pss[1])})
+        rows.append({'pid': pid, **identity, 'pss_kib': pss})
     return {'processes': rows, 'total_pss_kib': sum(row['pss_kib'] for row in rows)}
 
 

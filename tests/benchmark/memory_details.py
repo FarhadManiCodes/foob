@@ -8,6 +8,8 @@ import os
 from pathlib import Path
 import re
 
+from process_tree import KIB_FIELD, rollup
+
 
 def category(name):
     if name.startswith('/dev/dri/') or 'dmabuf' in name.lower():
@@ -32,15 +34,13 @@ def category(name):
 
 def details(pid):
     directory = Path(f'/proc/{pid}')
-    rollup = {key: int(value) for key, value in re.findall(
-        r'^([A-Za-z_]+):\s+(\d+) kB$', (directory / 'smaps_rollup').read_text(), re.MULTILINE)}
     mappings = []
     for line in (directory / 'smaps').read_text().splitlines():
         header = re.match(r'^[0-9a-f]+-[0-9a-f]+\s+([rwxps-]{4})\s+\S+\s+\S+\s+\d+\s*(.*)$', line)
         if header:
             mappings.append({'name': header[2] or '(anonymous)', 'permissions': header[1]})
         else:
-            value = re.match(r'^([A-Za-z_]+):\s+(\d+) kB$', line)
+            value = KIB_FIELD.match(line)
             if value and mappings:
                 mappings[-1][value[1]] = int(value[2])
     groups = defaultdict(int)
@@ -74,7 +74,7 @@ def details(pid):
             clients.append({'fd': descriptor.name, 'inspection_error': type(error).__name__})
     return {
         'pid': pid,
-        'rollup_kib': rollup,
+        'rollup_kib': rollup(pid),
         'thread_count': len(list((directory / 'task').iterdir())),
         'mapping_groups_pss_kib': dict(groups),
         'mapping_pss_sum_kib': sum(groups.values()),
