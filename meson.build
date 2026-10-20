@@ -35,10 +35,12 @@ caller_args = ' '.join(get_option('c_args'))
 if fortify and not caller_args.contains('_FORTIFY_SOURCE')
     add_project_arguments('-D_FORTIFY_SOURCE=3', language: 'c')
 endif
-# Whether fortify is really on, so the binary contract expects fortified calls only then:
-# a caller's -U_FORTIFY_SOURCE or -D_FORTIFY_SOURCE=0 turns it off.
+# Whether fortify makes checked calls, so the binary contract expects one only then: at
+# level 2 or 3 (foob's own 3, or a caller's =2 or =3). glibc checks printf only from
+# level 2, so a caller's level 1 (=1, or a bare -D_FORTIFY_SOURCE), =0 or
+# -U_FORTIFY_SOURCE leaves foob with none (D-62).
 fortified = fortify and not caller_args.contains('-U_FORTIFY_SOURCE') and (
-    not caller_args.contains('_FORTIFY_SOURCE') or caller_args.contains('_FORTIFY_SOURCE=1') or
+    not caller_args.contains('_FORTIFY_SOURCE') or
     caller_args.contains('_FORTIFY_SOURCE=2') or caller_args.contains('_FORTIFY_SOURCE=3'))
 add_project_arguments('-DFOOB_VERSION="@0@"'.format(meson.project_version()), language: 'c')
 add_project_link_arguments(cc.get_supported_link_arguments(

@@ -18,15 +18,6 @@ static char *webkit_form(const char *uri)
     return g_strdup(serialized);
 }
 
-static bool is_ascii(const char *text)
-{
-    for (const char *c = text; *c; c++) {
-        if ((unsigned char)*c >= 0x80)
-            return false;
-    }
-    return true;
-}
-
 /* WebKit's API returns text it cannot parse unchanged, and a parsed URL with its scheme
  * in lower case; so the text with an upper-case scheme comes back changed only if WebKit
  * parsed it. */
@@ -90,7 +81,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     /* Any text WebKit may report or a page may supply (D-45): foob never trusts what
      * WebKit reads as remote, whether foob sees the text or WebKit's form of it. Text
      * WebKit cannot parse (file://localhost:/a) is no address, so either answer is safe. */
-    if (is_ascii(input) && webkit_parses(input)) {
+    if (g_str_is_ascii(input) && webkit_parses(input)) {
         g_autofree char *webkit = webkit_form(input);
         g_assert_true(!foob_uri_is_local(input) || webkit_reads_local(webkit));
         g_assert_true(!foob_uri_is_local(webkit) || webkit_reads_local(webkit));

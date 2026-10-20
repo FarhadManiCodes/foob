@@ -8,7 +8,8 @@ cookie or input contents. Reads src/ and fails, with file:line, on:
   version numbers, stdout or stderr;
 - the word char in diagnostics.h, whose interface takes no text;
 - in diagnostics.c, any output call but the one in log_line(), and a log_line() whose
-  format is not literal, has a %c, %p or %n, or gives a %s anything but a literal, a
+  format is not literal, has a conversion other than an integer, a floating-point number
+  or a plain %s (so no %m, %ls, %c, %p, %n or '*'), or gives a %s anything but a literal, a
   choice between two literals, an event_names[] entry, g_quark_to_string(name) or
   g_type_name(name).
 
@@ -23,16 +24,19 @@ import re
 import sys
 
 OUTPUT = re.compile(
-    r'\b(printf|fprintf|dprintf|v[a-z]*printf|puts|fputs|putc|putchar|fputc|fwrite|write|perror'
-    r'|syslog|g_print|g_printerr|g_log\w*|g_message|g_warning\w*|g_critical|g_debug|g_info'
-    r'|g_error)\s*\(')
+    r'\b(v?[fd]?printf|puts|fputs|putc|putchar|fputc|fwrite|write|perror|syslog|v?errx?|v?warnx?'
+    r'|error(?:_at_line)?|g_(?:v?f?printf|print\w*)|g_log\w*|g_message|g_warning\w*|g_critical'
+    r'|g_debug|g_info|g_error|g_output_stream_\w*|g_file_set_contents\w*|g_file_replace\w*)\s*\(')
 LITERALS = r'(?:"(?:[^"\\]|\\.)*"\s*)+'
 MAIN_ARGUMENT = re.compile(rf'{LITERALS}|FOOB_VERSION|webkit_get_\w+_version\(\)|stdout|stderr')
 NAME = r'\w+(?:->\w+|\.\w+)*'
 STRING_ARGUMENT = re.compile(
     rf'{LITERALS}|[^?]+\?\s*{LITERALS}:\s*{LITERALS}|event_names\[{NAME}\]'
     rf'|g_quark_to_string\({NAME}\)|g_type_name\({NAME}\)')
-CONVERSION = re.compile(r'%(?:%|[-+ #0]*(?:\d+|\*)?(?:\.(?:\d+|\*))?(?:hh|h|ll|l|L|z|j|t)?([a-zA-Z]))')
+# Every conversion, and the ones allowed: integers, floating point and plain %s, with no
+# '*' (an extra argument). Any other (%m's error text, %ls, %c, %p, %n) is refused.
+CONVERSION = re.compile(r"%[-+ #0-9.*'I]*(?:hh|h|ll|l|L|z|j|t|q)?(?:.|$)", re.S)
+ALLOWED = re.compile(r'%%|%[-+ #0]*\d*(?:\.\d+)?(?:(?:hh|h|ll|l|z|j|t)?[diuxX]|[fFeEgG]|s)')
 
 
 def strip_comments(text):
@@ -106,14 +110,17 @@ def check(source):
                 if len(found) < 2 or not re.fullmatch(LITERALS, found[1]):
                     report(m.start(), 'log_line() needs a literal format')
                     continue
-                conversions = [c for c in CONVERSION.findall(literal_text(found[1])) if c]
+                specs = [c for c in CONVERSION.findall(literal_text(found[1])) if c != '%%']
+                refused = [c for c in specs if not ALLOWED.fullmatch(c)]
+                if refused:
+                    report(m.start(), f'log_line(): {", ".join(refused)} not allowed')
+                    continue
+                conversions = [c[-1] for c in specs]
                 if len(conversions) != len(found) - 2:
                     report(m.start(), 'log_line(): format and arguments differ in number')
                     continue
                 for conversion, argument in zip(conversions, found[2:], strict=True):
-                    if conversion in 'cpn':
-                        report(m.start(), f'log_line(): %{conversion} is not allowed')
-                    elif conversion == 's' and not STRING_ARGUMENT.fullmatch(argument):
+                    if conversion == 's' and not STRING_ARGUMENT.fullmatch(argument):
                         report(m.start(), f'log_line(): %s of {argument!r}')
     return problems
 

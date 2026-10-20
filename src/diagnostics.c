@@ -19,6 +19,7 @@ static const char *const event_names[] = {
     [FOOB_EVENT_DISPLAY_DISCONNECTED] = "display-disconnected",
     [FOOB_EVENT_SHUTDOWN_SIGNAL] = "shutdown signal",
 };
+static_assert(G_N_ELEMENTS(event_names) == FOOB_EVENT_COUNT, "every event needs a name");
 
 /* The one output of this file; each %s takes only foob's own text or a type name. */
 G_GNUC_PRINTF(2, 3)
@@ -53,14 +54,14 @@ static void report_geometry(const FoobDiagnostics *diagnostics)
     WPEView *view = diagnostics->view;
     WPEToplevelState state = wpe_view_get_toplevel_state(view);
     log_line(diagnostics,
-                         "viewport width=%d height=%d scale=%.3f "
-                         "active=%d fullscreen=%d maximized=%d focus=%d",
-                         wpe_view_get_width(view), wpe_view_get_height(view),
-                         wpe_view_get_scale(view),
-                         !!(state & WPE_TOPLEVEL_STATE_ACTIVE),
-                         !!(state & WPE_TOPLEVEL_STATE_FULLSCREEN),
-                         !!(state & WPE_TOPLEVEL_STATE_MAXIMIZED),
-                         wpe_view_get_has_focus(view));
+             "viewport width=%d height=%d scale=%.3f "
+             "active=%d fullscreen=%d maximized=%d focus=%d",
+             wpe_view_get_width(view), wpe_view_get_height(view),
+             wpe_view_get_scale(view),
+             !!(state & WPE_TOPLEVEL_STATE_ACTIVE),
+             !!(state & WPE_TOPLEVEL_STATE_FULLSCREEN),
+             !!(state & WPE_TOPLEVEL_STATE_MAXIMIZED),
+             wpe_view_get_has_focus(view));
 }
 
 static gboolean geometry_idle(gpointer user_data)
@@ -109,7 +110,7 @@ static void load_changed([[maybe_unused]] WebKitWebView *web_view, WebKitLoadEve
         double elapsed_ms = (double)(g_get_monotonic_time() - diagnostics->navigation_started) /
             (double)G_TIME_SPAN_MILLISECOND;
         log_line(diagnostics, "load-finished status=%s elapsed_ms=%.3f",
-                             diagnostics->load_failed ? "failed" : "ok", elapsed_ms);
+                 diagnostics->load_failed ? "failed" : "ok", elapsed_ms);
         report_geometry(diagnostics);
     }
 }
@@ -121,7 +122,7 @@ static gboolean load_failed([[maybe_unused]] WebKitWebView *web_view, WebKitLoad
     FoobDiagnostics *diagnostics = user_data;
     diagnostics->load_failed = true;
     log_line(diagnostics, "load-failed phase=%d domain=%s code=%d",
-                         event, g_quark_to_string(error->domain), error->code);
+             event, g_quark_to_string(error->domain), error->code);
     return FALSE; /* Preserve default error handling and TLS policy. */
 }
 

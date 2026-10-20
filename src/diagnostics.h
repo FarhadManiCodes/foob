@@ -25,6 +25,7 @@ typedef enum {
     FOOB_EVENT_DOWNLOAD_CANCELLED,
     FOOB_EVENT_DISPLAY_DISCONNECTED,
     FOOB_EVENT_SHUTDOWN_SIGNAL,
+    FOOB_EVENT_COUNT, /* Not an event: the number of events. */
 } FoobEvent;
 
 void foob_diagnostics_event(const FoobDiagnostics *diagnostics, FoobEvent event);
