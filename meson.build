@@ -85,13 +85,11 @@ foreach unit : ['target', 'window_title']
     endif
 endforeach
 
-python = find_program('python3', required: false)
-if python.found()
-    test('startup URI contract', python,
-        args: [files('tests/check_cli.py'), foob], timeout: 30)
-    test('binary contract', python,
-        args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
-endif
+# Required: Meson itself runs on Python 3, and a missing interpreter must not drop tests.
+python = find_program('python3')
+test('startup URI contract', python, args: [files('tests/check_cli.py'), foob], timeout: 30)
+test('binary contract', python,
+    args: [files('tests/check_binary.py'), foob] + (fortify ? ['--fortify'] : []))
 
 # Source checks, each skipped (77) where its tool is not installed: static analysis
 # (clang-tidy with .clang-tidy, through this build's compile_commands.json, D-52),
@@ -105,7 +103,7 @@ foreach check : [
     tool = find_program(check[1], required: false)
     if tool.found()
         test(check[0], tool, args: check[2], workdir: meson.project_source_root(), timeout: 120)
-    elif python.found()
+    else
         test(check[0], python, args: ['-c', 'print("SKIP: @0@ missing"); raise SystemExit(77)'.format(check[1])])
     endif
 endforeach

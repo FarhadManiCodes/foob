@@ -28,7 +28,7 @@ for module in ('target', 'window_title'):
         counted = re.match(r'\s*[^:]+:\s*(\d+):(.*)', line)
         if counted and counted[1] == '0' and counted[2].startswith('Source:'):
             # Not GLib's or libc's headers; the path is relative to the build directory.
-            inside = re.search(rf'(^|/)src/{module}\.c$', counted[2]) is not None
+            inside = re.search(rf'(^|/)src/{module}\.c$', counted[2].removeprefix('Source:')) is not None
             seen = seen or inside
         elif counted and counted[1] != '0' and inside:
             source = (int(counted[1]), counted[2].strip())
