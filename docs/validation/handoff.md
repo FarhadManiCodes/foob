@@ -37,7 +37,7 @@ index below, the roadmap's triage rule (under *Scope control*).
 4. Done 2026-10-19: Gate A approved (D-17). Next: the maintainer names the first M2 task.
 5. M2 planning is complete (D-18 to D-38, row *M2 planning* above); the line's design is task M2-14, done when needed. The task order is the roadmap's M2 *Order* paragraph (8 steps, D-30 and D-38); step 1 is F-77 with M2-02's canonical load, path argument and `--version`. Step 1 was named on 2026-10-19 (D-39) and is complete; step 2 (M2-04 profiles) waits for the maintainer.
 6. Done 2026-10-19: F-77 fixed in M2 step 1 (commit 1); its row left [findings.md](findings.md#findings).
-7. Done 2026-10-20: the branch security and merge reviews' follow-ups are placed (row above); F-78's guided row waits for the maintainer.
+7. Done 2026-10-20: the branch security and merge reviews' follow-ups are placed (row above). F-78 is fixed in code (`b2e768d`); its review asked for a nested negative control (`permissions-denied`, added: fails on M1) and record corrections (done). Its guided row (pointer lock, notifications) waits for the maintainer.
 
 **Rules for every agent (Claude, Codex, others)**
 - Read this file and [findings.md](findings.md) before anything else; do not repeat checks recorded as done and do not re-argue a decided item.

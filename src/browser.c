@@ -85,9 +85,9 @@ static gboolean decide_policy([[maybe_unused]] WebKitWebView *web_view, WebKitPo
 }
 
 /*
- * Every permission a page asks for is denied (F-78). Unanswered, WebKit denies most
- * requests but allows pointer lock (and, per the security review, installing missing
- * media plugins); which permission a page may get is decided in roadmap M3-05.
+ * Every permission a page asks for is denied (F-78). Unanswered, WebKit denies every
+ * request type but pointer lock, which it allows; which permission a page may get is
+ * decided in roadmap M3-05.
  */
 static gboolean permission_requested([[maybe_unused]] WebKitWebView *web_view,
                                      WebKitPermissionRequest *request, gpointer user_data)

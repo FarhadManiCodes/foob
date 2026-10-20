@@ -239,6 +239,23 @@ def canonical_form_requested(browser, socket, errors):
 scenario('canonical-address-loaded', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/x|y.html', expected_title='bar \u2014 foob',
          after_load=canonical_form_requested)
+# Every permission request is denied (F-78). Geolocation reaches foob without a click
+# (pointer lock needs one: a guided row); WebKit denies it unanswered too, so the
+# diagnostics line is what shows foob's handler answered.
+(scratch / 'geolocation.html').write_text(
+    '<!doctype html><title>geo</title><script>navigator.geolocation.getCurrentPosition('
+    '() => document.title = "geo ok", e => document.title = "geo " + e.code);</script>',
+    encoding='utf-8')
+
+
+def geolocation_denied_by_foob(browser, socket, errors):
+    assert 'permission-denied type=WebKitGeolocationPermissionRequest' in errors.read_text(), \
+        'foob did not answer the geolocation request'
+
+
+scenario('permissions-denied', 0, terminate,
+         uri=f'http://127.0.0.1:{server.server_port}/geolocation.html',
+         expected_title='geo 1 \u2014 foob', after_load=geolocation_denied_by_foob)
 scenario('title-remote-sanitized', 0, terminate,
          uri=f'http://127.0.0.1:{server.server_port}/hostile.html',
          expected_title='Payevil page \u2014 foob')

@@ -411,17 +411,23 @@ violations. Follow-ups, chosen by the maintainer:
 ## F-78: every permission request denied
 
 Found by the branch security review (2026-10-20; its report is in git history, commit
-`50331a3`). foob did not handle
-WebKit's `permission-request`, and unanswered WebKit *allows* pointer lock. Its API
-documentation says the other request types, notifications among them, are denied; the
-review read installing missing media plugins as allowed too. `browser.c` now denies every
+`50331a3`). foob did not handle WebKit's `permission-request`, and unanswered WebKit *allows* pointer lock. Its API
+documentation says the other seven request types, notifications among them, are denied.
+(The review also named installing missing media plugins; that request exists only in
+WebKitGTK, not in WPE.) `browser.c` now denies every
 request and, with `FOOB_DIAGNOSTICS=1`, logs `permission-denied type=<request type>`
 (the type only, never an address). M3-05 decides which permission a page may get.
 
-**Why a guided row.** In a nested probe of both binaries, a page that calls
-`requestPointerLock()` without a click gets an exception, and geolocation is refused
-before foob is asked. No request reaches foob without a real click, so a nested
-scenario could not fail on the old binary, and none was added.
+**Automatic check.** The nested scenario `permissions-denied` loads a page that asks
+for geolocation without a click. foob's handler denies it and logs `permission-denied
+type=WebKitGeolocationPermissionRequest`; on the M1 binary no such line appears and the
+scenario fails. The page sees error 1 on both binaries, because WebKit's default denies
+geolocation too: only the log line shows foob's handler answered. *Corrected after the
+review of `b2e768d`:* this record first said no request reaches foob without a click; my
+probe's log search had a broken regular expression.
+
+**Why a guided row as well.** Pointer lock is the only request whose outcome the fix
+changes, and `requestPointerLock()` throws without a real click.
 
 **Guided row** (maintainer at the keyboard, real clicks):
 
@@ -431,11 +437,12 @@ FOOB_DIAGNOSTICS=1 ./build/foob ./tests/fixtures/permissions.html
 
 | # | Click on the page | Expected (read the page's log panel and the terminal) | Result |
 |---|---|---|---|
-| 1 | "Lock the pointer" | the pointer stays free; log: `pointer lock refused`; terminal: `permission-denied type=WebKitPointerLockPermissionRequest`. **Negative control:** the M1 binary (`main`) locks the pointer and the log says `pointer locked` (`Escape` releases it) | pending |
-| 2 | "Ask to show notifications" | log: `notifications: denied` | pending |
+| 1 | "Lock the pointer" | the pointer stays free; log: `pointer lock refused`; terminal: `permission-denied type=WebKitPointerLockPermissionRequest`. **Negative control:** the M1 binary (`main`) locks the pointer and the log says `pointer locked` (`Escape` should release it; if it does not, close the window with niri's close key) | pending |
+| 2 | "Ask to show notifications" | log: `notifications: denied`, and terminal: `permission-denied type=WebKitNotificationPermissionRequest` (the line is the check; the page sees "denied" on M1 too) | pending |
 
 **Checks on this change.**
-- Unit tests 3/3; nested suite 14/14.
+- Unit tests 3/3; nested suite 14/14 (15/15 with `permissions-denied`, added after the
+  review).
 - ASan+UBSan: 3/3 and 14/14, with no report.
 - `gcc -fanalyzer`: clean.
 
