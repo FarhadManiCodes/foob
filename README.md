@@ -48,7 +48,7 @@ real current directory and turned into a `file:` URI; `foob example.com` and `fo
 foob loads the address in a canonical form that WebKit's parser leaves as it is:
 non-ASCII text in the path, query and fragment is percent-encoded, a host must be
 ASCII (punycode for international names), and a file name must be valid UTF-8.
-The M1 prototype is for trusted pages; comprehensive navigation/resource
+foob is still for trusted pages; comprehensive navigation/resource
 policy belongs to M2/M4. It uses one native Wayland window and an explicit
 ephemeral session. The `WPE_PLATFORM` environment cannot select another backend
 because the program constructs `WPEDisplayWayland` directly. Closing the window,
@@ -69,7 +69,7 @@ socket collector receives its memory and must honour the limit itself. `FOOB_DIA
 keeps core dumps for debugging.
 
 The [desktop checklist](docs/validation/desktop-checklist.md) passes; the
-[validation/handoff](docs/validation/handoff.md) records Gate A readiness.
+[validation/handoff](docs/validation/handoff.md) records the current state.
 The standard-library Python scripts under `tests/benchmark/` need desktop access
 and readable process PSS. Run `python3 tests/benchmark/suite.py` for serial fresh
 launches and a separate local warm-reload control; each suite run writes a new
