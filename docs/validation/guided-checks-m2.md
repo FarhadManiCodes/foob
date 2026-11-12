@@ -437,8 +437,21 @@ FOOB_DIAGNOSTICS=1 ./build/foob ./tests/fixtures/permissions.html
 
 | # | Click on the page | Expected (read the page's log panel and the terminal) | Result |
 |---|---|---|---|
-| 1 | "Lock the pointer" | the pointer stays free; log: `pointer lock refused`; terminal: `permission-denied type=WebKitPointerLockPermissionRequest`. **Negative control:** the M1 binary (`main`) locks the pointer and the log says `pointer locked` (`Escape` should release it; if it does not, close the window with niri's close key) | pending |
+| 1 | "Lock the pointer" | the pointer stays free; log: `pointer lock refused`; terminal: `permission-denied type=WebKitPointerLockPermissionRequest`. **Negative control:** a build of `50331a3`, the commit before the fix (D-65; below), locks the pointer and the log says `pointer locked` (`Escape` should release it; if it does not, close the window with niri's close key) | pending |
 | 2 | "Ask to show notifications" | log: `notifications: denied`, and terminal: `permission-denied type=WebKitNotificationPermissionRequest` (the line is the check; the page sees "denied" on M1 too) | pending |
+
+**Control binary for row 1** (D-65). `main` holds the fix since 2026-10-20, so the
+control is the commit before it, built outside the repository and run with the same
+command and the same fixture:
+
+```sh
+mkdir <dir> && git archive 50331a3 | tar -x -C <dir>
+meson setup <dir>/build <dir> && meson compile -C <dir>/build
+FOOB_DIAGNOSTICS=1 <dir>/build/foob ./tests/fixtures/permissions.html
+```
+
+Built this way on 2026-11-12 (`wpewebkit 2.54.2`): it compiles, and its `browser.c` has no
+`permission-request` handler. The click itself is still pending.
 
 **Checks on this change.**
 - Unit tests 3/3; nested suite 14/14 (15/15 with `permissions-denied`, added after the
