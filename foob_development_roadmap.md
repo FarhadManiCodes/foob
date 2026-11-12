@@ -203,6 +203,8 @@ Evidence to bring to the review:
 
 **Goal:** make essential websites and document workflows work without accidentally widening privileges.
 
+**Planning review first (D-74, 2026-11-12):** the tasks below were written on 2026-10-12, before the M2 decisions. Before the first M3 task, the maintainer reviews them point by point, as for M2 (D-18 to D-38), and each point is recorded before any code. First agenda: (1) M3-04 is P0 and the exit requires PDF handoff, while D-12 keeps the inline viewer and `AGENTS.md` says M3-04 revisits it only if a custom build turns PDF.js off; the Sioyek idea is undecided. (2) What asks the user in M3-01 (dialogs) and M3-03 (the per-download decision): foob's line (D-28) or something else. (3) Which M3 task builds the several views that M2-11 decides (D-24).
+
 - [ ] **M3-01 / P0:** Explicit policy for JavaScript alerts/confirms/prompts, HTML selects, `window.open` and popup authentication; test each with local fixtures. *M1 guided check:* a right-click shows no context menu today.
 
   **Carried from the M1 audit:** `window.open()` is unsupported today (returns `null`; WebKit's `create` signal is unhandled) and `target=_blank` links do nothing (D-04), so popup flows that need `window.opener` (OAuth sign-in popups) do not work; decide the popup policy with that in mind. Needs M2-11's several views in one process (D-24); a popup may be shown as a temporary view in the same window. M2-04's guided login check (D-23) says whether any site the maintainer uses needs a popup at all; many sites sign in by redirect.
@@ -247,6 +249,8 @@ Evidence to bring to the review:
 ## M4 — Local documents, math and offline research
 
 **Goal:** make the browser a useful local mathematical/research viewer **without a localhost web server**.
+
+**Planning review first (D-74, 2026-11-12):** as for M3, the maintainer reviews these tasks point by point before the first one. First agenda: (1) M4-08 opens a preview's web link "in the ordinary browsing session": with one process per profile and no IPC (D-18), say which process and profile a preview runs in, and what happens when the target profile is already open. (2) M4-02's sentence that previews introduce no private-browsing mode predates `--private` (D-19); say how the preview session relates to it. (3) The local-file trust revisit (D-08, the open-decisions table) is assigned to M4 but has no task and is not in the exit: give it one. (4) The headless display idea (I-02), which the maintainer leans towards for M4.
 
 - [ ] **M4-01 / P0:** Open explicitly authorized `.html` using a correctly escaped `file://` URI; test relative assets and filesystem boundaries. Confirm the canonical `file://` URL and MIME detection; minimal installations may need `shared-mime-info`.
 - [ ] **M4-02 / P0:** Introduce a limited `foob:` URI-scheme handler for **managed document resources**, with per-document allowlists and correct MIME types. Before choosing a scheme classification, test CORS, relative URLs, cookies/storage, history, origin and CSP on custom-scheme pages. Compare memory and speed of `file://`, load-bytes and streaming scheme handlers, and confirm the sandboxed subprocesses keep working.
