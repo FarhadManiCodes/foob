@@ -46,7 +46,7 @@ What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU
 - Primary destinations: Wikipedia, Google Scholar, Semantic Scholar.
 - Local mathematical HTML and Markdown rendered with KaTeX (bundled locally), plus suitable Typst HTML/MathML exports; use a separate PDF/document viewer for exact Typst layout and papers.
 - Open paper links, download PDFs, and hand them to the separate document viewer.
-- Optionally support ChatGPT, Claude, and Gemini if compatibility tests succeed.
+- Optionally support ChatGPT, Claude, Gemini and WhatsApp Web (text chat only, D-70) if compatibility tests succeed.
 - Small dependency footprint, predictable resources, maintainable packaging, and automated performance measurements.
 - Stretch target: **under 100 MiB total PSS** for one lightweight page, including all browser subprocesses; this is *not* a measured result or a guaranteed ceiling.
 
@@ -54,7 +54,7 @@ What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU
 
 - Servo integration or interchangeable engine adapters.
 - A full graphical browser interface or extension ecosystem.
-- An embedded PDF renderer as the target (interim: the engine's PDF.js viewer, D-12), video/audio playback, WebRTC calls, microphone/camera, DRM streaming, gamepad support.
+- An embedded PDF renderer as the target (interim: the engine's PDF.js viewer, D-12), video/audio playback, WebRTC calls, microphone/camera, DRM streaming, gamepad support. These are not promised or tested even where the stock engine happens to play them, such as a voice note in a chat (D-70); the custom engine candidate removes them.
 - A source-level fork of WebKit or modifications to upstream engine internals.
 - Compiling the entire browser engine every time the application is rebuilt.
 - Guaranteeing full compatibility with all complex web applications.
@@ -178,7 +178,7 @@ For **both stock and custom WPE**, use the same browser **source revision** and 
 | Local Markdown + KaTeX | Equations, fonts, selection/copy | Idle PSS |
 | Typst HTML + MathML | Equation correctness | Idle PSS |
 | PDF download | Download, filenames, progress, handoff to viewer | Peak memory; success |
-| ChatGPT/Claude/Gemini (optional) | Login, streaming, math, uploads | Comparative PSS; no fixed 100 MiB limit |
+| ChatGPT/Claude/Gemini, WhatsApp Web text chat (optional) | Login, streaming, math, uploads | Comparative PSS; no fixed 100 MiB limit |
 
 Measure **total proportional set size (PSS)** of the full application process tree after a defined idle period. Also record startup time, CPU, installed dependency closure, compressed/uncompressed package sizes, and any GPU allocations PSS doesn't capture. The **100 MiB total-PSS target applies to lightweight single-page workloads only**; rich web applications will generally exceed it.
 
@@ -212,7 +212,7 @@ The browser has no persistent chrome and does not use a conventional GUI toolkit
 | P1 | **Navigation surface without chrome** | **Decided (D-66):** `foob https://…` on the command line, and a "go to address" key on foob's own line (D-28, roadmap M2-07), never a box inside the page. An external launcher is refused while the profile is open (D-18) until the hand-off of M6-06. Treat shell input as **URL/search**, with proper escaping and untrusted-input boundaries. | Open URL from terminal, search query, history back/forward/reload, display current URI, copy current URI using a shortcut. |
 | P1 | **Navigation policy and URI schemes** | HTTP(S) internally; PDFs/downloads to external reader. **Decided for M2 (D-31):** WebKit's defaults for `file:`, `about:blank`, `data:`, `blob:` and `javascript:` kept and tested; a fixed table in the source hands `mailto:` and `webcal:` to Gmail and Google Calendar in Firefox, `whatsapp:` to foob's `whatsapp` profile and copies `zoommtg:`; every other scheme refused with a message. Only on a real click, never a redirect; argument vectors only, never a shell or `xdg-open`. | PDF links and redirects, `target=_blank`, mailto, local documents and failed schemes. |
 | P1 | **Local research documents and math** | Define trusted local content origin and resource resolution (KaTeX fonts/scripts, MathML and Typst HTML); avoid casually disabling web security for local HTML. | Local KaTeX without network; local links/images; no unintended local-file exposure to remote webpages. |
-| P1 | **Site compatibility and browser identity** | Test default user agent, feature detection, CSP/service workers, sign-in redirects, popup authentication, WebAuthn/passkeys where relevant. Do not change user-agent globally before observing failures. | Wikipedia, Scholar, Semantic Scholar, ChatGPT, Claude, Gemini representative flows. |
+| P1 | **Site compatibility and browser identity** | Test default user agent, feature detection, CSP/service workers, sign-in redirects, popup authentication, WebAuthn/passkeys where relevant. Do not change user-agent globally before observing failures. | Wikipedia, Scholar, Semantic Scholar, ChatGPT, Claude, Gemini and WhatsApp Web (text) representative flows. |
 | P1 | **Appearance, zoom, font and text rendering** | Distinguish CSS/device scale, page zoom, reader magnification and browser UI absence; support keyboard zoom and default font preferences. Follow system dark-mode/contrast/reduced-motion settings where supported. | Small math labels, ligatures, non-Latin text, system theme changes, 125–200% scale, resize after zoom. |
 | P1 | **Web-process crashes and application recovery** | Target: log crashed subprocesses, show or load a minimal recovery page and support reload, so a page crash does not end the application (interim: foob exits with code 4, D-06; roadmap M3-07). | Deliberately terminate a web process; check browser remains controllable and recoverable. |
 | P1 | **Diagnostics and traces** | Off by default; nothing about browsing is written unless asked (D-26). Live diagnostics (`FOOB_DIAGNOSTICS=1`) hold no host or address; an on-demand dump (a key) writes recent events with hosts only, never paths or queries, to a `0600` file in the profile. Core dumps are off for foob and its WebKit processes outside a diagnostics run (F-77). JavaScript errors later through the Web Inspector, private profile only. | Live output of a redirect fixture holds no host or path; `kill -SEGV` on the web process stores no core; the dump file's mode and content (roadmap M2-06). |
