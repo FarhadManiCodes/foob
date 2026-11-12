@@ -30,11 +30,11 @@ nothing until M2-03. Gate A was approved on 2026-10-19 (D-17); the maintainer na
 **Where to look:** [findings.md](findings.md) (decisions, findings, ideas), the evidence
 index below, the roadmap's triage rule (under *Scope control*).
 
-**Open right now** (2026-11-12)
-- F-78's guided clicks, by the maintainer: the current build and the `50331a3` control ([guided-checks-m2.md](guided-checks-m2.md#f-78-every-permission-request-denied)). The finding stays open until they pass. In the same sitting, the ten steps of [desktop-checklist.md](desktop-checklist.md) once on the current build (D-84), recorded there with the date, commit, binary hash and engine version.
-- M2 step 2 (M2-04, profiles) waits for the maintainer to name it. Settled for it in the reviews: D-72, D-75 to D-78 and D-85.
-- `.github/workflows/checks.yml` has never run on GitHub: `origin/main` does not hold it, and `m2` is pushed only when the maintainer asks.
-- To do before M2-04's code (D-83): run `python3 tests/benchmark/suite.py` once on the current commit as the memory baseline on the installed engine, on AC power with no other work on the desktop; summarize it in a new record.
+**Open right now** (2026-11-12; a new session starts here and tells the maintainer these, in this order)
+1. F-78's guided clicks, by the maintainer: the current build and the `50331a3` control ([guided-checks-m2.md](guided-checks-m2.md#f-78-every-permission-request-denied)). The finding stays open until they pass. In the same sitting, the ten steps of [desktop-checklist.md](desktop-checklist.md) once on the current build (D-84), recorded there with the date, commit, binary hash and engine version. The maintainer reports the results and the agent records them.
+2. Before M2-04's code (D-83), when the maintainer says the machine is on AC power and idle: the agent runs `python3 tests/benchmark/suite.py` once on the current commit as the memory baseline on the installed engine, on AC power with no other work on the desktop; summarize it in a new record.
+3. M2 step 2 (M2-04, profiles) waits for the maintainer to name it. Settled for it in the reviews: D-72, D-75 to D-78 and D-85.
+4. Any time, optional: `.github/workflows/checks.yml` has never run on GitHub: `origin/main` does not hold it, and `m2` is pushed only when the maintainer asks.
 
 **Numbered record** (items 1 to 8 are closed, item 9 is the plan review, item 10 the M1 review; kept because other documents cite the numbers)
 1. All done 2026-10-16 on `4f2163a` (binary `f1c00899…`): geometry probe, trimmed nested suite, the real session (typing, scrolling, focus, maximize, close), the remote-page guided rows and the `pointer.html` click check: the maintainer confirms all pass.
