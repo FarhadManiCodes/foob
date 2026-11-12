@@ -22,13 +22,15 @@ A custom build **does not require a source fork**: obtain a pinned upstream rele
 | Term | Meaning |
 |---|---|
 | WPE WebKit **2.54.0** | Upstream engine release that made WPEPlatform stable and the default (2026-09-16) |
-| WPE WebKit **2.54.1** | Upstream stable bug-fix release used as the baseline (2026-10-06) |
-| Arch **`wpewebkit 2.54.1-2`** | Arch package of 2.54.1; `-2` is Arch's packaging revision, not an upstream release |
+| WPE WebKit **2.54.1** | The minimum foob builds against (`meson.build`), and the release whose headers and build options this document's investigations read (2026-10-06) |
+| Arch **`wpewebkit`** | The engine foob runs on: whatever version Arch currently ships, read with `pacman -Q wpewebkit` or `foob --version` (D-71). In a package version such as `2.54.1-2`, `-2` is Arch's packaging revision, not an upstream release |
 | **`wpe-webkit-2.0`** | WPE WebKit API and pkg-config name; `2.0` is the API namespace, not the engine release |
 | **`wpe-platform-2.0`** | WPEPlatform API and pkg-config name, same namespace |
 | **`wpe-platform-wayland-2.0`** | Optional Wayland-specific pkg-config module |
 
 Keep the engine release, the Arch package revision and the API namespace apart in code, build instructions and evidence.
+
+**No version is fixed (D-71).** foob follows the packages Arch currently ships, for the engine and for every tool. A plan or instruction names no exact version; an evidence record states the version it ran on, read with a command. Where this document says "2.54.1", it dates an observation: read it again on the installed engine before relying on it. Only M5's custom engine build pins a release, the one Arch ships at that time.
 
 What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU: [blank-memory.md](docs/validation/blank-memory.md).
 
@@ -61,7 +63,7 @@ What M1 verified on this machine: [m1.md](docs/validation/m1.md); memory and GPU
 
 ## Engine choice and rationale
 
-**Selected:** WPE WebKit **2.54.1** as the upstream baseline, with the WPEPlatform Wayland backend (stable by default since 2.54.0).
+**Selected:** WPE WebKit as Arch currently ships it (2.54.1 or later, D-71), with the WPEPlatform Wayland backend (stable by default since 2.54.0).
 
 WPE is an official WebKit port suited to embedded and toolkit-independent deployments. It preserves a mature browser engine while avoiding the need to base the application on a conventional GTK/Qt frontend. "Embedded" does **not** mean the engine is fundamentally simpler than WebKit: the modern JS, DOM, CSS, networking and multiprocess core remains substantial. Its platform focus nonetheless aligns with this browser's constraints.
 
@@ -327,7 +329,7 @@ Schedule these checks by the roadmap: native view/input at M1/M2, persistent bro
 
 - `webkit_web_context_register_uri_scheme()` registers a callback; the callback receives a `WebKitURISchemeRequest`. Obtain the URI using `webkit_uri_scheme_request_get_uri()`; provide a `GInputStream` with correct length and MIME type using `webkit_uri_scheme_request_finish()` or an explicit `WebKitURISchemeResponse` via `webkit_uri_scheme_request_finish_with_response()`.
 - `WebKitSecurityManager` can classify a custom scheme (notably `webkit_security_manager_register_uri_scheme_as_local()`, `...as_secure()`, `...as_cors_enabled()`, `...as_no_access()` and `...as_display_isolated()`). These classifications have **different security semantics**: do not enable all of them automatically. In particular, marking a scheme CORS-enabled is not equivalent to restricting it, and marking it secure does not validate content.
-- Register the scheme and set any intentional security classifications **before navigating the first view**. The handler and security-manager APIs were confirmed in the pinned WPE WebKit 2.54.1 upstream headers. The upstream 2023 introductory article's browser skeleton uses an old Cog/libwpe backend; take only its scheme-related design, not that outdated platform boilerplate.
+- Register the scheme and set any intentional security classifications **before navigating the first view**. The handler and security-manager APIs were confirmed in the WPE WebKit 2.54.1 upstream headers. The upstream 2023 introductory article's browser skeleton uses an old Cog/libwpe backend; take only its scheme-related design, not that outdated platform boilerplate.
 - `webkit_web_view_load_html()` / `load_bytes()` are useful for isolated in-memory pages, but less convenient than scheme handlers for multiple linked CSS/JS/image/font assets. Do not confuse `load_alternate_html()` (error/replacement content) with a general-purpose file server.
 
 ### Strict resource policy

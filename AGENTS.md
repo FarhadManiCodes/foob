@@ -29,6 +29,8 @@ pkg-config --modversion wpe-platform-2.0
 
 These report installed packages and available API modules; the `2.0` suffix denotes the API namespace, not the engine release.
 
+foob follows the packages Arch currently ships (D-71). Fix no exact version of the engine or of a tool in a plan, an instruction, a script or a test; `meson.build` holds minimum versions only. Read a version with a command and state it in each evidence record. When `pacman -Q wpewebkit` differs from the last recorded version, run `meson test` and the nested suite before other work and record the result in the handoff; compare measurements only within one engine version; a probe result older than the installed engine is read again before code relies on it.
+
 Use `meson setup build` to configure, `meson compile -C build` to build, and `meson test -C build --print-errorlogs` to run registered tests. Launch `./build/foob [URI]`; see README for diagnostics and trusted local fixtures. Python checks use only the standard library and need no environment installation.
 
 ## Coding Style & Naming Conventions

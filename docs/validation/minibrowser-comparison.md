@@ -10,6 +10,8 @@ tarball (`https://wpewebkit.org/releases/wpewebkit-2.54.1.tar.xz`, file
 `Tools/MiniBrowser/wpe/main.cpp`, SHA256 of the file
 `1cb7d78673bcfe832f8a58d47a57a6b7f09fc5dc0ac91ed1e84a5c1364cd7dbf`), into a new empty
 directory, and never build or run it. Two-clause BSD license, copyright Igalia.
+That file is the M1 baseline. M2-13 and M3-09 compare with the file from the release of
+the engine then installed (`foob --version`), fetched the same way (D-71).
 
 ## Size (a signal, not a target; `AGENTS.md`)
 
