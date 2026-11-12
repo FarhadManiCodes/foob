@@ -2,7 +2,7 @@
 
 **Status:** Architecture direction accepted. Project state: [handoff](docs/validation/handoff.md).  
 **Date:** 2026-10-12  
-**Working name:** `foob` (not final)  
+**Name:** `foob` (final, D-78)  
 **Decision owner:** Project maintainer
 
 ## Decision summary
@@ -429,7 +429,7 @@ Lifecycle was resolved in M1 and persistent-profile concurrency in M2 planning (
 
 ## Open questions / deferred decisions
 
-- Choose a final project name (`foob` is provisional).
+- (The project name is decided: `foob`, D-78.)
 - Whether foob's transient line ever becomes a permanent status line. (The URL prompt is decided: a key on that line, D-66, roadmap M2-07.)
 - Choose the tab form (niri's tabbed columns, foob's lazy tabs, or both) from the M2-11 measurements (D-24, D-25, M3-12).
 - Evaluate the engine's per-site compatibility before relying on it as a Firefox replacement (M3-06).

@@ -3,7 +3,7 @@
 **Document type:** Execution plan / agile-style milestones  
 **Status:** Project state: [handoff](docs/validation/handoff.md); stages after Gate A are provisional.  
 **Created:** 2026-10-12  
-**Working project name:** `foob`  
+**Project name:** `foob` (final, D-78)  
 **Companion document:** [`foob_architecture_decision.md`](./foob_architecture_decision.md) — technical decisions, API investigation, security boundaries and research notes.
 
 ## Guiding decision
